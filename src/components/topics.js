@@ -1,14 +1,4 @@
-import {
-  Database,
-  RefreshCw,
-  Globe,
-  Zap,
-  Mouse,
-  Keyboard,
-  Eye,
-  FileText,
-  Smartphone,
-} from "lucide-react";
+import { Database, Globe } from "lucide-react";
 
 import UseStateDemo from "./topics/UseStateDemo";
 import PropsDemo from "./topics/PropsDemo";
