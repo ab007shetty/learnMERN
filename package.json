@@ -2,6 +2,7 @@
   "name": "react-basics",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ab007shetty.github.io/react-basics",
   "dependencies": {
     "@babel/standalone": "^7.27.6",
     "@testing-library/dom": "^10.4.0",
