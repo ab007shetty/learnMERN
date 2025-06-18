@@ -87,20 +87,18 @@ const UseStateDemo = ({ icon: Icon, name, description }) => {
                   {Icon && <Icon className="w-7 h-7 text-blue-600" />}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{name || "useState Hook"}</h2>
-                  <p className="text-gray-700">{description || "Manage state in functional components"}</p>
+                  <h2 className="text-2xl font-bold text-gray-900">{name || "Counter"}</h2>
+                  <p className="text-gray-700">{description || "Demonstrates a simple counter using useState."}</p>
                 </div>
               </div>
-              {/* One-liner and use case */}
-              <div className="">
+              {/* React concept used here */}
+              <div>
                 <div className="font-semibold text-blue-800 mb-1">
-                  What is useState? 
+                  React concept used here: <span className="font-mono bg-blue-50 px-2 py-1 rounded">useState</span>
                 </div>
                 <div className="mb-2 text-gray-800">
-                  <span className="font-mono bg-blue-50 px-2 py-1 rounded">useState</span> is a Hook in React that lets you add state to functional components.
-                </div>
-                <div className="text-gray-700">
-                  <strong>Use case:</strong> Useful for tracking and updating values like form inputs, toggles, or counters in your UI.
+                  <span className="font-mono bg-blue-50 px-2 py-1 rounded">useState</span> is a React Hook that lets you add state to functional components.
+                  In this example, <span className="font-mono">useState(0)</span> creates a <span className="font-mono">counter</span> state variable and a <span className="font-mono">setCounter</span> function that updates it. When you click the buttons, <span className="font-mono">setCounter</span> changes the state and causes the component to re-render and display the new value.
                 </div>
               </div>
             </div>
