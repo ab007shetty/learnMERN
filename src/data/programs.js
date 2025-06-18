@@ -1,113 +1,82 @@
-import {
-  Hash,
-  ListTodo,
-  Send,
-  /*   Repeat,
-  Layers,
-  ClipboardList,
-  FileText,
-  RefreshCcw,
-  Globe, */
-} from "lucide-react";
-
+import { Hash, ListTodo, Send, Play } from "lucide-react";
 import CounterDemo from "../components/programs/CounterDemo";
 import TodoDemo from "../components/programs/TodoDemo";
 import PropsDemo from "../components/programs/PropsDemo";
-/* import UseEffectDemo from "../components/programs/UseEffectDemo";
-import UseRefDemo from "../components/programs/UseRefDemo";
-import UseMemoDemo from "../components/programs/UseMemoDemo";
-import UseCallbackDemo from "../components/programs/UseCallbackDemo";
-import UseContextDemo from "../components/programs/UseContextDemo";
-import ControlledInputDemo from "../components/programs/ControlledInputDemo";
-import UncontrolledInputDemo from "../components/programs/UncontrolledInputDemo";
-import FetchDataDemo from "../components/programs/FetchDataDemo";
-import ListRenderingDemo from "../components/programs/ListRenderingDemo"; */
+import EmptyPlayground from "../components/programs/EmptyPlayground";
 
 const programs = [
   {
-    id: 1,
+    id: "playground",
+    name: "Playground",
+    icon: Play,
+    description: "Build Anything you want!",
+    concept: "All react hooks",
+    conceptDescription: "",
+    component: EmptyPlayground,
+  },
+  {
+    id: "counter",
     name: "Counter",
     icon: Hash,
-    description: "Simple counter using useState (basic state management)",
+    description: "Demonstrates a simple counter using useState.",
+    concept: "useState",
+    conceptDescription: (
+      <>
+        <span className="font-mono bg-blue-50 px-2 py-1 rounded">useState</span>{" "}
+        is a React Hook that lets you add state to functional components.
+        <br />
+        In this example, <span className="font-mono">useState(0)</span> creates
+        a <span className="font-mono">counter</span> state variable and a{" "}
+        <span className="font-mono">setCounter</span> function that updates it.
+        When you click the buttons,{" "}
+        <span className="font-mono">setCounter</span> changes the state and
+        causes the component to re-render and display the new value.
+      </>
+    ),
     component: CounterDemo,
   },
   {
-    id: 2,
+    id: "todo",
     name: "ToDo",
     icon: ListTodo,
-    description: "A basic ToDo app with add, remove, and toggle functionality",
+    description:
+      "Demonstrates useState for managing both the todo array and input value in a functional component.",
+    concept: "useState",
+    conceptDescription: (
+      <>
+        <span className="font-mono bg-blue-50 px-2 py-1 rounded">useState</span>{" "}
+        lets you declare state variables in functional components.
+        <br />
+        Here, <span className="font-mono">useState([])</span> stores the list of
+        todos and <span className="font-mono">useState("")</span> manages the
+        input field value. Each state update causes the component to re-render
+        and display the latest UI.
+      </>
+    ),
     component: TodoDemo,
   },
   {
-    id: 3,
+    id: "props",
     name: "Props",
     icon: Send,
-    description: "Pass data and event handlers to child components",
+    description:
+      "Demonstrates passing data and functions as props from a parent to child component.",
+    concept: "props",
+    conceptDescription: (
+      <>
+        <span className="font-mono bg-blue-50 px-2 py-1 rounded">props</span>{" "}
+        are used to pass data and behavior from a parent component to its
+        children.
+        <br />
+        In this example, the <span className="font-mono">Child</span> component
+        receives a <span className="font-mono">name</span> (string) and an{" "}
+        <span className="font-mono">onGreet</span> (function) as props. This
+        allows the parent to control both the text and the click behavior of
+        each child.
+      </>
+    ),
     component: PropsDemo,
   },
-  /* {
-    id: 4,
-    name: "useEffect Hook",
-    icon: RefreshCcw,
-    description: "Handle side effects such as data fetching or subscriptions",
-    component: UseEffectDemo,
-  },
-  {
-    id: 5,
-    name: "useRef Hook",
-    icon: Layers,
-    description: "Access and persist mutable values and DOM nodes",
-    component: UseRefDemo,
-  },
-  {
-    id: 6,
-    name: "useMemo Hook",
-    icon: ClipboardList,
-    description: "Optimize performance by memoizing expensive calculations",
-    component: UseMemoDemo,
-  },
-  {
-    id: 7,
-    name: "useCallback Hook",
-    icon: Repeat,
-    description: "Memoize functions to prevent unnecessary re-renders",
-    component: UseCallbackDemo,
-  },
-  {
-    id: 8,
-    name: "useContext Hook",
-    icon: FileText,
-    description: "Share state easily across deeply nested components",
-    component: UseContextDemo,
-  },
-  {
-    id: 9,
-    name: "Controlled Input",
-    icon: Send,
-    description: "Controlled component for form input using state",
-    component: ControlledInputDemo,
-  },
-  {
-    id: 10,
-    name: "Uncontrolled Input",
-    icon: Globe,
-    description: "Uncontrolled component for form input using ref",
-    component: UncontrolledInputDemo,
-  },
-  {
-    id: 11,
-    name: "Fetch Data (API)",
-    icon: Globe,
-    description: "Fetch and display data from an API in a React component",
-    component: FetchDataDemo,
-  },
-  {
-    id: 12,
-    name: "List Rendering",
-    icon: Layers,
-    description: "Render lists and use keys for efficient DOM updates",
-    component: ListRenderingDemo,
-  }, */
 ];
 
 export default programs;

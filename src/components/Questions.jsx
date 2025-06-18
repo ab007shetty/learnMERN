@@ -81,7 +81,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col p-4 overflow-hidden bg-gray-100 transition-all duration-300 mt-6">
+    <div className="w-full h-full flex flex-col p-4 overflow-hidden bg-gray-100 transition-all duration-300 mt-2">
       {/* Header with Progress Bar and Navigation */}
       <div className="flex items-center mb-4 flex-shrink-0">
         <div className="flex items-center gap-3 flex-shrink-0">
@@ -136,7 +136,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
       </div>
 
       {/* Main Card: Full Width/Fit to Window, shadow added, top margin */}
-      <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300 mt-4">
+      <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300 mt-2">
         <div
           className="bg-white rounded-2xl border border-gray-200 shadow-2xl flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300"
           onTouchStart={handleTouchStart}
@@ -144,7 +144,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
           onTouchEnd={handleTouchEnd}
         >
           {/* Question */}
-          <div className="mb-6 px-8 pt-8">
+          <div className="mb-4 px-8 pt-4">
             <h2 className="text-lg md:text-xl font-bold text-blue-800 mb-2">
               Q{currentQuestion.id}: {currentQuestion.question}
             </h2>

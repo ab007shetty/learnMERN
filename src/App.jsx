@@ -5,68 +5,33 @@ import Introduction from "./components/Introduction";
 import Questions from "./components/Questions";
 import programs from "./data/programs";
 
-// Constants
-const QUESTIONS_KEY = "questions"; // Must match Sidebar
+const QUESTIONS_KEY = "questions";
 const INTRO = "INTRO";
-const SIDEBAR_WIDTH = 288; // px, for w-72
+const SIDEBAR_WIDTH = 250;
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selected, setSelected] = useState(INTRO);
 
   const selectedProgram = programs.find((p) => p.id === selected);
 
-  // Function to render main content based on selection
-  const renderMainContent = () => {
-    if (selected === INTRO) {
-      return <Introduction totalTopics={programs.length} />;
-    } else if (selected === QUESTIONS_KEY) {
-      return (
-        <Questions 
-          name="Q&A Practice"
-          description="Test your knowledge with interactive question cards"
-        />
-      );
-    } else if (selectedProgram && selectedProgram.component) {
-      return (
-        <selectedProgram.component
-          icon={selectedProgram.icon}
-          name={selectedProgram.name}
-          description={selectedProgram.description}
-        />
-      );
-    }
-    return null;
-  };
-
   return (
     <div className="relative min-h-screen bg-gray-50">
-      <Navbar 
-        sidebarOpen={sidebarOpen} 
-        onSidebarToggle={() => setSidebarOpen((prev) => !prev)} 
+      <Navbar
+        sidebarOpen={sidebarOpen}
+        onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
       />
 
-      {/* Sidebar */}
       <Sidebar
         sidebarOpen={sidebarOpen}
         onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
         selected={selected}
         setSelected={setSelected}
-        programs={programs} // pass all programs to Sidebar
+        programs={programs}
         INTRO={INTRO}
+        QUESTIONS_KEY={QUESTIONS_KEY}
         SIDEBAR_WIDTH={SIDEBAR_WIDTH}
       />
-
-      {/* Overlay for mobile when sidebar is open */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-30 z-30 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
 
       <main
         className={`
@@ -74,12 +39,23 @@ const App = () => {
           ${sidebarOpen ? "md:ml-72" : "md:ml-0"}
         `}
         style={{
-          // For smooth transition of margin-left on desktop, no margin on mobile
           marginLeft: sidebarOpen && window.innerWidth >= 768 ? SIDEBAR_WIDTH : 0,
           maxWidth: "100vw",
         }}
       >
-        {renderMainContent()}
+        {selected === INTRO && <Introduction totalTopics={programs.length} />}
+        {selected === QUESTIONS_KEY && (
+          <Questions
+            name="Q&A Practice"
+            description="Test your knowledge with interactive question cards"
+          />
+        )}
+        {selectedProgram &&
+          selectedProgram.component &&
+          selected !== INTRO &&
+          selected !== QUESTIONS_KEY && (
+            <selectedProgram.component {...selectedProgram} />
+          )}
       </main>
     </div>
   );
