@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, HelpCircle } from 'lucide-react';
 import questions from '../data/questions';
 
 const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -37,6 +39,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
 
   const totalQuestions = questions.length;
 
+  // Navigation functions
   const nextQuestion = () => {
     if (currentIndex < totalQuestions - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -49,8 +52,36 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     }
   };
 
+  // Touch/swipe handlers for mobile
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const threshold = 60; // min distance for swipe
+    if (touchStartX.current !== null && touchEndX.current !== null) {
+      const diff = touchStartX.current - touchEndX.current;
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) {
+          // swipe left (next)
+          nextQuestion();
+        } else {
+          // swipe right (prev)
+          prevQuestion();
+        }
+      }
+    }
+    // Reset refs
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   return (
-    <div className="w-full h-full flex flex-col p-4 overflow-hidden bg-gray-100 transition-all duration-300">
+    <div className="w-full h-full flex flex-col p-4 overflow-hidden bg-gray-100 transition-all duration-300 mt-6">
       {/* Header with Progress Bar and Navigation */}
       <div className="flex items-center mb-4 flex-shrink-0">
         <div className="flex items-center gap-3 flex-shrink-0">
@@ -74,7 +105,8 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
               ></div>
             </div>
           </div>
-          <div className="flex gap-2 ml-4 flex-shrink-0">
+          {/* Desktop navigation buttons */}
+          <div className="hidden md:flex gap-2 ml-4 flex-shrink-0">
             <button
               onClick={prevQuestion}
               disabled={currentIndex === 0}
@@ -103,9 +135,14 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
         </div>
       </div>
 
-      {/* Main Card: Full Width/Fit to Window, NO shadow at top */}
-      <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300">
-        <div className="bg-white rounded-2xl border border-gray-200 flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300">
+      {/* Main Card: Full Width/Fit to Window, shadow added, top margin */}
+      <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300 mt-4">
+        <div
+          className="bg-white rounded-2xl border border-gray-200 shadow-2xl flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Question */}
           <div className="mb-6 px-8 pt-8">
             <h2 className="text-lg md:text-xl font-bold text-blue-800 mb-2">
@@ -148,6 +185,10 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
               </ul>
             </div>
           )}
+        </div>
+        {/* Mobile swipe hint */}
+        <div className="md:hidden mt-3 text-center text-sm text-gray-500 select-none">
+          Swipe left/right to navigate
         </div>
       </div>
     </div>
