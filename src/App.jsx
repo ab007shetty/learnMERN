@@ -4,7 +4,6 @@ import Sidebar from "./components/Sidebar";
 import Introduction from "./components/Introduction";
 import Questions from "./components/Questions";
 import programs from "./data/programs";
-import questions from "./data/questions";
 
 // Constants
 const QUESTIONS_KEY = "questions"; // Must match Sidebar

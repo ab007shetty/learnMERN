@@ -2,12 +2,12 @@ import {
   Hash,
   ListTodo,
   Send,
-  Repeat,
+  /*   Repeat,
   Layers,
   ClipboardList,
   FileText,
   RefreshCcw,
-  Globe,
+  Globe, */
 } from "lucide-react";
 
 import CounterDemo from "../components/programs/CounterDemo";
