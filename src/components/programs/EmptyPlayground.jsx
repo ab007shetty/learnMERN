@@ -1,9 +1,9 @@
 import PlaygroundWrapper from "../PlaygroundWrapper";
 
 const DEFAULT_BODY = `
-// Type a component, JSX, or export default!
+//Write React components, JSX, or pure JS. No need of any import statements.
 
-<h1>Hello World</h1>
+console.log('Hello, World!');
 `.trim();
 
 export default function EmptyPlayground(props) {

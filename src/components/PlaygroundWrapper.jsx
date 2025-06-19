@@ -21,63 +21,180 @@ function isComponent(thing) {
   );
 }
 
+// Custom console that captures output
+function createConsole() {
+  const logs = [];
+  const mockConsole = {
+    log: (...args) => logs.push({ type: 'log', args }),
+    error: (...args) => logs.push({ type: 'error', args }),
+    warn: (...args) => logs.push({ type: 'warn', args }),
+    info: (...args) => logs.push({ type: 'info', args }),
+  };
+  return { console: mockConsole, logs };
+}
+
+// Check if code appears to be React-related
+function isReactCode(code) {
+  const reactPatterns = [
+    /import.*react/i,
+    /from\s+['"]react['"]/i,
+    /React\./,
+    /useState|useEffect|useRef|useMemo|useCallback|useReducer|useContext/,
+    /<[A-Z][a-zA-Z0-9]*[^>]*>/,  // JSX components (capitalized)
+    /<[a-z]+[^>]*>/,              // HTML-like JSX elements
+    /React\.createElement/,
+    /export\s+default/,
+    /function.*\(\)\s*{[^}]*return[^}]*</, // Function returning JSX
+    /const.*=.*\(\)\s*=>[^{]*</,          // Arrow function returning JSX
+    /return\s*\(/,                        // return statement with parentheses (common in JSX)
+    /return\s*</,                         // return statement with JSX
+    /className=/,                         // JSX className attribute
+    /onClick=/,                           // JSX event handlers
+    /onChange=/,
+    /onSubmit=/,
+  ];
+  return reactPatterns.some(pattern => pattern.test(code));
+}
+
 // Babel transpile and eval code
 function transpileAndEval(userCode) {
   try {
-    const HOOKS = `
-      const { useState, useEffect, useRef, useMemo, useCallback, useReducer, useContext } = React;
-    `;
-    let code = HOOKS + "\n" + userCode;
+    const { console: mockConsole, logs } = createConsole();
+    
+    // Check if this looks like React code
+    if (isReactCode(userCode)) {
+      // Handle React code
+      const HOOKS = `
+        const { useState, useEffect, useRef, useMemo, useCallback, useReducer, useContext } = React;
+      `;
+      let code = HOOKS + "\n" + userCode;
 
-    if (/export\s+default\s+/.test(code)) {
-      code = code.replace(/export\s+default\s+/, "exports.__esModule = true; exports.default = ");
-    }
-    const wrapped = `
-      (function(exports, React){
-        let __result;
-        ${code}
-        if (exports && exports.default) {
-          __result = exports.default;
-        }
-        return typeof __result !== "undefined" 
-          ? __result 
-          : (typeof Parent !== "undefined" ? Parent 
-          : (typeof App !== "undefined" ? App 
-          : undefined));
-      })
-    `;
-    const transpiled = Babel.transform(wrapped, { presets: ["react"] }).code;
-    // eslint-disable-next-line no-eval
-    const fn = eval(transpiled);
-    const result = fn({}, React);
-
-    if (isComponent(result)) {
-      return { element: React.createElement(result) };
-    }
-    if (React.isValidElement(result)) {
-      return { element: result };
-    }
-    try {
-      const jsxTranspiled = Babel.transform(
-        `(function(React){ 
-          const { useState, useEffect, useRef, useMemo, useCallback, useReducer, useContext } = React;
-          return (${userCode}); 
-        })`,
-        { presets: ["react"] }
-      ).code;
-      // eslint-disable-next-line no-eval
-      const jsxFn = eval(jsxTranspiled);
-      const jsxResult = jsxFn(React);
-      if (React.isValidElement(jsxResult)) {
-        return { element: jsxResult };
+      if (/export\s+default\s+/.test(code)) {
+        code = code.replace(/export\s+default\s+/, "exports.__esModule = true; exports.default = ");
       }
-    } catch {}
-    return {
-      error: "Nothing rendered. Make sure your code returns, exports, or evaluates to a React element or component."
-    };
+      
+      const wrapped = `
+        (function(exports, React, console){
+          let __result;
+          ${code}
+          if (exports && exports.default) {
+            __result = exports.default;
+          }
+          return typeof __result !== "undefined" 
+            ? __result 
+            : (typeof Parent !== "undefined" ? Parent 
+            : (typeof App !== "undefined" ? App 
+            : undefined));
+        })
+      `;
+      
+      const transpiled = Babel.transform(wrapped, { presets: ["react"] }).code;
+      // eslint-disable-next-line no-eval
+      const fn = eval(transpiled);
+      const result = fn({}, React, mockConsole);
+
+      if (isComponent(result)) {
+        return { element: React.createElement(result), logs };
+      }
+      if (React.isValidElement(result)) {
+        return { element: result, logs };
+      }
+      
+      try {
+        const jsxTranspiled = Babel.transform(
+          `(function(React, console){ 
+            const { useState, useEffect, useRef, useMemo, useCallback, useReducer, useContext } = React;
+            return (${userCode}); 
+          })`,
+          { presets: ["react"] }
+        ).code;
+        // eslint-disable-next-line no-eval
+        const jsxFn = eval(jsxTranspiled);
+        const jsxResult = jsxFn(React, mockConsole);
+        if (React.isValidElement(jsxResult)) {
+          return { element: jsxResult, logs };
+        }
+      } catch {}
+      
+      return {
+        error: "Nothing rendered. Make sure your code returns, exports, or evaluates to a React element or component.",
+        logs
+      };
+    } else {
+      // Handle pure JavaScript code
+      const wrapped = `
+        (function(console) {
+          ${userCode}
+        })
+      `;
+      
+      try {
+        // eslint-disable-next-line no-eval
+        const fn = eval(wrapped);
+        fn(mockConsole);
+        
+        return { 
+          isJavaScript: true, 
+          logs,
+          success: true
+        };
+      } catch (err) {
+        return { 
+          isJavaScript: true, 
+          logs,
+          error: err.message 
+        };
+      }
+    }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message, logs: [] };
   }
+}
+
+// Format console arguments for display
+function formatConsoleArgs(args) {
+  return args.map(arg => {
+    if (typeof arg === 'object' && arg !== null) {
+      try {
+        return JSON.stringify(arg, null, 2);
+      } catch {
+        return String(arg);
+      }
+    }
+    return String(arg);
+  }).join(' ');
+}
+
+// Console output component
+function ConsoleOutput({ logs }) {
+  if (!logs || logs.length === 0) {
+    return (
+      <div className="text-gray-500 text-sm italic p-4 text-center">
+        No console output
+      </div>
+    );
+  }
+
+  return (
+    <div className="font-mono text-sm">
+      {logs.map((log, index) => (
+        <div
+          key={index}
+          className={`p-2 border-b border-gray-200 ${
+            log.type === 'error' ? 'text-red-600 bg-red-50' :
+            log.type === 'warn' ? 'text-yellow-600 bg-yellow-50' :
+            log.type === 'info' ? 'text-blue-600 bg-blue-50' :
+            'text-gray-800'
+          }`}
+        >
+          <span className="text-gray-500 text-xs uppercase mr-2">
+            {log.type}:
+          </span>
+          <span>{formatConsoleArgs(log.args)}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 // Custom CodeEditor with line numbers and tab support, perfectly aligned
@@ -219,17 +336,65 @@ const PlaygroundWrapper = ({
   const handleReset = () => setBody(defaultCode);
 
   const renderPreview = () => {
-    const { element, error } = transpileAndEval(debouncedBody);
-    if (error) {
+    const result = transpileAndEval(debouncedBody);
+    
+    if (result.error) {
       return (
-        <div className="text-red-500 p-4 text-center border-2 border-red-200 rounded bg-red-50">
-          <div className="text-2xl mb-2">⚠️</div>
-          <div className="font-bold">Code Error</div>
-          <div className="text-sm mt-2 font-mono break-words">{error}</div>
+        <div className="h-full flex flex-col">
+          <div className="text-red-500 p-4 text-center border-2 border-red-200 rounded bg-red-50 flex-shrink-0">
+            <div className="text-2xl mb-2">⚠️</div>
+            <div className="font-bold">Code Error</div>
+            <div className="text-sm mt-2 font-mono break-words">{result.error}</div>
+          </div>
+          {result.logs && result.logs.length > 0 && (
+            <div className="flex-1 mt-4 bg-white rounded border overflow-hidden">
+              <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
+                Console Output
+              </div>
+              <div className="max-h-40 overflow-y-auto">
+                <ConsoleOutput logs={result.logs} />
+              </div>
+            </div>
+          )}
         </div>
       );
     }
-    return element;
+
+    if (result.isJavaScript) {
+      return (
+        <div className="h-full flex flex-col">
+          <div className="flex-1 bg-white rounded border overflow-hidden">
+            <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
+              Console Output
+            </div>
+            <div className="h-full overflow-y-auto">
+              <ConsoleOutput logs={result.logs} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // React component/JSX rendering
+    return (
+      <div className="h-full flex flex-col">
+        <div className="flex-1 flex items-center justify-center min-h-0">
+          <ErrorBoundary resetKey={debouncedBody}>
+            {result.element}
+          </ErrorBoundary>
+        </div>
+        {result.logs && result.logs.length > 0 && (
+          <div className="mt-4 bg-white rounded border overflow-hidden flex-shrink-0">
+            <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
+              Console Output
+            </div>
+            <div className="max-h-32 overflow-y-auto">
+              <ConsoleOutput logs={result.logs} />
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -250,7 +415,7 @@ const PlaygroundWrapper = ({
               </div>
               <div>
                 <div className="font-semibold text-blue-800 mb-1">
-                  React concept used here:{" "}
+                  Concept:{" "}
                   <span className="font-mono bg-blue-50 px-2 py-1 rounded">{concept}</span>
                 </div>
                 {conceptDescription && (
@@ -258,8 +423,10 @@ const PlaygroundWrapper = ({
                 )}
               </div>
             </div>
-            <div className="bg-gray-200 px-0 md:px-8 py-8 flex-1 min-h-0 flex items-center justify-center">
-              <ErrorBoundary resetKey={debouncedBody}>{renderPreview()}</ErrorBoundary>
+            <div className="bg-gray-200 px-0 md:px-8 py-8 flex-1 min-h-0 flex items-stretch">
+              <div className="w-full">
+                {renderPreview()}
+              </div>
             </div>
           </div>
           {/* Code editor: 60% width on large screens */}

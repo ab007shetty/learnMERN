@@ -7,16 +7,16 @@ import EmptyPlayground from "../components/programs/EmptyPlayground";
 const programs = [
   {
     id: "playground",
-    name: "Playground",
+    name: "JS Playground",
     icon: Play,
-    description: "Build Anything you want!",
-    concept: "All react hooks",
+    description: "Execute any JS code",
+    concept: "JavaScript, JSX, React.js",
     conceptDescription: "",
     component: EmptyPlayground,
   },
   {
     id: "counter",
-    name: "Counter",
+    name: "Counter.jsx",
     icon: Hash,
     description: "Demonstrates a simple counter using useState.",
     concept: "useState",
@@ -37,7 +37,7 @@ const programs = [
   },
   {
     id: "todo",
-    name: "ToDo",
+    name: "Todo.jsx",
     icon: ListTodo,
     description:
       "Demonstrates useState for managing both the todo array and input value in a functional component.",
@@ -57,7 +57,7 @@ const programs = [
   },
   {
     id: "props",
-    name: "Props",
+    name: "Props.jsx",
     icon: Send,
     description:
       "Demonstrates passing data and functions as props from a parent to child component.",

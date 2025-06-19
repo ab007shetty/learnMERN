@@ -1,7 +1,7 @@
 import PlaygroundWrapper from "../PlaygroundWrapper";
 
 const DEFAULT_BODY = `
-// Type a component, JSX, or export default!
+//Write React components, JSX, or pure JS. No need of any import statements.
 
 function Counter() {
   const [counter, setCounter] = useState(0);

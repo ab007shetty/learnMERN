@@ -1,7 +1,7 @@
 import PlaygroundWrapper from "../PlaygroundWrapper";
 
 const DEFAULT_BODY = `
-// Type a component, JSX, or export default!
+//Write React components, JSX, or pure JS. No need of any import statements.
 
 const users = [{ id: 1, name: "john", age: 23 }, { id: 2, name: "mary", age: 53 }];
 
