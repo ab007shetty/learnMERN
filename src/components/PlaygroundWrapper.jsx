@@ -169,7 +169,7 @@ function formatConsoleArgs(args) {
 function ConsoleOutput({ logs }) {
   if (!logs || logs.length === 0) {
     return (
-      <div className="text-gray-500 text-sm italic p-3 text-center">
+      <div className="text-gray-500 text-sm italic p-2 text-center">
         No console output
       </div>
     );
@@ -332,12 +332,35 @@ const PlaygroundWrapper = ({
   description,
   concept,
   conceptDescription,
-  defaultCode
+  defaultCode,
+  onCodeChange,        // callback for code changes
+  customHeaderControls, // custom controls for header
+  onReset             // NEW: custom reset handler
 }) => {
   const [body, setBody] = useState(defaultCode);
   const debouncedBody = useDebouncedValue(body, 400);
 
-  const handleReset = () => setBody(defaultCode);
+  // Handle body changes and call the callback
+  const handleBodyChange = (newBody) => {
+    setBody(newBody);
+    if (onCodeChange) {
+      onCodeChange(newBody);
+    }
+  };
+
+  const handleReset = () => {
+    if (onReset) {
+      // Use custom reset handler if provided
+      onReset();
+      setBody(defaultCode); // Reset local state too
+    } else {
+      // Default reset behavior
+      setBody(defaultCode);
+      if (onCodeChange) {
+        onCodeChange(defaultCode);
+      }
+    }
+  };
 
   const renderPreview = () => {
     const result = transpileAndEval(debouncedBody);
@@ -351,11 +374,11 @@ const PlaygroundWrapper = ({
             <div className="text-sm mt-2 font-mono break-words">{result.error}</div>
           </div>
           {result.logs && result.logs.length > 0 && (
-            <div className="flex-1 mt-3 bg-white rounded border overflow-hidden">
+            <div className="flex-1 mt-2 bg-white rounded border overflow-hidden">
               <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
                 Console Output
               </div>
-              <div className="max-h-48 overflow-y-auto" style={{ paddingBottom: '8px' }}>
+              <div className="max-h-48 overflow-y-auto" style={{ paddingBottom: '4px' }}>
                 <ConsoleOutput logs={result.logs} />
               </div>
             </div>
@@ -388,11 +411,11 @@ const PlaygroundWrapper = ({
           </ErrorBoundary>
         </div>
         {result.logs && result.logs.length > 0 && (
-          <div className="mt-3 bg-white rounded border overflow-hidden flex-shrink-0">
+          <div className="mt-2 bg-white rounded border overflow-hidden flex-shrink-0">
             <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
               Console Output
             </div>
-            <div className="max-h-40 overflow-y-auto" style={{ paddingBottom: '8px' }}>
+            <div className="max-h-40 overflow-y-auto" style={{ paddingBottom: '4px' }}>
               <ConsoleOutput logs={result.logs} />
             </div>
           </div>
@@ -429,7 +452,7 @@ const PlaygroundWrapper = ({
                 </div>
               )}
             </div>
-            <div className="bg-gray-200 px-0 md:px-6 py-6 flex-1 min-h-0 flex items-stretch">
+            <div className="bg-gray-200 px-0 md:px-4 py-4 flex-1 min-h-0 flex items-stretch">
               <div className="w-full">
                 {renderPreview()}
               </div>
@@ -439,18 +462,25 @@ const PlaygroundWrapper = ({
           <div className="w-full lg:w-[60%] bg-gray-900 border-t lg:border-t-0 lg:border-l border-gray-200 flex flex-col min-h-0">
             <div className="flex justify-between items-center p-4 md:p-4 border-b border-gray-700">
               <div className="font-bold text-blue-300 text-lg">Code Playground</div>
-              <button
-                onClick={handleReset}
-                className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
-                title="Reset to original code"
-              >
-                Reset
-              </button>
+              
+              <div className="flex items-center space-x-3">
+                {/* Custom header controls */}
+                {customHeaderControls}
+                
+                {/* Reset button */}
+                <button
+                  onClick={handleReset}
+                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                  title="Reset to original code and clear saved data"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
             <div className="flex-1 min-h-0 flex flex-col p-2">
               <CodeEditor
                 value={body}
-                onChange={e => setBody(e.target.value)}
+                onChange={e => handleBodyChange(e.target.value)}
               />
             </div>
           </div>
