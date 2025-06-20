@@ -169,7 +169,7 @@ function formatConsoleArgs(args) {
 function ConsoleOutput({ logs }) {
   if (!logs || logs.length === 0) {
     return (
-      <div className="text-gray-500 text-sm italic p-4 text-center">
+      <div className="text-gray-500 text-sm italic p-3 text-center">
         No console output
       </div>
     );
@@ -180,7 +180,9 @@ function ConsoleOutput({ logs }) {
       {logs.map((log, index) => (
         <div
           key={index}
-          className={`p-2 border-b border-gray-200 ${
+          className={`px-3 py-2 ${
+            index < logs.length - 1 ? 'border-b border-gray-200' : ''
+          } ${
             log.type === 'error' ? 'text-red-600 bg-red-50' :
             log.type === 'warn' ? 'text-yellow-600 bg-yellow-50' :
             log.type === 'info' ? 'text-blue-600 bg-blue-50' :
@@ -193,6 +195,8 @@ function ConsoleOutput({ logs }) {
           <span>{formatConsoleArgs(log.args)}</span>
         </div>
       ))}
+      {/* Add significant bottom spacing to ensure last item is fully visible */}
+      <div className="h-6"></div>
     </div>
   );
 }
@@ -347,11 +351,11 @@ const PlaygroundWrapper = ({
             <div className="text-sm mt-2 font-mono break-words">{result.error}</div>
           </div>
           {result.logs && result.logs.length > 0 && (
-            <div className="flex-1 mt-4 bg-white rounded border overflow-hidden">
+            <div className="flex-1 mt-3 bg-white rounded border overflow-hidden">
               <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
                 Console Output
               </div>
-              <div className="max-h-40 overflow-y-auto">
+              <div className="max-h-48 overflow-y-auto" style={{ paddingBottom: '8px' }}>
                 <ConsoleOutput logs={result.logs} />
               </div>
             </div>
@@ -367,7 +371,7 @@ const PlaygroundWrapper = ({
             <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
               Console Output
             </div>
-            <div className="h-full overflow-y-auto">
+            <div className="h-full overflow-y-auto" style={{ paddingBottom: '8px' }}>
               <ConsoleOutput logs={result.logs} />
             </div>
           </div>
@@ -384,11 +388,11 @@ const PlaygroundWrapper = ({
           </ErrorBoundary>
         </div>
         {result.logs && result.logs.length > 0 && (
-          <div className="mt-4 bg-white rounded border overflow-hidden flex-shrink-0">
+          <div className="mt-3 bg-white rounded border overflow-hidden flex-shrink-0">
             <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
               Console Output
             </div>
-            <div className="max-h-32 overflow-y-auto">
+            <div className="max-h-40 overflow-y-auto" style={{ paddingBottom: '8px' }}>
               <ConsoleOutput logs={result.logs} />
             </div>
           </div>
@@ -413,17 +417,19 @@ const PlaygroundWrapper = ({
                   <p className="text-gray-700">{description}</p>
                 </div>
               </div>
-              <div>
-                <div className="font-semibold text-blue-800 mb-1">
-                  Concept:{" "}
-                  <span className="font-mono bg-blue-50 px-2 py-1 rounded">{concept}</span>
+              {concept && (
+                <div>
+                  <div className="font-semibold text-blue-800 mb-1">
+                    Concept:{" "}
+                    <span className="font-mono bg-blue-50 px-2 py-1 rounded">{concept}</span>
+                  </div>
+                  {conceptDescription && (
+                    <div className="mb-2 text-gray-800">{conceptDescription}</div>
+                  )}
                 </div>
-                {conceptDescription && (
-                  <div className="mb-2 text-gray-800">{conceptDescription}</div>
-                )}
-              </div>
+              )}
             </div>
-            <div className="bg-gray-200 px-0 md:px-8 py-8 flex-1 min-h-0 flex items-stretch">
+            <div className="bg-gray-200 px-0 md:px-6 py-6 flex-1 min-h-0 flex items-stretch">
               <div className="w-full">
                 {renderPreview()}
               </div>

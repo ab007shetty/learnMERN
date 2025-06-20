@@ -7,10 +7,13 @@ console.log('Hello, World!');
 `.trim();
 
 export default function EmptyPlayground(props) {
+  // Remove concept and conceptDescription from props to give more space for console
+  const { concept, conceptDescription, ...otherProps } = props;
+  
   return (
     <PlaygroundWrapper
       defaultCode={DEFAULT_BODY}
-      {...props}
+      {...otherProps}
     />
   );
 }
