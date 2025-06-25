@@ -12,7 +12,6 @@ function useDebouncedValue(value, delay) {
   return debounced;
 }
 
-// Check if result is a React component
 function isComponent(thing) {
   return typeof thing === "function" && (
     thing.prototype?.isReactComponent ||
@@ -21,7 +20,6 @@ function isComponent(thing) {
   );
 }
 
-// Custom console that captures output
 function createConsole() {
   const logs = [];
   const mockConsole = {
@@ -33,46 +31,78 @@ function createConsole() {
   return { console: mockConsole, logs };
 }
 
-// Check if code appears to be React-related
 function isReactCode(code) {
-  const reactPatterns = [
-    /import.*react/i,
-    /from\s+['"]react['"]/i,
-    /React\./,
-    /useState|useEffect|useRef|useMemo|useCallback|useReducer|useContext/,
-    /<[A-Z][a-zA-Z0-9]*[^>]*>/,  // JSX components (capitalized)
-    /<[a-z]+[^>]*>/,              // HTML-like JSX elements
-    /React\.createElement/,
-    /export\s+default/,
-    /function.*\(\)\s*{[^}]*return[^}]*</, // Function returning JSX
-    /const.*=.*\(\)\s*=>[^{]*</,          // Arrow function returning JSX
-    /return\s*\(/,                        // return statement with parentheses (common in JSX)
-    /return\s*</,                         // return statement with JSX
-    /className=/,                         // JSX className attribute
-    /onClick=/,                           // JSX event handlers
-    /onChange=/,
-    /onSubmit=/,
-  ];
-  return reactPatterns.some(pattern => pattern.test(code));
+  const cleanCode = code
+    .replace(/\/\/.*$/gm, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(['"`])((?:\\.|(?!\1)[^\\])*?)\1/g, '');
+  if (/import\s+React\b/.test(cleanCode) || /from\s+['"]react['"]/.test(cleanCode)) return true;
+  if (/export\s+default\s*<\w/.test(cleanCode)) return true;
+  if (/(^|\s|=|\(|\[|\{)<[A-Za-z][\w:.-]*[\s/>]/m.test(cleanCode)) return true;
+  return false;
 }
 
-// Babel transpile and eval code
+function findMatchingBracket(text, position) {
+  const brackets = { '(': ')', '[': ']', '{': '}', ')': '(', ']': ']', '}': '{' };
+  const char = text[position];
+  if (!brackets[char]) return -1;
+  const isOpening = ['(', '[', '{'].includes(char);
+  const target = brackets[char];
+  let count = 1;
+  if (isOpening) {
+    for (let i = position + 1; i < text.length; i++) {
+      if (text[i] === char) count++;
+      else if (text[i] === target) count--;
+      if (count === 0) return i;
+    }
+  } else {
+    for (let i = position - 1; i >= 0; i--) {
+      if (text[i] === char) count++;
+      else if (text[i] === target) count--;
+      if (count === 0) return i;
+    }
+  }
+  return -1;
+}
+
+function getAutoCloseChar(char) {
+  const pairs = {
+    '(': ')',
+    '[': ']',
+    '{': '}',
+    '"': '"',
+    "'": "'",
+    '`': '`'
+  };
+  return pairs[char];
+}
+
+function shouldAutoIndent(text, position) {
+  const beforeCursor = text.substring(0, position);
+  const afterCursor = text.substring(position);
+  const lastChar = beforeCursor.trim().slice(-1);
+  const nextChar = afterCursor.trim().charAt(0);
+  return lastChar === '{' && (nextChar === '}' || nextChar === '');
+}
+
+function getCurrentIndent(text, position) {
+  const lines = text.substring(0, position).split('\n');
+  const currentLine = lines[lines.length - 1];
+  const match = currentLine.match(/^(\s*)/);
+  return match ? match[1] : '';
+}
+
 function transpileAndEval(userCode) {
   try {
     const { console: mockConsole, logs } = createConsole();
-    
-    // Check if this looks like React code
     if (isReactCode(userCode)) {
-      // Handle React code
       const HOOKS = `
         const { useState, useEffect, useRef, useMemo, useCallback, useReducer, useContext } = React;
       `;
       let code = HOOKS + "\n" + userCode;
-
       if (/export\s+default\s+/.test(code)) {
         code = code.replace(/export\s+default\s+/, "exports.__esModule = true; exports.default = ");
       }
-      
       const wrapped = `
         (function(exports, React, console){
           let __result;
@@ -87,19 +117,16 @@ function transpileAndEval(userCode) {
             : undefined));
         })
       `;
-      
       const transpiled = Babel.transform(wrapped, { presets: ["react"] }).code;
       // eslint-disable-next-line no-eval
-      const fn = eval(transpiled);
+      const fn = (0, eval)(transpiled);
       const result = fn({}, React, mockConsole);
-
       if (isComponent(result)) {
         return { element: React.createElement(result), logs };
       }
       if (React.isValidElement(result)) {
         return { element: result, logs };
       }
-      
       try {
         const jsxTranspiled = Babel.transform(
           `(function(React, console){ 
@@ -109,30 +136,26 @@ function transpileAndEval(userCode) {
           { presets: ["react"] }
         ).code;
         // eslint-disable-next-line no-eval
-        const jsxFn = eval(jsxTranspiled);
+        const jsxFn = (0, eval)(jsxTranspiled);
         const jsxResult = jsxFn(React, mockConsole);
         if (React.isValidElement(jsxResult)) {
           return { element: jsxResult, logs };
         }
       } catch {}
-      
       return {
         error: "Nothing rendered. Make sure your code returns, exports, or evaluates to a React element or component.",
         logs
       };
     } else {
-      // Handle pure JavaScript code
       const wrapped = `
         (function(console) {
           ${userCode}
         })
       `;
-      
       try {
         // eslint-disable-next-line no-eval
-        const fn = eval(wrapped);
+        const fn = (0, eval)(wrapped);
         fn(mockConsole);
-        
         return { 
           isJavaScript: true, 
           logs,
@@ -151,7 +174,6 @@ function transpileAndEval(userCode) {
   }
 }
 
-// Format console arguments for display
 function formatConsoleArgs(args) {
   return args.map(arg => {
     if (typeof arg === 'object' && arg !== null) {
@@ -165,7 +187,6 @@ function formatConsoleArgs(args) {
   }).join(' ');
 }
 
-// Console output component
 function ConsoleOutput({ logs }) {
   if (!logs || logs.length === 0) {
     return (
@@ -174,7 +195,6 @@ function ConsoleOutput({ logs }) {
       </div>
     );
   }
-
   return (
     <div className="font-mono text-sm">
       {logs.map((log, index) => (
@@ -195,25 +215,152 @@ function ConsoleOutput({ logs }) {
           <span>{formatConsoleArgs(log.args)}</span>
         </div>
       ))}
-      {/* Add significant bottom spacing to ensure last item is fully visible */}
       <div className="h-6"></div>
     </div>
   );
 }
 
-// Custom CodeEditor with line numbers and tab support, perfectly aligned
+// --- Robust syntax highlighting: comments win, then log, then keyword ---
 function CodeEditor({ value, onChange, ...rest }) {
   const textareaRef = useRef(null);
   const gutterRef = useRef(null);
+  const overlayRef = useRef(null);
+  const containerRef = useRef(null);
   const lines = value.split("\n");
   const [visibleLines, setVisibleLines] = useState(30);
 
-  // Keep visibleLines up-to-date on resize
+  const keywords = [
+    'function', 'const', 'let', 'var', 'import', 'export', 'from', 'return', 
+    'if', 'else', 'for', 'while', 'class', 'extends', 'async', 'await', 
+    'try', 'catch', 'finally', 'throw', 'new', 'typeof', 'instanceof', 
+    'true', 'false', 'null', 'undefined', 'this', 'super', 'static', 
+    'default', 'case', 'switch', 'break', 'continue', 'do'
+  ];
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  // --- FIXED robust highlightSyntax ---
+  function highlightSyntax(code) {
+    // Comments (priority 3)
+    const ranges = [];
+    let match;
+    const singleLineRegex = /\/\/.*$/gm;
+    while ((match = singleLineRegex.exec(code)) !== null) {
+      ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 3 });
+    }
+    const multiLineRegex = /\/\*[\s\S]*?\*\//g;
+    while ((match = multiLineRegex.exec(code)) !== null) {
+      ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 3 });
+    }
+
+    // Robust console.log highlight (priority 2, light purple)
+    // Use a parser to handle nested parens and strings
+    const codeLen = code.length;
+    let i = 0;
+    while (i < codeLen) {
+      const logIdx = code.indexOf("console.log(", i);
+      if (logIdx === -1) break;
+      let parenCount = 0;
+      let j = logIdx + "console.log(".length;
+      parenCount++; // the initial "("
+      let insideString = null;
+      let prevChar = "";
+      while (j < codeLen) {
+        const char = code[j];
+        if (!insideString) {
+          if (char === '"' || char === "'" || char === "`") {
+            insideString = char;
+          } else if (char === "(") {
+            parenCount++;
+          } else if (char === ")") {
+            parenCount--;
+            if (parenCount === 0) {
+              // Found end of log statement
+              ranges.push({ start: logIdx, end: j + 1, color: '#81cede', priority: 2 });
+              break;
+            }
+          }
+        } else {
+          // Inside string, skip escaped quotes
+          if (char === insideString && prevChar !== "\\") {
+            insideString = null;
+          }
+        }
+        prevChar = char;
+        j++;
+      }
+      // If no matching parenthesis, highlight till end of line
+      if (parenCount > 0) {
+        let lineEnd = code.indexOf('\n', logIdx);
+        if (lineEnd === -1) lineEnd = codeLen;
+        ranges.push({ start: logIdx, end: lineEnd, color: '#81cede', priority: 2 });
+        i = lineEnd + 1;
+      } else {
+        i = j + 1;
+      }
+    }
+
+    // keywords (priority 1, orange)
+    const keywordPattern = new RegExp(`\\b(${keywords.join('|')})\\b`, 'g');
+    while ((match = keywordPattern.exec(code)) !== null) {
+      ranges.push({ start: match.index, end: match.index + match[0].length, color: 'orange', priority: 1 });
+    }
+
+    // Sort by start, then by -priority (so higher priority wins when touching)
+    ranges.sort((a, b) => a.start - b.start || b.priority - a.priority);
+
+    // Merge and prioritize: for each index, assign the highest-priority highlight covering it
+    const colorMap = new Array(code.length).fill(null);
+    for (const { start, end, color, priority } of ranges) {
+      for (let i = start; i < end; ++i) {
+        if (colorMap[i] == null || priority > colorMap[i].priority) {
+          colorMap[i] = { color, priority };
+        }
+      }
+    }
+
+    // Escape HTML and map code indices to escaped indices
+    let escMap = [];
+    let j = 0;
+    for (let i = 0; i < code.length; ++i) {
+      const c = code[i];
+      if (c === '&') { escMap.push(j); j += 5; }
+      else if (c === '<' || c === '>') { escMap.push(j); j += 4; }
+      else { escMap.push(j); ++j; }
+    }
+    escMap.push(j);
+    const ESC = escapeHtml(code);
+
+    // Walk through code, emit spans for contiguous color regions
+    let html = "";
+    let lastIdx = 0;
+    while (lastIdx < code.length) {
+      const currColor = colorMap[lastIdx]?.color;
+      let endIdx = lastIdx + 1;
+      while (endIdx < code.length && colorMap[endIdx]?.color === currColor) {
+        ++endIdx;
+      }
+      const escStart = escMap[lastIdx];
+      const escEnd = escMap[endIdx];
+      const text = ESC.slice(escStart, escEnd);
+      if (currColor) {
+        html += `<span style="color: ${currColor};">${text}</span>`;
+      } else {
+        html += text;
+      }
+      lastIdx = endIdx;
+    }
+    return html;
+  }
+
   useLayoutEffect(() => {
     function updateLines() {
       if (textareaRef.current) {
         const editorHeightPx = textareaRef.current.offsetHeight || 400;
-        // 14px fontSize * 1.5 lineHeight = 21px
         const lineHeightPx = parseFloat(getComputedStyle(textareaRef.current).lineHeight) || 21;
         setVisibleLines(Math.ceil(editorHeightPx / lineHeightPx));
       }
@@ -223,28 +370,76 @@ function CodeEditor({ value, onChange, ...rest }) {
     return () => window.removeEventListener("resize", updateLines);
   }, [value]);
 
-  // Sync gutter scroll with textarea
   function handleScroll(e) {
     if (gutterRef.current) {
       gutterRef.current.scrollTop = e.target.scrollTop;
     }
+    if (overlayRef.current) {
+      overlayRef.current.scrollTop = e.target.scrollTop;
+      overlayRef.current.scrollLeft = e.target.scrollLeft;
+    }
   }
 
-  // Handle Tab for indentation
+  function handleSelectionChange() {
+    if (!textareaRef.current) return;
+    const position = textareaRef.current.selectionStart;
+    findMatchingBracket(value, position);
+  }
+
   function handleKeyDown(e) {
+    const el = textareaRef.current;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const before = value.substring(0, start);
+    const after = value.substring(end);
+
     if (e.key === "Tab") {
       e.preventDefault();
-      const el = textareaRef.current;
-      const start = el.selectionStart;
-      const end = el.selectionEnd;
-      const before = value.substring(0, start);
-      const after = value.substring(end);
-      const tabStr = "  "; // 2 spaces
+      const tabStr = "  ";
       const newValue = before + tabStr + after;
       onChange({ target: { value: newValue } });
       setTimeout(() => {
         el.selectionStart = el.selectionEnd = start + tabStr.length;
       }, 0);
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const currentIndent = getCurrentIndent(value, start);
+      let newIndent = currentIndent;
+      if (shouldAutoIndent(value, start)) {
+        newIndent += "  ";
+      }
+      const newValue = before + "\n" + newIndent + after;
+      onChange({ target: { value: newValue } });
+      setTimeout(() => {
+        el.selectionStart = el.selectionEnd = start + 1 + newIndent.length;
+      }, 0);
+      return;
+    }
+    const autoCloseChar = getAutoCloseChar(e.key);
+    if (autoCloseChar && start === end) {
+      if (['"', "'", '`'].includes(e.key)) {
+        const beforeChar = before.slice(-1);
+        const afterChar = after.charAt(0);
+        if (beforeChar === e.key || afterChar === e.key) {
+          return;
+        }
+      }
+      e.preventDefault();
+      const newValue = before + e.key + autoCloseChar + after;
+      onChange({ target: { value: newValue } });
+      setTimeout(() => {
+        el.selectionStart = el.selectionEnd = start + 1;
+      }, 0);
+      return;
+    }
+    if ([')', ']', '}', '"', "'", '`'].includes(e.key) && after.charAt(0) === e.key) {
+      e.preventDefault();
+      setTimeout(() => {
+        el.selectionStart = el.selectionEnd = start + 1;
+      }, 0);
+      return;
     }
   }
 
@@ -252,7 +447,8 @@ function CodeEditor({ value, onChange, ...rest }) {
 
   return (
     <div
-      className="flex w-full h-full min-h-0 relative"
+      ref={containerRef}
+      className="flex w-full h-full min-h-0 relative code-editor-container"
       style={{
         background: "#1e293b",
         borderRadius: 8,
@@ -297,31 +493,62 @@ function CodeEditor({ value, onChange, ...rest }) {
           </div>
         ))}
       </pre>
-      {/* Textarea */}
-      <textarea
-        ref={textareaRef}
-        value={value}
-        onChange={onChange}
-        onScroll={handleScroll}
-        onKeyDown={handleKeyDown}
-        className="w-full h-full flex-1 min-h-0 bg-gray-800 text-gray-100 font-mono border-0 focus:outline-none resize-none rounded"
-        spellCheck={false}
-        style={{
-          fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-          fontSize: "14px",
-          lineHeight: "1.5",
-          minHeight: "400px",
-          height: "100%",
-          maxHeight: "100%",
-          overflow: "auto",
-          borderTopLeftRadius: 0,
-          borderBottomLeftRadius: 0,
-          boxSizing: "border-box",
-          padding: 0,
-        }}
-        aria-label="Edit the code playground"
-        {...rest}
-      />
+      
+      {/* Code editor container */}
+      <div className="flex-1 relative" style={{ minHeight: "400px" }}>
+        {/* Syntax highlighting overlay */}
+        <pre
+          ref={overlayRef}
+          className="absolute inset-0 pointer-events-none overflow-auto bg-transparent font-mono"
+          style={{
+            fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+            fontSize: "14px",
+            lineHeight: "1.5",
+            margin: 0,
+            padding: 0,
+            whiteSpace: "pre-wrap",
+            wordWrap: "break-word",
+            zIndex: 1,
+            color: "#ffffff", // White default color
+          }}
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{
+            __html: highlightSyntax(value)
+          }}
+        />
+        
+        {/* Textarea */}
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={onChange}
+          onScroll={handleScroll}
+          onKeyDown={handleKeyDown}
+          onSelect={handleSelectionChange}
+          onClick={handleSelectionChange}
+          onKeyUp={handleSelectionChange}
+          className="absolute inset-0 w-full h-full bg-transparent text-gray-100 font-mono border-0 focus:outline-none resize-none caret-white"
+          spellCheck={false}
+          style={{
+            fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+            fontSize: "14px",
+            lineHeight: "1.5",
+            minHeight: "400px",
+            height: "100%",
+            maxHeight: "100%",
+            overflow: "auto",
+            boxSizing: "border-box",
+            padding: 0,
+            margin: 0,
+            background: "transparent",
+            color: "transparent",
+            caretColor: "#ffffff",
+            zIndex: 2,
+          }}
+          aria-label="Edit the code playground"
+          {...rest}
+        />
+      </div>
     </div>
   );
 }
@@ -333,28 +560,23 @@ const PlaygroundWrapper = ({
   concept,
   conceptDescription,
   defaultCode,
-  onCodeChange,        // callback for code changes
-  customHeaderControls, // custom controls for header
-  onReset             // NEW: custom reset handler
+  onCodeChange,
+  customHeaderControls,
+  onReset
 }) => {
   const [body, setBody] = useState(defaultCode);
   const debouncedBody = useDebouncedValue(body, 400);
-
-  // Handle body changes and call the callback
   const handleBodyChange = (newBody) => {
     setBody(newBody);
     if (onCodeChange) {
       onCodeChange(newBody);
     }
   };
-
   const handleReset = () => {
     if (onReset) {
-      // Use custom reset handler if provided
       onReset();
-      setBody(defaultCode); // Reset local state too
+      setBody(defaultCode);
     } else {
-      // Default reset behavior
       setBody(defaultCode);
       if (onCodeChange) {
         onCodeChange(defaultCode);
@@ -364,7 +586,6 @@ const PlaygroundWrapper = ({
 
   const renderPreview = () => {
     const result = transpileAndEval(debouncedBody);
-    
     if (result.error) {
       return (
         <div className="h-full flex flex-col">
@@ -386,7 +607,6 @@ const PlaygroundWrapper = ({
         </div>
       );
     }
-
     if (result.isJavaScript) {
       return (
         <div className="h-full flex flex-col">
@@ -401,8 +621,6 @@ const PlaygroundWrapper = ({
         </div>
       );
     }
-
-    // React component/JSX rendering
     return (
       <div className="h-full flex flex-col">
         <div className="flex-1 flex items-center justify-center min-h-0">
@@ -477,7 +695,7 @@ const PlaygroundWrapper = ({
                 </button>
               </div>
             </div>
-            <div className="flex-1 min-h-0 flex flex-col p-2">
+            <div className="flex-1 min-h-0 flex flex-col p-2 ">
               <CodeEditor
                 value={body}
                 onChange={e => handleBodyChange(e.target.value)}
