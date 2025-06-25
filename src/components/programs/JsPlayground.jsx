@@ -9,7 +9,7 @@ console.log('Hello, World!');
 
 const STORAGE_KEY = 'empty-playground-code';
 
-export default function EmptyPlayground(props) {
+export default function JsPlayground(props) {
   // Remove concept and conceptDescription from props to give more space for console
   const { concept, conceptDescription, ...otherProps } = props;
   

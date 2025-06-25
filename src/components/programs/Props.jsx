@@ -29,7 +29,7 @@ const App = () => {
 export default App;
 `.trim();
 
-export default function PropsDemo(props) {
+export default function Props(props) {
   return (
     <PlaygroundWrapper
       defaultCode={DEFAULT_BODY}

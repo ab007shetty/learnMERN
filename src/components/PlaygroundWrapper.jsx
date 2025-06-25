@@ -12,6 +12,22 @@ function useDebouncedValue(value, delay) {
   return debounced;
 }
 
+// All HTML tags as a Set for fast lookup
+const htmlTags = [
+  "html","head","title","base","link","meta","style","script","noscript",
+  "body","section","nav","article","aside","h1","h2","h3","h4","h5","h6",
+  "header","footer","address","main","p","hr","pre","blockquote","ol","ul","li",
+  "dl","dt","dd","figure","figcaption","div","a","em","strong","small","s","cite",
+  "q","dfn","abbr","ruby","rt","rp","data","time","code","var","samp","kbd","sub",
+  "sup","i","b","u","mark","bdi","bdo","span","br","wbr","ins","del","picture","source",
+  "img","iframe","embed","object","param","video","audio","track","map","area","table",
+  "caption","colgroup","col","tbody","thead","tfoot","tr","td","th","form","fieldset",
+  "legend","label","input","button","select","datalist","optgroup","option","textarea",
+  "output","progress","meter","details","summary","dialog","menu","menuitem","canvas",
+  "template","svg","math"
+];
+const htmlTagSet = new Set(htmlTags);
+
 function isComponent(thing) {
   return typeof thing === "function" && (
     thing.prototype?.isReactComponent ||
@@ -220,7 +236,11 @@ function ConsoleOutput({ logs }) {
   );
 }
 
-// --- Robust syntax highlighting: comments win, then log, then keyword ---
+// Syntax highlighting: 
+// - comments (green), 
+// - console.log (blue), 
+// - keywords (orange), 
+// - HTML tag names (violet)
 function CodeEditor({ value, onChange, ...rest }) {
   const textareaRef = useRef(null);
   const gutterRef = useRef(null);
@@ -243,22 +263,21 @@ function CodeEditor({ value, onChange, ...rest }) {
       .replace(/>/g, '&gt;');
   }
 
-  // --- FIXED robust highlightSyntax ---
   function highlightSyntax(code) {
-    // Comments (priority 3)
+    // Step 1: Find all ranges for comments, console.log, keywords, and HTML tags
     const ranges = [];
     let match;
+    // Comments (priority 4, green)
     const singleLineRegex = /\/\/.*$/gm;
     while ((match = singleLineRegex.exec(code)) !== null) {
-      ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 3 });
+      ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 4 });
     }
     const multiLineRegex = /\/\*[\s\S]*?\*\//g;
     while ((match = multiLineRegex.exec(code)) !== null) {
-      ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 3 });
+      ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 4 });
     }
 
-    // Robust console.log highlight (priority 2, light purple)
-    // Use a parser to handle nested parens and strings
+    // console.log highlight (priority 3, blue)
     const codeLen = code.length;
     let i = 0;
     while (i < codeLen) {
@@ -266,7 +285,7 @@ function CodeEditor({ value, onChange, ...rest }) {
       if (logIdx === -1) break;
       let parenCount = 0;
       let j = logIdx + "console.log(".length;
-      parenCount++; // the initial "("
+      parenCount++;
       let insideString = null;
       let prevChar = "";
       while (j < codeLen) {
@@ -279,13 +298,11 @@ function CodeEditor({ value, onChange, ...rest }) {
           } else if (char === ")") {
             parenCount--;
             if (parenCount === 0) {
-              // Found end of log statement
-              ranges.push({ start: logIdx, end: j + 1, color: '#81cede', priority: 2 });
+              ranges.push({ start: logIdx, end: j + 1, color: '#81cede', priority: 3 });
               break;
             }
           }
         } else {
-          // Inside string, skip escaped quotes
           if (char === insideString && prevChar !== "\\") {
             insideString = null;
           }
@@ -293,37 +310,45 @@ function CodeEditor({ value, onChange, ...rest }) {
         prevChar = char;
         j++;
       }
-      // If no matching parenthesis, highlight till end of line
       if (parenCount > 0) {
         let lineEnd = code.indexOf('\n', logIdx);
         if (lineEnd === -1) lineEnd = codeLen;
-        ranges.push({ start: logIdx, end: lineEnd, color: '#81cede', priority: 2 });
+        ranges.push({ start: logIdx, end: lineEnd, color: '#81cede', priority: 3 });
         i = lineEnd + 1;
       } else {
         i = j + 1;
       }
     }
 
-    // keywords (priority 1, orange)
+    // keywords (priority 2, orange)
     const keywordPattern = new RegExp(`\\b(${keywords.join('|')})\\b`, 'g');
     while ((match = keywordPattern.exec(code)) !== null) {
-      ranges.push({ start: match.index, end: match.index + match[0].length, color: 'orange', priority: 1 });
+      ranges.push({ start: match.index, end: match.index + match[0].length, color: 'orange', priority: 2 });
     }
 
-    // Sort by start, then by -priority (so higher priority wins when touching)
-    ranges.sort((a, b) => a.start - b.start || b.priority - a.priority);
+    // HTML tag names (priority 1, violet)
+    // We'll match tags and only color the tag name, not the full tag
+    let htmlTagRegex = /<\/?([A-Za-z][A-Za-z0-9:-]*)/g;
+    while ((match = htmlTagRegex.exec(code)) !== null) {
+      const tagName = match[1];
+      if (htmlTagSet.has(tagName.toLowerCase())) {
+        const nameStart = match.index + (code[match.index + 1] === '/' ? 2 : 1);
+        ranges.push({ start: nameStart, end: nameStart + tagName.length, color: '#b57cf2', priority: 1 });
+      }
+    }
 
-    // Merge and prioritize: for each index, assign the highest-priority highlight covering it
+    // Sort and assign color by priority
+    ranges.sort((a, b) => a.start - b.start || b.priority - a.priority);
     const colorMap = new Array(code.length).fill(null);
     for (const { start, end, color, priority } of ranges) {
       for (let i = start; i < end; ++i) {
-        if (colorMap[i] == null || priority > colorMap[i].priority) {
+        if (!colorMap[i] || priority > colorMap[i].priority) {
           colorMap[i] = { color, priority };
         }
       }
     }
 
-    // Escape HTML and map code indices to escaped indices
+    // Escape HTML and build escMap
     let escMap = [];
     let j = 0;
     for (let i = 0; i < code.length; ++i) {
@@ -335,7 +360,7 @@ function CodeEditor({ value, onChange, ...rest }) {
     escMap.push(j);
     const ESC = escapeHtml(code);
 
-    // Walk through code, emit spans for contiguous color regions
+    // Output html with correct spans
     let html = "";
     let lastIdx = 0;
     while (lastIdx < code.length) {
@@ -414,6 +439,18 @@ function CodeEditor({ value, onChange, ...rest }) {
       onChange({ target: { value: newValue } });
       setTimeout(() => {
         el.selectionStart = el.selectionEnd = start + 1 + newIndent.length;
+        // Scroll caret into view
+        const ta = el;
+        const valueUpToCaret = ta.value.slice(0, start + 1 + newIndent.length);
+        const caretLine = valueUpToCaret.split('\n').length - 1;
+        const lineHeight = parseFloat(getComputedStyle(ta).lineHeight) || 21;
+        const desiredScrollTop = caretLine * lineHeight;
+        if (
+          desiredScrollTop < ta.scrollTop ||
+          desiredScrollTop > ta.scrollTop + ta.clientHeight - lineHeight
+        ) {
+          ta.scrollTop = desiredScrollTop - ta.clientHeight / 2 + lineHeight;
+        }
       }, 0);
       return;
     }

@@ -4,7 +4,7 @@ import programs from '../data/programs';
 
 const Introduction = () => {
   const totalQuestions = questions.length;
-  const totalPrograms = programs.length;
+  const totalPrograms = programs.length - 1;
 
   return (
     <>

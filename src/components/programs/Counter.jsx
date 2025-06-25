@@ -18,7 +18,7 @@ function Counter() {
 export default Counter;
 `.trim();
 
-export default function CounterDemo(props) {
+export default function Counter(props) {
   return (
     <PlaygroundWrapper
       defaultCode={DEFAULT_BODY}

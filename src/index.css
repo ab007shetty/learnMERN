@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom scrollbar color*/
+.code-editor-container pre,
+.code-editor-container textarea {
+  scrollbar-color: #334155 #1e293b; /* For Firefox */
+  scrollbar-width: thin;
+}
+
+/* Chrome, Edge, Safari */
+.code-editor-container pre::-webkit-scrollbar,
+.code-editor-container textarea::-webkit-scrollbar {
+  width: 10px;
+  background: #1e293b;
+}
+
+.code-editor-container pre::-webkit-scrollbar-thumb,
+.code-editor-container textarea::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 8px;
+  border: 2px solid #1e293b;
+}
+
+.code-editor-container pre::-webkit-scrollbar-corner,
+.code-editor-container textarea::-webkit-scrollbar-corner {
+  background: #1e293b;
+}

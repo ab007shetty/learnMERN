@@ -8,12 +8,22 @@ function Todo() {
   const [input, setInput] = useState("");
 
   const add = () => {
-    setTodos([...todos, input]);
-    setInput("");
+    if (input.trim()) {
+      setTodos([...todos, { text: input, completed: false }]);
+      setInput("");
+    }
   };
 
   const remove = (index) => {
     setTodos(todos.filter((_, i) => i !== index));
+  };
+
+  const toggle = (index) => {
+    setTodos(
+      todos.map((todo, i) =>
+        i === index ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
   };
 
   return (
@@ -24,8 +34,11 @@ function Todo() {
       <ul>
         {todos.map((todo, i) => (
           <li key={i}>
-            {todo}
-            <button onClick={() => remove(i)}>Delete</button>
+            <input type="checkbox" checked={todo.completed} onChange={() => toggle(i)} />
+            <span style={{ textDecoration: todo.completed ? "line-through" : "none" }}>
+              {todo.text}
+            </span>
+            <button onClick={() => remove(i)}> Delete </button>
           </li>
         ))}
       </ul>
@@ -36,7 +49,7 @@ function Todo() {
 export default Todo;
 `.trim();
 
-export default function TodoDemo(props) {
+export default function Todo(props) {
   return (
     <PlaygroundWrapper
       defaultCode={DEFAULT_BODY}
