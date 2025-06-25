@@ -482,6 +482,138 @@ const questions = [
       "React.memo = functional equivalent.",
     ],
   },
+  {
+    id: 34,
+    question: "What is React Fiber?",
+    answer: [
+      "React Fiber is the new reconciliation engine in React (from v16).",
+      "It allows React to break rendering work into chunks and pause/resume work as needed for better responsiveness.",
+    ],
+    example: [
+      "// No direct code usage, it's internal to React.",
+      "// Helps with time-slicing, concurrent rendering, and prioritizing updates.",
+    ],
+    keyterms: [
+      "Fiber = reimplementation of React’s core algorithm.",
+      "Enables asynchronous rendering, improves UI responsiveness.",
+      "Supports features like Suspense, Concurrent Mode.",
+    ],
+  },
+  {
+    id: 35,
+    question: "What is the difference between state and props in React?",
+    answer: [
+      "State is local and managed within the component. It changes over time using useState or this.setState.",
+      "Props are inputs passed to components by parents. They are read-only inside the component.",
+    ],
+    example: [
+      "const [count, setCount] = useState(0); // state",
+      "<Counter count={count} /> // props",
+    ],
+    keyterms: [
+      "State = internal, mutable data.",
+      "Props = external, immutable inputs.",
+      "State affects behavior; props affect rendering.",
+    ],
+  },
+  {
+    id: 36,
+    question: "What is props drilling in React?",
+    answer: [
+      "Props drilling is passing props through multiple layers of components, even if intermediate components don’t need them.",
+      "This makes components tightly coupled and harder to maintain.",
+    ],
+    example: [
+      "// App -> Parent -> Child -> GrandChild (just to pass data)",
+      "<App><Parent data={value} /></App>",
+    ],
+    keyterms: [
+      "Props drilling = deep prop passing through hierarchy.",
+      "Avoid using Context API or state management tools like Redux.",
+    ],
+  },
+  {
+    id: 37,
+    question: "What is the Context API in React?",
+    answer: [
+      "Context API provides a way to share values between components without passing props manually through every level.",
+      "It is useful for global data like themes, user info, etc.",
+    ],
+    example: [
+      "const MyContext = React.createContext();",
+      "<MyContext.Provider value={data}><App /></MyContext.Provider>",
+      "const value = useContext(MyContext);",
+    ],
+    keyterms: [
+      "Context = global state mechanism inside React.",
+      "Avoids props drilling, used with useContext().",
+    ],
+  },
+  {
+    id: 38,
+    question: "What is the useState hook in React?",
+    answer: [
+      "useState is a hook that lets you add state to functional components.",
+      "It returns a state variable and a function to update it.",
+    ],
+    example: ["const [count, setCount] = useState(0);", "setCount(count + 1);"],
+    keyterms: [
+      "useState = state hook for functional components.",
+      "Replaces this.state in class components.",
+      "Triggers re-render when updated.",
+    ],
+  },
+  {
+    id: 39,
+    question: "What is the useEffect hook in React?",
+    answer: [
+      "useEffect runs side-effects in function components, like fetching data or subscriptions.",
+      "It can also clean up when the component unmounts or dependencies change.",
+    ],
+    example: [
+      "useEffect(() => { fetchData(); }, []); // runs once",
+      "useEffect(() => { console.log(value); }, [value]);",
+    ],
+    keyterms: [
+      "useEffect = lifecycle hook (componentDidMount, etc.).",
+      "Accepts dependency array to control when it runs.",
+      "Supports clean-up with return function.",
+    ],
+  },
+  {
+    id: 40,
+    question: "What are custom hooks in React?",
+    answer: [
+      "Custom hooks are user-defined functions that use built-in hooks to share reusable logic across components.",
+      "They help keep components clean and modular.",
+    ],
+    example: [
+      "function useTitle(title) { useEffect(() => { document.title = title; }, [title]); }",
+      "useTitle('Home Page');",
+    ],
+    keyterms: [
+      "Custom hook = reusable logic using hooks.",
+      "Name must start with 'use'.",
+      "Encapsulates side-effects, states, etc.",
+    ],
+  },
+  {
+    id: 41,
+    question: "What is Redux and how is it used in React?",
+    answer: [
+      "Redux is a state management library that stores the global state in a single store.",
+      "State updates are done using actions and reducers, and components access data via selectors or mapStateToProps.",
+    ],
+    example: [
+      "store.dispatch({ type: 'INCREMENT' });",
+      "const count = useSelector(state => state.count);",
+    ],
+    keyterms: [
+      "Redux = predictable global state container.",
+      "Uses store, actions, reducers.",
+      "Middleware like thunk used for async logic.",
+    ],
+  },
 ];
 
 export default questions;
