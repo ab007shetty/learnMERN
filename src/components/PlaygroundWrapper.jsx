@@ -138,10 +138,10 @@ function transpileAndEval(userCode) {
       const fn = (0, eval)(transpiled);
       const result = fn({}, React, mockConsole);
       if (isComponent(result)) {
-        return { element: React.createElement(result), logs };
+        return { element: React.createElement(result), logs, isReact: true };
       }
       if (React.isValidElement(result)) {
-        return { element: result, logs };
+        return { element: result, logs, isReact: true };
       }
       try {
         const jsxTranspiled = Babel.transform(
@@ -155,12 +155,13 @@ function transpileAndEval(userCode) {
         const jsxFn = (0, eval)(jsxTranspiled);
         const jsxResult = jsxFn(React, mockConsole);
         if (React.isValidElement(jsxResult)) {
-          return { element: jsxResult, logs };
+          return { element: jsxResult, logs, isReact: true };
         }
       } catch {}
       return {
         error: "Nothing rendered. Make sure your code returns, exports, or evaluates to a React element or component.",
-        logs
+        logs,
+        isReact: true
       };
     } else {
       const wrapped = `
@@ -203,10 +204,10 @@ function formatConsoleArgs(args) {
   }).join(' ');
 }
 
-function ConsoleOutput({ logs }) {
+function ConsoleOutput({ logs, isReact }) {
   if (!logs || logs.length === 0) {
     return (
-      <div className="text-gray-500 text-sm italic p-2 text-center">
+      <div className={`text-gray-500 dark:text-gray-400 text-sm italic p-2 text-center`}>
         No console output
       </div>
     );
@@ -217,15 +218,15 @@ function ConsoleOutput({ logs }) {
         <div
           key={index}
           className={`px-3 py-2 ${
-            index < logs.length - 1 ? 'border-b border-gray-200' : ''
+            index < logs.length - 1 ? 'border-b border-gray-200 dark:border-gray-700' : ''
           } ${
-            log.type === 'error' ? 'text-red-600 bg-red-50' :
-            log.type === 'warn' ? 'text-yellow-600 bg-yellow-50' :
-            log.type === 'info' ? 'text-blue-600 bg-blue-50' :
-            'text-gray-800'
+            log.type === 'error' ? 'text-red-600 bg-red-50 dark:bg-red-900/30' :
+            log.type === 'warn' ? 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30' :
+            log.type === 'info' ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/30' :
+            isReact ? 'text-gray-800 dark:text-white' : 'text-gray-800 dark:text-gray-200'
           }`}
         >
-          <span className="text-gray-500 text-xs uppercase mr-2">
+          <span className="text-gray-500 dark:text-gray-400 text-xs uppercase mr-2">
             {log.type}:
           </span>
           <span>{formatConsoleArgs(log.args)}</span>
@@ -236,11 +237,6 @@ function ConsoleOutput({ logs }) {
   );
 }
 
-// Syntax highlighting: 
-// - comments (green), 
-// - console.log (blue), 
-// - keywords (orange), 
-// - HTML tag names (violet)
 function CodeEditor({ value, onChange, ...rest }) {
   const textareaRef = useRef(null);
   const gutterRef = useRef(null);
@@ -264,10 +260,8 @@ function CodeEditor({ value, onChange, ...rest }) {
   }
 
   function highlightSyntax(code) {
-    // Step 1: Find all ranges for comments, console.log, keywords, and HTML tags
     const ranges = [];
     let match;
-    // Comments (priority 4, green)
     const singleLineRegex = /\/\/.*$/gm;
     while ((match = singleLineRegex.exec(code)) !== null) {
       ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 4 });
@@ -276,8 +270,6 @@ function CodeEditor({ value, onChange, ...rest }) {
     while ((match = multiLineRegex.exec(code)) !== null) {
       ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 4 });
     }
-
-    // console.log highlight (priority 3, blue)
     const codeLen = code.length;
     let i = 0;
     while (i < codeLen) {
@@ -319,15 +311,10 @@ function CodeEditor({ value, onChange, ...rest }) {
         i = j + 1;
       }
     }
-
-    // keywords (priority 2, orange)
     const keywordPattern = new RegExp(`\\b(${keywords.join('|')})\\b`, 'g');
     while ((match = keywordPattern.exec(code)) !== null) {
       ranges.push({ start: match.index, end: match.index + match[0].length, color: 'orange', priority: 2 });
     }
-
-    // HTML tag names (priority 1, violet)
-    // We'll match tags and only color the tag name, not the full tag
     let htmlTagRegex = /<\/?([A-Za-z][A-Za-z0-9:-]*)/g;
     while ((match = htmlTagRegex.exec(code)) !== null) {
       const tagName = match[1];
@@ -336,8 +323,6 @@ function CodeEditor({ value, onChange, ...rest }) {
         ranges.push({ start: nameStart, end: nameStart + tagName.length, color: '#b57cf2', priority: 1 });
       }
     }
-
-    // Sort and assign color by priority
     ranges.sort((a, b) => a.start - b.start || b.priority - a.priority);
     const colorMap = new Array(code.length).fill(null);
     for (const { start, end, color, priority } of ranges) {
@@ -347,8 +332,6 @@ function CodeEditor({ value, onChange, ...rest }) {
         }
       }
     }
-
-    // Escape HTML and build escMap
     let escMap = [];
     let j = 0;
     for (let i = 0; i < code.length; ++i) {
@@ -359,8 +342,6 @@ function CodeEditor({ value, onChange, ...rest }) {
     }
     escMap.push(j);
     const ESC = escapeHtml(code);
-
-    // Output html with correct spans
     let html = "";
     let lastIdx = 0;
     while (lastIdx < code.length) {
@@ -439,7 +420,6 @@ function CodeEditor({ value, onChange, ...rest }) {
       onChange({ target: { value: newValue } });
       setTimeout(() => {
         el.selectionStart = el.selectionEnd = start + 1 + newIndent.length;
-        // Scroll caret into view
         const ta = el;
         const valueUpToCaret = ta.value.slice(0, start + 1 + newIndent.length);
         const caretLine = valueUpToCaret.split('\n').length - 1;
@@ -495,10 +475,9 @@ function CodeEditor({ value, onChange, ...rest }) {
         boxSizing: "border-box",
       }}
     >
-      {/* Line Numbers */}
       <pre
         ref={gutterRef}
-        className="select-none text-right bg-gray-800 text-gray-500 text-xs font-mono overflow-hidden"
+        className="select-none text-right bg-gray-800 dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-xs font-mono overflow-hidden"
         style={{
           minWidth: "2.2em",
           userSelect: "none",
@@ -530,10 +509,7 @@ function CodeEditor({ value, onChange, ...rest }) {
           </div>
         ))}
       </pre>
-      
-      {/* Code editor container */}
       <div className="flex-1 relative" style={{ minHeight: "400px" }}>
-        {/* Syntax highlighting overlay */}
         <pre
           ref={overlayRef}
           className="absolute inset-0 pointer-events-none overflow-auto bg-transparent font-mono"
@@ -553,8 +529,6 @@ function CodeEditor({ value, onChange, ...rest }) {
             __html: highlightSyntax(value)
           }}
         />
-        
-        {/* Textarea */}
         <textarea
           ref={textareaRef}
           value={value}
@@ -564,7 +538,7 @@ function CodeEditor({ value, onChange, ...rest }) {
           onSelect={handleSelectionChange}
           onClick={handleSelectionChange}
           onKeyUp={handleSelectionChange}
-          className="absolute inset-0 w-full h-full bg-transparent text-gray-100 font-mono border-0 focus:outline-none resize-none caret-white"
+          className="absolute inset-0 w-full h-full bg-transparent text-gray-100 dark:text-gray-100 font-mono border-0 focus:outline-none resize-none caret-white"
           spellCheck={false}
           style={{
             fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
@@ -626,18 +600,18 @@ const PlaygroundWrapper = ({
     if (result.error) {
       return (
         <div className="h-full flex flex-col">
-          <div className="text-red-500 p-4 text-center border-2 border-red-200 rounded bg-red-50 flex-shrink-0">
+          <div className="text-red-500 p-4 text-center border-2 border-red-200 dark:border-red-700 rounded bg-red-50 dark:bg-red-950 flex-shrink-0">
             <div className="text-2xl mb-2">⚠️</div>
             <div className="font-bold">Code Error</div>
             <div className="text-sm mt-2 font-mono break-words">{result.error}</div>
           </div>
           {result.logs && result.logs.length > 0 && (
-            <div className="flex-1 mt-2 bg-white rounded border overflow-hidden">
-              <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
+            <div className="flex-1 mt-2 bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="bg-gray-800 dark:bg-gray-900 text-white text-sm font-bold px-3 py-2">
                 Console Output
               </div>
-              <div className="max-h-48 overflow-y-auto" style={{ paddingBottom: '4px' }}>
-                <ConsoleOutput logs={result.logs} />
+              <div className="max-h-48 overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '4px' }}>
+                <ConsoleOutput logs={result.logs} isReact={!!result.isReact} />
               </div>
             </div>
           )}
@@ -647,12 +621,12 @@ const PlaygroundWrapper = ({
     if (result.isJavaScript) {
       return (
         <div className="h-full flex flex-col">
-          <div className="flex-1 bg-white rounded border overflow-hidden">
-            <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
+          <div className="flex-1 bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-gray-800 dark:bg-gray-900 text-white text-sm font-bold px-3 py-2">
               Console Output
             </div>
-            <div className="h-full overflow-y-auto" style={{ paddingBottom: '8px' }}>
-              <ConsoleOutput logs={result.logs} />
+            <div className="h-full overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '8px' }}>
+              <ConsoleOutput logs={result.logs} isReact={!!result.isReact} />
             </div>
           </div>
         </div>
@@ -661,17 +635,23 @@ const PlaygroundWrapper = ({
     return (
       <div className="h-full flex flex-col">
         <div className="flex-1 flex items-center justify-center min-h-0">
-          <ErrorBoundary resetKey={debouncedBody}>
-            {result.element}
-          </ErrorBoundary>
+          <div className="w-full h-full">
+            <div className="w-full flex items-center justify-center align-middle h-full">
+              <ErrorBoundary resetKey={debouncedBody}>
+                <div className="[&_*]:text-dark dark:[&_*]:text-white dark:[&_input]:text-black dark:[&_textarea]:text-white dark:[&_select]:text-white [&_*]:dark:placeholder-gray-500">
+                  {result.element}
+                </div>
+              </ErrorBoundary>
+            </div>
+          </div>
         </div>
         {result.logs && result.logs.length > 0 && (
-          <div className="mt-2 bg-white rounded border overflow-hidden flex-shrink-0">
-            <div className="bg-gray-800 text-white text-sm font-bold px-3 py-2">
+          <div className="mt-2 bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 overflow-hidden flex-shrink-0">
+            <div className="bg-gray-800 dark:bg-gray-900 text-white text-sm font-bold px-3 py-2">
               Console Output
             </div>
-            <div className="max-h-40 overflow-y-auto" style={{ paddingBottom: '4px' }}>
-              <ConsoleOutput logs={result.logs} />
+            <div className="max-h-40 overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '4px' }}>
+              <ConsoleOutput logs={result.logs} isReact={!!result.isReact} />
             </div>
           </div>
         )}
@@ -679,44 +659,58 @@ const PlaygroundWrapper = ({
     );
   };
 
+
+
   return (
-    <div className="bg-blue-50 pb-2 rounded pt-4 px-2 md:px-4 flex justify-center">
-      <div className="w-full bg-white rounded-lg shadow-2xl overflow-hidden">
-        <div className="flex flex-col lg:flex-row h-auto lg:h-[630px] lg:max-h-[630px]">
+   <div className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden p-2 mt-4">
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[600px] lg:max-h-[600px]">
           {/* Left side (info & preview): 40% width on large screens */}
           <div className="w-full lg:w-[40%] flex flex-col h-auto min-h-0">
-            <div className="p-4 md:p-4 border-b border-gray-200">
+            <div className="p-4 md:p-4 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-4 mb-2">
-                <div className="bg-blue-100 rounded-lg p-2">
-                  {Icon && <Icon className="w-7 h-7 text-blue-600" />}
+                <div className="bg-blue-100 dark:bg-blue-900/40 rounded-lg p-2">
+                  {Icon && <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{name}</h2>
-                  <p className="text-gray-700">{description}</p>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{name}</h2>
+                  <p className="text-gray-700 dark:text-gray-300">{description}</p>
                 </div>
               </div>
               {concept && (
                 <div>
-                  <div className="font-semibold text-blue-800 mb-1">
+                  <div className="font-semibold text-blue-800 dark:text-blue-300 mb-1">
                     Concept:{" "}
-                    <span className="font-mono bg-blue-50 px-2 py-1 rounded">{concept}</span>
+                    {Array.isArray(concept)
+                      ? concept.map((c, i) => (
+                          <span
+                            key={i}
+                            className="font-mono bg-blue-50 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded mr-2 inline-block"
+                          >
+                            {c}
+                          </span>
+                        ))
+                      : (
+                        <span className="font-mono bg-blue-50 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded">
+                          {concept}
+                        </span>
+                      )}
                   </div>
                   {conceptDescription && (
-                    <div className="mb-2 text-gray-800">{conceptDescription}</div>
+                    <div className="mb-2 text-gray-800 dark:text-gray-200">{conceptDescription}</div>
                   )}
                 </div>
               )}
             </div>
-            <div className="bg-gray-200 px-0 md:px-4 py-4 flex-1 min-h-0 flex items-stretch">
+            <div className="bg-gray-200 dark:bg-gray-950 flex-1 min-h-0 flex items-stretch">
               <div className="w-full">
                 {renderPreview()}
               </div>
             </div>
           </div>
           {/* Code editor: 60% width on large screens */}
-          <div className="w-full lg:w-[60%] bg-gray-900 border-t lg:border-t-0 lg:border-l border-gray-200 flex flex-col min-h-0">
-            <div className="flex justify-between items-center p-4 md:p-4 border-b border-gray-700">
-              <div className="font-bold text-blue-300 text-lg">Code Playground</div>
+          <div className="w-full lg:w-[60%] bg-gray-900 dark:bg-gray-950 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 flex flex-col min-h-0">
+            <div className="flex justify-between items-center p-4 md:p-4 border-b border-gray-700 dark:border-gray-700">
+              <div className="font-bold text-blue-300 dark:text-blue-200 text-lg">Code Playground</div>
               
               <div className="flex items-center space-x-3">
                 {/* Custom header controls */}
@@ -740,8 +734,21 @@ const PlaygroundWrapper = ({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      {/* Custom scrollbar style for dark mode only on console output window */}
+      <style>{`
+        .dark .console-output-scrollbar::-webkit-scrollbar {
+          background: #181a20;
+          width: 8px;
+        }
+        .dark .console-output-scrollbar::-webkit-scrollbar-thumb {
+          background: #22242c;
+          border-radius: 6px;
+        }
+        .dark .console-output-scrollbar {
+          scrollbar-color: #22242c #181a20;
+        }
+      `}</style>
+    </div> 
   );
 };
 

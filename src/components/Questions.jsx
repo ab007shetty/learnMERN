@@ -8,7 +8,7 @@ function highlightText(text, searchTerm) {
   const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
   const parts = text.split(regex);
   return parts.map((part, i) =>
-    regex.test(part) ? <mark key={i} className="bg-yellow-200 px-1 rounded">{part}</mark> : part
+    regex.test(part) ? <mark key={i} className="bg-yellow-200 dark:bg-yellow-600 px-1 rounded">{part}</mark> : part
   );
 }
 
@@ -100,7 +100,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
 
   if (!currentQuestion || totalQuestions === 0) {
     return (
-      <div className="w-full h-screen flex items-center justify-center text-red-600 font-bold text-xl">
+      <div className="w-full h-screen flex items-center justify-center text-red-600 dark:text-red-400 font-bold text-xl">
         No question found.
       </div>
     );
@@ -171,21 +171,21 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
           onClick={prevSearchMatch}
           disabled={currentMatchIndex === 0}
           title="Previous search result"
-          className={`flex items-center p-1 rounded hover:bg-gray-300 transition-all ${
-            currentMatchIndex === 0 ? 'text-gray-300' : 'text-gray-700'
+          className={`flex items-center p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-all ${
+            currentMatchIndex === 0 ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'
           }`}
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
-        <span className="text-xs text-gray-700 font-medium px-1 min-w-[32px] text-center">
+        <span className="text-xs text-gray-700 dark:text-gray-300 font-medium px-1 min-w-[32px] text-center">
           {currentMatchIndex + 1}/{filteredIndexes.length}
         </span>
         <button
           onClick={nextSearchMatch}
           disabled={currentMatchIndex === filteredIndexes.length - 1}
           title="Next search result"
-          className={`flex items-center p-1 rounded hover:bg-gray-300 transition-all ${
-            currentMatchIndex === filteredIndexes.length - 1 ? 'text-gray-300' : 'text-gray-700'
+          className={`flex items-center p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-all ${
+            currentMatchIndex === filteredIndexes.length - 1 ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'
           }`}
         >
           <ChevronRight className="w-4 h-4" />
@@ -194,23 +194,23 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     ) : null;
 
   return (
-    <div className="w-full h-full flex flex-col p-4 overflow-hidden bg-gray-100 transition-all duration-300 mt-2">
+    <div className="w-full h-full flex flex-col p-4 rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 transition-all duration-300 mt-4 ">
       {/* Header: All controls */}
       <div className="w-full flex flex-col gap-2 mb-4">
         <div className="flex items-center w-full gap-2">
           {/* Icon & Q&A Heading */}
           <div className="flex items-center gap-2 flex-shrink-0 mr-2">
-            <Icon className="w-7 h-7 text-blue-600" />
-            <h1 className="text-xl font-bold text-gray-900 whitespace-nowrap">Q&amp;A</h1>
+            <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Q&amp;A</h1>
           </div>
           {/* Desktop search bar & match nav */}
           {!isMobile && (
             <div className="flex items-center gap-2 flex-shrink-0 min-w-[230px] max-w-[350px] w-full">
-              <div className="flex items-center bg-white rounded-lg border border-gray-300 px-2 py-1 shadow-sm w-full">
-                <Search className="w-4 h-4 text-gray-400 mr-2" />
+              <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 px-2 py-1 shadow-sm w-full">
+                <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2" />
                 <input
                   type="text"
-                  className="bg-transparent outline-none w-full text-sm"
+                  className="bg-transparent outline-none w-full text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   placeholder="Search questions…"
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
@@ -222,7 +222,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                     onClick={() => setSearchTerm('')}
                     aria-label="Clear"
                   >
-                    <X className="w-4 h-4 text-gray-400" />
+                    <X className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                   </button>
                 )}
               </div>
@@ -234,21 +234,21 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
           {!isMobile && (
             <div className="flex-1 min-w-0 mx-2">
               <div className="flex justify-between items-center mb-0.5">
-                <span className="text-xs font-medium text-gray-700 whitespace-nowrap">
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
                   {totalQuestions > 0
                     ? <>Question {activeCurrentIdx + 1} of {totalQuestions}</>
                     : 'No questions'}
                 </span>
                 {/* Hide percent complete on mobile */}
-                <span className="text-xs text-gray-500 whitespace-nowrap">
+                <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
                   {totalQuestions > 0
                     ? `${Math.round(((activeCurrentIdx + 1) / totalQuestions) * 100)}% Complete`
                     : ''}
                 </span>
               </div>
-              <div className="w-full bg-gray-300 rounded-full h-1.5">
+              <div className="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-1.5">
                 <div
-                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                  className="bg-blue-600 dark:bg-blue-500 h-1.5 rounded-full transition-all duration-300"
                   style={{
                     width: totalQuestions > 0
                       ? `${((activeCurrentIdx + 1) / totalQuestions) * 100}%`
@@ -266,8 +266,8 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                 disabled={activeCurrentIdx === 0}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md font-medium text-sm transition-all duration-200 ${
                   activeCurrentIdx === 0
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-gray-300 hover:bg-gray-400 text-gray-700 hover:shadow-md'
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 hover:shadow-md'
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -278,8 +278,8 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                 disabled={activeCurrentIdx === totalQuestions - 1}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md font-medium text-sm transition-all duration-200 ${
                   activeCurrentIdx === totalQuestions - 1
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md'
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white hover:shadow-md'
                 }`}
               >
                 Next
@@ -294,19 +294,19 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
               onClick={() => setShowMobileSearch(true)}
               aria-label="Search"
             >
-              <Search className="w-6 h-6 text-gray-600" />
+              <Search className="w-6 h-6 text-gray-600 dark:text-gray-400" />
             </button>
           )}
         </div>
         {/* Mobile search bar and match nav in one row, full width, compact */}
         {isMobile && showMobileSearch && (
           <div className="flex items-center w-full mt-1 relative z-20 gap-2">
-            <div className="flex items-center bg-white rounded-lg border border-gray-300 px-2 py-1 shadow-sm flex-1 min-w-0">
-              <Search className="w-4 h-4 text-gray-400 mr-2" />
+            <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 px-2 py-1 shadow-sm flex-1 min-w-0">
+              <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2" />
               <input
                 type="text"
                 autoFocus
-                className="bg-transparent outline-none w-full text-sm"
+                className="bg-transparent outline-none w-full text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 placeholder="Search questions…"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
@@ -320,21 +320,21 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                   onClick={prevSearchMatch}
                   disabled={currentMatchIndex === 0}
                   title="Previous search result"
-                  className={`flex items-center p-1 rounded hover:bg-gray-300 transition-all ${
-                    currentMatchIndex === 0 ? 'text-gray-300' : 'text-gray-700'
+                  className={`flex items-center p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-all ${
+                    currentMatchIndex === 0 ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <span className="text-xs text-gray-700 font-medium px-1 min-w-[32px] text-center">
+                <span className="text-xs text-gray-700 dark:text-gray-300 font-medium px-1 min-w-[32px] text-center">
                   {currentMatchIndex + 1}/{filteredIndexes.length}
                 </span>
                 <button
                   onClick={nextSearchMatch}
                   disabled={currentMatchIndex === filteredIndexes.length - 1}
                   title="Next search result"
-                  className={`flex items-center p-1 rounded hover:bg-gray-300 transition-all ${
-                    currentMatchIndex === filteredIndexes.length - 1 ? 'text-gray-300' : 'text-gray-700'
+                  className={`flex items-center p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-all ${
+                    currentMatchIndex === filteredIndexes.length - 1 ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -347,40 +347,41 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
               onClick={() => setShowMobileSearch(false)}
               aria-label="Close"
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </button>
           </div>
         )}
       </div>
       {/* Main Card */}
-      <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300 mt-2">
+      <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300 mt-2 rounded-2xl overflow-hidden">
         <div
-          className="bg-white rounded-2xl border border-gray-200 shadow-2xl flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300"
+          className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700  flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300"
+          style={{ backgroundColor: 'inherit' }} // Remove light grey bg around card!
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
           {/* Question */}
           <div className="mb-4 px-8 pt-4">
-            <h2 className="text-lg md:text-xl font-bold text-blue-800 mb-2">
+            <h2 className="text-lg md:text-xl font-bold text-blue-800 dark:text-blue-300 mb-2">
               Q{currentQuestion.id}: {questionHighlighted}
             </h2>
           </div>
           {/* Answer */}
           <div className="mb-8 px-8">
-            <h3 className="text-lg font-semibold text-green-700 mb-2">Answer</h3>
-            <div className="space-y-4 text-lg text-green-900 leading-relaxed">
+            <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">Answer</h3>
+            <div className="space-y-4 text-lg text-green-900 dark:text-green-200 leading-relaxed">
               {answerHighlighted}
             </div>
           </div>
           {/* Example (if present) */}
           {currentQuestion.example && currentQuestion.example.length > 0 && (
             <div className="mb-8 px-8">
-              <h3 className="text-lg font-semibold text-purple-700 mb-2">Example</h3>
-              <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto text-base text-gray-100">
+              <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2">Example</h3>
+              <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-base text-gray-100 dark:text-gray-200">
                 <code>
                   {currentQuestion.example.map((line, idx) => (
-                    <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400' : ''}>
+                    <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400 dark:text-green-300' : ''}>
                       {line}
                     </div>
                   ))}
@@ -391,8 +392,8 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
           {/* Key Terms (if present) */}
           {currentQuestion.keyterms && currentQuestion.keyterms.length > 0 && (
             <div className="mb-2 px-8 pb-4">
-              <h3 className="text-lg font-semibold text-yellow-700 mb-2">Key Terms</h3>
-              <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900">
+              <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
+              <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900 dark:text-yellow-200">
                 {currentQuestion.keyterms.map((term, idx) => (
                   <li key={idx}>{term}</li>
                 ))}
@@ -401,7 +402,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
           )}
         </div>
         {/* Mobile swipe hint */}
-        <div className="md:hidden mt-3 text-center text-sm text-gray-500 select-none">
+        <div className="md:hidden mt-3 text-center text-sm text-gray-500 dark:text-gray-400 select-none">
           Swipe left/right to navigate
         </div>
       </div>
