@@ -3,7 +3,7 @@ import { Code2, BookOpen, ExternalLink } from 'lucide-react';
 
 const Introduction = () => {
   return (
-    <div className="w-full lg:h-[630px] lg:max-h-[630px] h-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-200 lg:overflow-hidden">
+    <div className="w-full lg:h-[650px] lg:max-h-[650px] h-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-200 lg:overflow-hidden">
       <div className="max-w-6xl mx-auto p-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
@@ -28,7 +28,7 @@ const Introduction = () => {
                 Start with the basics like useState and useEffect hooks to understand fundamental React concepts.
               </p>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
               <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl inline-flex mb-4">
                 <Code2 className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -38,7 +38,7 @@ const Introduction = () => {
                 Each topic includes practical examples and code snippets you can experiment with.
               </p>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 md:col-span-2 lg:col-span-1">
               <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl inline-flex mb-4">
                 <ExternalLink className="w-6 h-6 text-blue-600 dark:text-blue-400" />

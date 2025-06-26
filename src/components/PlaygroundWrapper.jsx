@@ -663,7 +663,7 @@ const PlaygroundWrapper = ({
 
   return (
    <div className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden p-2 mt-4">
-    <div className="flex flex-col lg:flex-row h-auto lg:h-[600px] lg:max-h-[600px]">
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[610px] lg:max-h-[610px]">
           {/* Left side (info & preview): 40% width on large screens */}
           <div className="w-full lg:w-[40%] flex flex-col h-auto min-h-0">
             <div className="p-4 md:p-4 border-b border-gray-200 dark:border-gray-700">
