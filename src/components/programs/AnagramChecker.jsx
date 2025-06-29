@@ -56,7 +56,7 @@ function AnagramChecker(str1, str2) {
 }
 
 // Example usage:
-console.log(AnagramChecker("listen", "silent")); // true
+console.log(AnagramChecker("listen       ", "silent")); // true
 console.log(AnagramChecker("hello", "world"));   // false
 `.trim();
 

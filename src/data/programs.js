@@ -14,6 +14,7 @@ import {
   Repeat,
   Layers,
   Text,
+  Clock,
 } from "lucide-react";
 
 import Counter from "../components/programs/Counter";
@@ -31,6 +32,7 @@ import Fibonacci from "../components/programs/Fibonacci";
 import FindIndex from "../components/programs/FindIndex";
 import LongestWord from "../components/programs/LongestWord";
 import ArrayOperations from "../components/programs/ArrayOperations";
+import Stopwatch from "../components/programs/Stopwatch";
 
 const programs = [
   {
@@ -54,6 +56,18 @@ const programs = [
       return "useState Hook adds state to functional components and triggers re-renders.";
     },
     component: Counter,
+  },
+  {
+    id: "stopwatch",
+    name: "Stopwatch",
+    icon: Clock, // You can use any icon component here
+    description:
+      "Simple stopwatch with start, pause, and reset.\nDemonstrates side effects and cleanup with useEffect.",
+    concept: "useEffect",
+    get conceptDescription() {
+      return "useEffect Hook handles side effects like timers and API calls. Cleanup is done via return function.";
+    },
+    component: Stopwatch,
   },
   {
     id: "todo",
