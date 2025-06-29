@@ -15,7 +15,7 @@ function AnagramChecker() {
     }
 
     const normalize = str =>
-      str.replace(/\s/g, '')   // remove all spaces
+      str.replace(/\\s/g, '')   // remove all spaces
          .toLowerCase()        // convert to lowercase
          .split('')            // split into characters
          .sort()               // sort alphabetically
@@ -46,7 +46,7 @@ const DEFAULT_JS_CODE = `
 function AnagramChecker(str1, str2) {
 
     const normalize = str =>
-      str.replace(/\s/g, '')   
+      str.replace(/\\s/g, '')   
          .toLowerCase()        
          .split('')           
          .sort()              
