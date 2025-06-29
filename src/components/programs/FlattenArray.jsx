@@ -32,10 +32,28 @@ function FlattenArray() {
 export default FlattenArray;
 `.trim();
 
+// Default JavaScript code
+const DEFAULT_JS_CODE = `
+//Write React components, JSX, or pure JS. No need of any import statements.
+
+// With built in method
+const arr = [1, [2, [3, [4, 5]]]];
+const flattened = arr.flat(Infinity); // Infinity for deeply nested arrays
+console.log(flattened); // Output: [1, 2, 3, 4, 5]
+
+//Manual
+function flatten(arr) {
+  return arr.reduce((acc, val) =>
+    Array.isArray(val) ? acc.concat(flatten(val)) : acc.concat(val), []);
+}
+console.log(flatten([1, [2, [3, [4, 5]]]])); // [1, 2, 3, 4, 5]
+`.trim();
+
 export default function FlattenArray(props) {
   return (
     <PlaygroundWrapper
       defaultCode={DEFAULT_BODY}
+      defaultJsCode={DEFAULT_JS_CODE}
       {...props}
     />
   );

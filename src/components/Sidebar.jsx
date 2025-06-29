@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Search, X, HelpCircle, Hash, BookOpen } from 'lucide-react';
 import questions from '../data/questions';
 
-const MAX_NAME_LENGTH = 17;
+const MAX_NAME_LENGTH = 20;
 
 function truncateName(name) {
   return name.length > MAX_NAME_LENGTH ? name.slice(0, MAX_NAME_LENGTH - 3) + '...' : name;

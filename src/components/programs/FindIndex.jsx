@@ -20,6 +20,7 @@ function FindIndex() {
   return (
     <div>
       <input value={input} onChange={e => setInput(e.target.value)} placeholder="Array" />
+      <br /> <br />
       <input value={target} onChange={e => setTarget(e.target.value)} placeholder="Element" />
       <button onClick={find}>Find Index</button>
       <div>{index}</div>
@@ -30,10 +31,30 @@ function FindIndex() {
 export default FindIndex;
 `.trim();
 
+const DEFAULT_JS_CODE = `
+//Write React components, JSX, or pure JS. No need of any import statements.
+
+function findIndex(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) {
+      return i;
+    }
+  }
+  return -1; // not found
+}
+
+// Example usage:
+const numbers = [10, 20, 30, 40, 50];
+const target = 30;
+const index = findIndex(numbers, target);
+console.log("Index of " + target + " is: " + index); // Output: 2
+`.trim();
+
 export default function FindIndex(props) {
   return (
     <PlaygroundWrapper
       defaultCode={DEFAULT_BODY}
+      defaultJsCode={DEFAULT_JS_CODE}
       {...props}
     />
   );

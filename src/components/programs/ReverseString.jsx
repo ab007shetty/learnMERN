@@ -21,10 +21,23 @@ function ReverseString() {
 export default ReverseString;
 `.trim();
 
+// Default JavaScript code
+const DEFAULT_JS_CODE = `
+//Write React components, JSX, or pure JS. No need of any import statements.
+
+function reverseString(input) {
+  return input.split('').reverse().join('');
+}
+
+// Simulate calling with user-provided input
+console.log(reverseString("hello")); // Output: "olleh"
+`.trim();
+  
 export default function ReverseString(props) {
   return (
     <PlaygroundWrapper
       defaultCode={DEFAULT_BODY}
+      defaultJsCode={DEFAULT_JS_CODE}
       {...props}
     />
   );

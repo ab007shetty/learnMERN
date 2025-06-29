@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar color*/
+/* Custom scrollbar color for code editor */
 .code-editor-container pre,
 .code-editor-container textarea {
   scrollbar-color: #334155 #1e293b; /* For Firefox */
@@ -26,4 +26,17 @@
 .code-editor-container pre::-webkit-scrollbar-corner,
 .code-editor-container textarea::-webkit-scrollbar-corner {
   background: #1e293b;
+}
+
+/* Custom scrollbar style for dark mode only on console output window */
+.dark .console-output-scrollbar::-webkit-scrollbar {
+  background: #181a20;
+  width: 8px;
+}
+.dark .console-output-scrollbar::-webkit-scrollbar-thumb {
+  background: #22242c;
+  border-radius: 6px;
+}
+.dark .console-output-scrollbar {
+  scrollbar-color: #22242c #181a20;
 }

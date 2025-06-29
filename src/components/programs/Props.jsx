@@ -19,9 +19,10 @@ const Child = (props) => {
 const App = () => {
   return (
     <div>
-      <Child id={users[0].id} name={users[0].name} age={users[0].age} />
-      <Child id={users[1].id} name={users[1].name} age={users[1].age} />
-      <Child id={3} name="ani" age={22} />
+    {users.map((user) => (
+      <Child id={user.id} name={user.name} age={user.age} />
+    ))}
+       <Child id={3} name="ani" age={22} />
     </div>
   );
 };

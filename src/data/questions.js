@@ -614,6 +614,25 @@ const questions = [
       "Middleware like thunk used for async logic.",
     ],
   },
+  {
+    id: 42,
+    question:
+      "What is hoisting and how do var, let, and const behave differently in JavaScript?",
+    answer: [
+      "Hoisting is JavaScript’s behavior of moving variable declarations to the top of their scope.",
+      "var is hoisted and initialized as undefined.",
+      "let and const are also hoisted, but not initialized. They stay in the Temporal Dead Zone (TDZ) until their declaration is reached.",
+      "Accessing let or const before declaration causes a ReferenceError.",
+    ],
+    example: [
+      "Keyword                  | var                   | let                    | const",
+      "-------------------------|-----------------------|------------------------|-------------------------------",
+      "Hoisted?                 | Yes                   | Yes                    | Yes",
+      "Initialized?             | Yes (as undefined)    | No                     | No",
+      "TDZ Exists?              | No                    | Yes                    | Yes",
+      "Access Before Declaration| Allowed (undefined)   | Error in TDZ           | Error in TDZ + Must initialize",
+    ],
+  },
 ];
 
 export default questions;

@@ -27,10 +27,29 @@ function CountRepeatedChars() {
 export default CountRepeatedChars;
 `.trim();
 
+const DEFAULT_JS_CODE = `
+//Write React components, JSX, or pure JS. No need of any import statements.
+
+function countRepeatedChars(str) {
+  const count = {};
+  for (let char of str) {
+    count[char] = (count[char] || 0) + 1;
+  }
+
+  for (let char in count) {       // use if needed,  if (count[char] > 1) 
+      console.log(char + ": " + count[char]);
+  }
+}
+
+// Example usage:
+countRepeatedChars("Hello");
+`.trim();
+
 export default function CountRepeatedChars(props) {
   return (
     <PlaygroundWrapper
       defaultCode={DEFAULT_BODY}
+      defaultJsCode={DEFAULT_JS_CODE}
       {...props}
     />
   );

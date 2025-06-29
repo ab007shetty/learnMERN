@@ -1,10 +1,12 @@
 import PlaygroundWrapper from "../PlaygroundWrapper";
 
-const DEFAULT_BODY = `
+const DEFAULT_REACT_CODE = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function Counter() {
   const [counter, setCounter] = useState(0);
+
+// setCounter(counter + 1) can be wrong, use prevCount to always get the latest value
 
   return (
     <div>
@@ -21,7 +23,7 @@ export default Counter;
 export default function Counter(props) {
   return (
     <PlaygroundWrapper
-      defaultCode={DEFAULT_BODY}
+      defaultCode={DEFAULT_REACT_CODE}
       {...props}
     />
   );

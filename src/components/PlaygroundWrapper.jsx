@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import * as Babel from "@babel/standalone";
 import { ErrorBoundary } from "./ErrorBoundary";
 
@@ -28,6 +28,21 @@ const htmlTags = [
 ];
 const htmlTagSet = new Set(htmlTags);
 
+// Keywords for syntax highlight (optional)
+const keywords = [
+  'function', 'const', 'let', 'var', 'import', 'export', 'from', 'return',
+  'if', 'else', 'for', 'while', 'class', 'extends', 'async', 'await',
+  'try', 'catch', 'finally', 'throw', 'new', 'typeof', 'instanceof',
+  'true', 'false', 'null', 'undefined', 'this', 'super', 'static',
+  'default', 'case', 'switch', 'break', 'continue', 'do'
+];
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 function isComponent(thing) {
   return typeof thing === "function" && (
     thing.prototype?.isReactComponent ||
@@ -56,29 +71,6 @@ function isReactCode(code) {
   if (/export\s+default\s*<\w/.test(cleanCode)) return true;
   if (/(^|\s|=|\(|\[|\{)<[A-Za-z][\w:.-]*[\s/>]/m.test(cleanCode)) return true;
   return false;
-}
-
-function findMatchingBracket(text, position) {
-  const brackets = { '(': ')', '[': ']', '{': '}', ')': '(', ']': ']', '}': '{' };
-  const char = text[position];
-  if (!brackets[char]) return -1;
-  const isOpening = ['(', '[', '{'].includes(char);
-  const target = brackets[char];
-  let count = 1;
-  if (isOpening) {
-    for (let i = position + 1; i < text.length; i++) {
-      if (text[i] === char) count++;
-      else if (text[i] === target) count--;
-      if (count === 0) return i;
-    }
-  } else {
-    for (let i = position - 1; i >= 0; i--) {
-      if (text[i] === char) count++;
-      else if (text[i] === target) count--;
-      if (count === 0) return i;
-    }
-  }
-  return -1;
 }
 
 function getAutoCloseChar(char) {
@@ -126,10 +118,10 @@ function transpileAndEval(userCode) {
           if (exports && exports.default) {
             __result = exports.default;
           }
-          return typeof __result !== "undefined" 
-            ? __result 
-            : (typeof Parent !== "undefined" ? Parent 
-            : (typeof App !== "undefined" ? App 
+          return typeof __result !== "undefined"
+            ? __result
+            : (typeof Parent !== "undefined" ? Parent
+            : (typeof App !== "undefined" ? App
             : undefined));
         })
       `;
@@ -145,9 +137,9 @@ function transpileAndEval(userCode) {
       }
       try {
         const jsxTranspiled = Babel.transform(
-          `(function(React, console){ 
+          `(function(React, console){
             const { useState, useEffect, useRef, useMemo, useCallback, useReducer, useContext } = React;
-            return (${userCode}); 
+            return (${userCode});
           })`,
           { presets: ["react"] }
         ).code;
@@ -173,16 +165,16 @@ function transpileAndEval(userCode) {
         // eslint-disable-next-line no-eval
         const fn = (0, eval)(wrapped);
         fn(mockConsole);
-        return { 
-          isJavaScript: true, 
+        return {
+          isJavaScript: true,
           logs,
           success: true
         };
       } catch (err) {
-        return { 
-          isJavaScript: true, 
+        return {
+          isJavaScript: true,
           logs,
-          error: err.message 
+          error: err.message
         };
       }
     }
@@ -237,130 +229,124 @@ function ConsoleOutput({ logs, isReact }) {
   );
 }
 
+function highlightSyntax(code) {
+  const ranges = [];
+  let match;
+  const singleLineRegex = /\/\/.*$/gm;
+  while ((match = singleLineRegex.exec(code)) !== null) {
+    ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 4 });
+  }
+  const multiLineRegex = /\/\*[\s\S]*?\*\//g;
+  while ((match = multiLineRegex.exec(code)) !== null) {
+    ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 4 });
+  }
+  const codeLen = code.length;
+  let i = 0;
+  while (i < codeLen) {
+    const logIdx = code.indexOf("console.log(", i);
+    if (logIdx === -1) break;
+    let parenCount = 0;
+    let j = logIdx + "console.log(".length;
+    parenCount++;
+    let insideString = null;
+    let prevChar = "";
+    while (j < codeLen) {
+      const char = code[j];
+      if (!insideString) {
+        if (char === '"' || char === "'" || char === "`") {
+          insideString = char;
+        } else if (char === "(") {
+          parenCount++;
+        } else if (char === ")") {
+          parenCount--;
+          if (parenCount === 0) {
+            ranges.push({ start: logIdx, end: j + 1, color: '#81cede', priority: 3 });
+            break;
+          }
+        }
+      } else {
+        if (char === insideString && prevChar !== "\\") {
+          insideString = null;
+        }
+      }
+      prevChar = char;
+      j++;
+    }
+    if (parenCount > 0) {
+      let lineEnd = code.indexOf('\n', logIdx);
+      if (lineEnd === -1) lineEnd = codeLen;
+      ranges.push({ start: logIdx, end: lineEnd, color: '#81cede', priority: 3 });
+      i = lineEnd + 1;
+    } else {
+      i = j + 1;
+    }
+  }
+  const keywordPattern = new RegExp(`\\b(${keywords.join('|')})\\b`, 'g');
+  while ((match = keywordPattern.exec(code)) !== null) {
+    ranges.push({ start: match.index, end: match.index + match[0].length, color: 'orange', priority: 2 });
+  }
+  let htmlTagRegex = /<\/?([A-Za-z][A-Za-z0-9:-]*)/g;
+  while ((match = htmlTagRegex.exec(code)) !== null) {
+    const tagName = match[1];
+    if (htmlTagSet.has(tagName.toLowerCase())) {
+      const nameStart = match.index + (code[match.index + 1] === '/' ? 2 : 1);
+      ranges.push({ start: nameStart, end: nameStart + tagName.length, color: '#b57cf2', priority: 1 });
+    }
+  }
+  ranges.sort((a, b) => a.start - b.start || b.priority - a.priority);
+  const colorMap = new Array(code.length).fill(null);
+  for (const { start, end, color, priority } of ranges) {
+    for (let i = start; i < end; ++i) {
+      if (!colorMap[i] || priority > colorMap[i].priority) {
+        colorMap[i] = { color, priority };
+      }
+    }
+  }
+  let escMap = [];
+  let j = 0;
+  for (let i = 0; i < code.length; ++i) {
+    const c = code[i];
+    if (c === '&') { escMap.push(j); j += 5; }
+    else if (c === '<' || c === '>') { escMap.push(j); j += 4; }
+    else { escMap.push(j); ++j; }
+  }
+  escMap.push(j);
+  const ESC = escapeHtml(code);
+  let html = "";
+  let lastIdx = 0;
+  while (lastIdx < code.length) {
+    const currColor = colorMap[lastIdx]?.color;
+    let endIdx = lastIdx + 1;
+    while (endIdx < code.length && colorMap[endIdx]?.color === currColor) {
+      ++endIdx;
+    }
+    const escStart = escMap[lastIdx];
+    const escEnd = escMap[endIdx];
+    const text = ESC.slice(escStart, escEnd);
+    if (currColor) {
+      html += `<span style="color: ${currColor};">${text}</span>`;
+    } else {
+      html += text;
+    }
+    lastIdx = endIdx;
+  }
+  return html;
+}
+
 function CodeEditor({ value, onChange, ...rest }) {
   const textareaRef = useRef(null);
   const gutterRef = useRef(null);
   const overlayRef = useRef(null);
-  const containerRef = useRef(null);
-  const lines = value.split("\n");
   const [visibleLines, setVisibleLines] = useState(30);
+  const lines = value.split("\n");
 
-  const keywords = [
-    'function', 'const', 'let', 'var', 'import', 'export', 'from', 'return', 
-    'if', 'else', 'for', 'while', 'class', 'extends', 'async', 'await', 
-    'try', 'catch', 'finally', 'throw', 'new', 'typeof', 'instanceof', 
-    'true', 'false', 'null', 'undefined', 'this', 'super', 'static', 
-    'default', 'case', 'switch', 'break', 'continue', 'do'
-  ];
-
-  function escapeHtml(str) {
-    return str.replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
-
-  function highlightSyntax(code) {
-    const ranges = [];
-    let match;
-    const singleLineRegex = /\/\/.*$/gm;
-    while ((match = singleLineRegex.exec(code)) !== null) {
-      ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 4 });
+  function handleScroll(e) {
+    if (gutterRef.current && overlayRef.current) {
+      const scrollTop = e.target.scrollTop;
+      gutterRef.current.scrollTop = scrollTop;
+      overlayRef.current.scrollTop = scrollTop;
+      overlayRef.current.scrollLeft = e.target.scrollLeft;
     }
-    const multiLineRegex = /\/\*[\s\S]*?\*\//g;
-    while ((match = multiLineRegex.exec(code)) !== null) {
-      ranges.push({ start: match.index, end: match.index + match[0].length, color: '#5fde74', priority: 4 });
-    }
-    const codeLen = code.length;
-    let i = 0;
-    while (i < codeLen) {
-      const logIdx = code.indexOf("console.log(", i);
-      if (logIdx === -1) break;
-      let parenCount = 0;
-      let j = logIdx + "console.log(".length;
-      parenCount++;
-      let insideString = null;
-      let prevChar = "";
-      while (j < codeLen) {
-        const char = code[j];
-        if (!insideString) {
-          if (char === '"' || char === "'" || char === "`") {
-            insideString = char;
-          } else if (char === "(") {
-            parenCount++;
-          } else if (char === ")") {
-            parenCount--;
-            if (parenCount === 0) {
-              ranges.push({ start: logIdx, end: j + 1, color: '#81cede', priority: 3 });
-              break;
-            }
-          }
-        } else {
-          if (char === insideString && prevChar !== "\\") {
-            insideString = null;
-          }
-        }
-        prevChar = char;
-        j++;
-      }
-      if (parenCount > 0) {
-        let lineEnd = code.indexOf('\n', logIdx);
-        if (lineEnd === -1) lineEnd = codeLen;
-        ranges.push({ start: logIdx, end: lineEnd, color: '#81cede', priority: 3 });
-        i = lineEnd + 1;
-      } else {
-        i = j + 1;
-      }
-    }
-    const keywordPattern = new RegExp(`\\b(${keywords.join('|')})\\b`, 'g');
-    while ((match = keywordPattern.exec(code)) !== null) {
-      ranges.push({ start: match.index, end: match.index + match[0].length, color: 'orange', priority: 2 });
-    }
-    let htmlTagRegex = /<\/?([A-Za-z][A-Za-z0-9:-]*)/g;
-    while ((match = htmlTagRegex.exec(code)) !== null) {
-      const tagName = match[1];
-      if (htmlTagSet.has(tagName.toLowerCase())) {
-        const nameStart = match.index + (code[match.index + 1] === '/' ? 2 : 1);
-        ranges.push({ start: nameStart, end: nameStart + tagName.length, color: '#b57cf2', priority: 1 });
-      }
-    }
-    ranges.sort((a, b) => a.start - b.start || b.priority - a.priority);
-    const colorMap = new Array(code.length).fill(null);
-    for (const { start, end, color, priority } of ranges) {
-      for (let i = start; i < end; ++i) {
-        if (!colorMap[i] || priority > colorMap[i].priority) {
-          colorMap[i] = { color, priority };
-        }
-      }
-    }
-    let escMap = [];
-    let j = 0;
-    for (let i = 0; i < code.length; ++i) {
-      const c = code[i];
-      if (c === '&') { escMap.push(j); j += 5; }
-      else if (c === '<' || c === '>') { escMap.push(j); j += 4; }
-      else { escMap.push(j); ++j; }
-    }
-    escMap.push(j);
-    const ESC = escapeHtml(code);
-    let html = "";
-    let lastIdx = 0;
-    while (lastIdx < code.length) {
-      const currColor = colorMap[lastIdx]?.color;
-      let endIdx = lastIdx + 1;
-      while (endIdx < code.length && colorMap[endIdx]?.color === currColor) {
-        ++endIdx;
-      }
-      const escStart = escMap[lastIdx];
-      const escEnd = escMap[endIdx];
-      const text = ESC.slice(escStart, escEnd);
-      if (currColor) {
-        html += `<span style="color: ${currColor};">${text}</span>`;
-      } else {
-        html += text;
-      }
-      lastIdx = endIdx;
-    }
-    return html;
   }
 
   useLayoutEffect(() => {
@@ -376,22 +362,6 @@ function CodeEditor({ value, onChange, ...rest }) {
     return () => window.removeEventListener("resize", updateLines);
   }, [value]);
 
-  function handleScroll(e) {
-    if (gutterRef.current) {
-      gutterRef.current.scrollTop = e.target.scrollTop;
-    }
-    if (overlayRef.current) {
-      overlayRef.current.scrollTop = e.target.scrollTop;
-      overlayRef.current.scrollLeft = e.target.scrollLeft;
-    }
-  }
-
-  function handleSelectionChange() {
-    if (!textareaRef.current) return;
-    const position = textareaRef.current.selectionStart;
-    findMatchingBracket(value, position);
-  }
-
   function handleKeyDown(e) {
     const el = textareaRef.current;
     const start = el.selectionStart;
@@ -399,49 +369,40 @@ function CodeEditor({ value, onChange, ...rest }) {
     const before = value.substring(0, start);
     const after = value.substring(end);
 
-    if (e.key === "Tab") {
-      e.preventDefault();
-      const tabStr = "  ";
-      const newValue = before + tabStr + after;
-      onChange({ target: { value: newValue } });
-      setTimeout(() => {
-        el.selectionStart = el.selectionEnd = start + tabStr.length;
-      }, 0);
-      return;
-    }
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const currentIndent = getCurrentIndent(value, start);
-      let newIndent = currentIndent;
-      if (shouldAutoIndent(value, start)) {
-        newIndent += "  ";
-      }
-      const newValue = before + "\n" + newIndent + after;
-      onChange({ target: { value: newValue } });
-      setTimeout(() => {
-        el.selectionStart = el.selectionEnd = start + 1 + newIndent.length;
-        const ta = el;
-        const valueUpToCaret = ta.value.slice(0, start + 1 + newIndent.length);
-        const caretLine = valueUpToCaret.split('\n').length - 1;
-        const lineHeight = parseFloat(getComputedStyle(ta).lineHeight) || 21;
-        const desiredScrollTop = caretLine * lineHeight;
-        if (
-          desiredScrollTop < ta.scrollTop ||
-          desiredScrollTop > ta.scrollTop + ta.clientHeight - lineHeight
-        ) {
-          ta.scrollTop = desiredScrollTop - ta.clientHeight / 2 + lineHeight;
+    // HTML tag auto-close - improved: only on ">"
+    if (e.key === ">") {
+      const tagMatch = before.match(/<([a-zA-Z][a-zA-Z0-9-]*)([^>]*)$/);
+      if (tagMatch) {
+        const tagName = tagMatch[1];
+        const attributes = tagMatch[2];
+        const selfClosingTags = [
+          'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link',
+          'meta', 'param', 'source', 'track', 'wbr'
+        ];
+        const isSelfClosing = selfClosingTags.includes(tagName.toLowerCase()) || attributes.trim().endsWith('/');
+        if (!isSelfClosing && htmlTagSet.has(tagName.toLowerCase())) {
+          const restOfDocument = after;
+          const closingTagRegex = new RegExp(`<\\s*\\/\\s*${tagName}\\s*>`, 'i');
+          if (!closingTagRegex.test(restOfDocument)) {
+            e.preventDefault();
+            const newValue = before + `></${tagName}>` + after;
+            onChange({ target: { value: newValue } });
+            setTimeout(() => {
+              el.selectionStart = el.selectionEnd = start + 1;
+            }, 0);
+            return;
+          }
         }
-      }, 0);
-      return;
+      }
     }
+
+    // Paren, bracket, quote auto-close
     const autoCloseChar = getAutoCloseChar(e.key);
-    if (autoCloseChar && start === end) {
+    if (autoCloseChar && start === end && e.key !== ">") {
       if (['"', "'", '`'].includes(e.key)) {
         const beforeChar = before.slice(-1);
         const afterChar = after.charAt(0);
-        if (beforeChar === e.key || afterChar === e.key) {
-          return;
-        }
+        if (beforeChar === e.key || afterChar === e.key) return;
       }
       e.preventDefault();
       const newValue = before + e.key + autoCloseChar + after;
@@ -458,13 +419,51 @@ function CodeEditor({ value, onChange, ...rest }) {
       }, 0);
       return;
     }
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const tabStr = "  ";
+      const newValue = before + tabStr + after;
+      onChange({ target: { value: newValue } });
+      setTimeout(() => {
+        el.selectionStart = el.selectionEnd = start + tabStr.length;
+      }, 0);
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const currentIndent = getCurrentIndent(value, start);
+      let newIndent = currentIndent;
+      if (shouldAutoIndent(value, start)) newIndent += "  ";
+      const newValue = before + "\n" + newIndent + after;
+      onChange({ target: { value: newValue } });
+      setTimeout(() => {
+        el.selectionStart = el.selectionEnd = start + 1 + newIndent.length;
+        const ta = el;
+        const valueUpToCaret = ta.value.slice(0, start + 1 + newIndent.length);
+        const caretLine = valueUpToCaret.split('\n').length - 1;
+        const lineHeight = parseFloat(getComputedStyle(ta).lineHeight) || 21;
+        const desiredScrollTop = caretLine * lineHeight;
+        if (desiredScrollTop < ta.scrollTop ||
+            desiredScrollTop > ta.scrollTop + ta.clientHeight - lineHeight) {
+          ta.scrollTop = desiredScrollTop - ta.clientHeight / 2 + lineHeight;
+        }
+      }, 0);
+      return;
+    }
   }
+
+  useEffect(() => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    const sync = () => handleScroll({ target: ta });
+    ta.addEventListener("scroll", sync);
+    return () => ta.removeEventListener("scroll", sync);
+  }, []);
 
   const totalLines = Math.max(lines.length, visibleLines);
 
   return (
     <div
-      ref={containerRef}
       className="flex w-full h-full min-h-0 relative code-editor-container"
       style={{
         background: "#1e293b",
@@ -473,6 +472,7 @@ function CodeEditor({ value, onChange, ...rest }) {
         fontSize: "14px",
         lineHeight: "1.5",
         boxSizing: "border-box",
+        overflow: "hidden",
       }}
     >
       <pre
@@ -509,7 +509,7 @@ function CodeEditor({ value, onChange, ...rest }) {
           </div>
         ))}
       </pre>
-      <div className="flex-1 relative" style={{ minHeight: "400px" }}>
+      <div className="flex-1 relative max-h-[300px] md:max-h-none overflow-y-auto" style={{ minHeight: "200px" }}>
         <pre
           ref={overlayRef}
           className="absolute inset-0 pointer-events-none overflow-auto bg-transparent font-mono"
@@ -522,7 +522,7 @@ function CodeEditor({ value, onChange, ...rest }) {
             whiteSpace: "pre-wrap",
             wordWrap: "break-word",
             zIndex: 1,
-            color: "#ffffff", // White default color
+            color: "#ffffff",
           }}
           aria-hidden="true"
           dangerouslySetInnerHTML={{
@@ -533,18 +533,14 @@ function CodeEditor({ value, onChange, ...rest }) {
           ref={textareaRef}
           value={value}
           onChange={onChange}
-          onScroll={handleScroll}
           onKeyDown={handleKeyDown}
-          onSelect={handleSelectionChange}
-          onClick={handleSelectionChange}
-          onKeyUp={handleSelectionChange}
-          className="absolute inset-0 w-full h-full bg-transparent text-gray-100 dark:text-gray-100 font-mono border-0 focus:outline-none resize-none caret-white"
           spellCheck={false}
+          className="absolute inset-0 w-full h-full bg-transparent text-gray-100 dark:text-gray-100 font-mono border-0 focus:outline-none resize-none caret-white"
           style={{
             fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
             fontSize: "14px",
             lineHeight: "1.5",
-            minHeight: "400px",
+            minHeight: "200px",
             height: "100%",
             maxHeight: "100%",
             overflow: "auto",
@@ -564,6 +560,7 @@ function CodeEditor({ value, onChange, ...rest }) {
   );
 }
 
+// --- Main PlaygroundWrapper ---
 const PlaygroundWrapper = ({
   icon: Icon,
   name,
@@ -571,30 +568,49 @@ const PlaygroundWrapper = ({
   concept,
   conceptDescription,
   defaultCode,
+  defaultJsCode,
   onCodeChange,
   customHeaderControls,
-  onReset
+  onReset,
+  requireResetConfirm = false, // for js playground only
 }) => {
-  const [body, setBody] = useState(defaultCode);
-  const debouncedBody = useDebouncedValue(body, 400);
+  const hasJsTab = typeof defaultJsCode === "string" && defaultJsCode.trim() !== "";
+  const [activeTab, setActiveTab] = useState("react");
+  const [reactBody, setReactBody] = useState(defaultCode);
+  const [jsBody, setJsBody] = useState(defaultJsCode || "");
+  const currentBody = activeTab === "react" ? reactBody : jsBody;
+  const debouncedBody = useDebouncedValue(currentBody, 400);
+
+  useEffect(() => {
+    if (!hasJsTab && activeTab !== "react") setActiveTab("react");
+  }, [hasJsTab, activeTab]);
+
   const handleBodyChange = (newBody) => {
-    setBody(newBody);
-    if (onCodeChange) {
-      onCodeChange(newBody);
-    }
-  };
-  const handleReset = () => {
-    if (onReset) {
-      onReset();
-      setBody(defaultCode);
+    if (activeTab === "react") {
+      setReactBody(newBody);
+      if (onCodeChange) onCodeChange(newBody, "react");
     } else {
-      setBody(defaultCode);
-      if (onCodeChange) {
-        onCodeChange(defaultCode);
-      }
+      setJsBody(newBody);
+      if (onCodeChange) onCodeChange(newBody, "js");
     }
   };
 
+  // Reset: confirm for js playground, instant for others
+  const handleReset = () => {
+    if (requireResetConfirm) {
+      if (window.confirm("Are you sure you want to reset the code? This will clear your saved code.")) {
+        if (onReset) onReset(activeTab);
+        if (activeTab === "react") setReactBody(defaultCode);
+        if (activeTab === "js") setJsBody(defaultJsCode || "");
+      }
+    } else {
+      if (onReset) onReset(activeTab);
+      if (activeTab === "react") setReactBody(defaultCode);
+      if (activeTab === "js") setJsBody(defaultJsCode || "");
+    }
+  };
+
+  // -- Output window: make scrollable on mobile --
   const renderPreview = () => {
     const result = transpileAndEval(debouncedBody);
     if (result.error) {
@@ -610,7 +626,7 @@ const PlaygroundWrapper = ({
               <div className="bg-gray-800 dark:bg-gray-900 text-white text-sm font-bold px-3 py-2">
                 Console Output
               </div>
-              <div className="max-h-48 overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '4px' }}>
+              <div className="max-h-[160px] md:max-h-48 overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '4px' }}>
                 <ConsoleOutput logs={result.logs} isReact={!!result.isReact} />
               </div>
             </div>
@@ -625,7 +641,7 @@ const PlaygroundWrapper = ({
             <div className="bg-gray-800 dark:bg-gray-900 text-white text-sm font-bold px-3 py-2">
               Console Output
             </div>
-            <div className="h-full overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '8px' }}>
+            <div className="h-full max-h-[160px] md:max-h-full overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '8px' }}>
               <ConsoleOutput logs={result.logs} isReact={!!result.isReact} />
             </div>
           </div>
@@ -650,7 +666,7 @@ const PlaygroundWrapper = ({
             <div className="bg-gray-800 dark:bg-gray-900 text-white text-sm font-bold px-3 py-2">
               Console Output
             </div>
-            <div className="max-h-40 overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '4px' }}>
+            <div className="max-h-[120px] md:max-h-40 overflow-y-auto console-output-scrollbar" style={{ paddingBottom: '4px' }}>
               <ConsoleOutput logs={result.logs} isReact={!!result.isReact} />
             </div>
           </div>
@@ -659,64 +675,96 @@ const PlaygroundWrapper = ({
     );
   };
 
-
-
   return (
-   <div className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden p-2 mt-4">
-    <div className="flex flex-col lg:flex-row h-auto lg:h-[610px] lg:max-h-[610px]">
-          {/* Left side (info & preview): 40% width on large screens */}
-          <div className="w-full lg:w-[40%] flex flex-col h-auto min-h-0">
-            <div className="p-4 md:p-4 border-b border-gray-200 dark:border-gray-700">
-              <div className="flex items-center space-x-4 mb-2">
-                <div className="bg-blue-100 dark:bg-blue-900/40 rounded-lg p-2">
-                  {Icon && <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{name}</h2>
-                  <p className="text-gray-700 dark:text-gray-300">{description}</p>
-                </div>
+    <div className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden p-2 mt-4">
+      <div className="flex flex-col lg:flex-row h-auto lg:h-[610px] lg:max-h-[610px]">
+        {/* Left side: info & preview */}
+        <div className="w-full lg:w-[40%] flex flex-col h-full min-h-0">
+          <div className="p-4 md:p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center space-x-4 mb-2">
+              <div className="bg-blue-100 dark:bg-blue-900/40 rounded-lg p-2">
+                {Icon && <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />}
               </div>
-              {concept && (
-                <div>
-                  <div className="font-semibold text-blue-800 dark:text-blue-300 mb-1">
-                    Concept:{" "}
-                    {Array.isArray(concept)
-                      ? concept.map((c, i) => (
-                          <span
-                            key={i}
-                            className="font-mono bg-blue-50 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded mr-2 inline-block"
-                          >
-                            {c}
-                          </span>
-                        ))
-                      : (
-                        <span className="font-mono bg-blue-50 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded">
-                          {concept}
-                        </span>
-                      )}
-                  </div>
-                  {conceptDescription && (
-                    <div className="mb-2 text-gray-800 dark:text-gray-200">{conceptDescription}</div>
-                  )}
-                </div>
-              )}
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{name}</h2>
+                <p className="text-gray-700 dark:text-gray-300">{description}</p>
+              </div>
             </div>
-            <div className="bg-gray-200 dark:bg-gray-950 flex-1 min-h-0 flex items-stretch">
-              <div className="w-full">
-                {renderPreview()}
+            {concept && (
+              <div>
+                <div className="font-semibold text-blue-800 dark:text-blue-300 mb-1">
+                  Concept:{" "}
+                  {Array.isArray(concept)
+                    ? concept.map((c, i) => (
+                        <span
+                          key={i}
+                          className="font-mono bg-blue-50 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded mr-2 inline-block"
+                        >
+                          {c}
+                        </span>
+                      ))
+                    : (
+                      <span className="font-mono bg-blue-50 dark:bg-blue-900 dark:text-blue-100 px-2 py-1 rounded">
+                        {concept}
+                      </span>
+                    )}
+                </div>
+                {conceptDescription && (
+                  <div className="mb-2 text-gray-800 dark:text-gray-200">{conceptDescription}</div>
+                )}
               </div>
+            )}
+          </div>
+          <div className="bg-gray-200 dark:bg-gray-950 flex-1 min-h-0 flex items-stretch overflow-y-auto">
+            <div className="w-full max-h-[340px] md:max-h-none overflow-y-auto">
+              {renderPreview()}
             </div>
           </div>
-          {/* Code editor: 60% width on large screens */}
-          <div className="w-full lg:w-[60%] bg-gray-900 dark:bg-gray-950 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 flex flex-col min-h-0">
-            <div className="flex justify-between items-center p-4 md:p-4 border-b border-gray-700 dark:border-gray-700">
-              <div className="font-bold text-blue-300 dark:text-blue-200 text-lg">Code Playground</div>
-              
+        </div>
+        {/* Right side: code editor */}
+        <div className="w-full lg:w-[60%] bg-gray-900 dark:bg-gray-950 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 flex flex-col min-h-0 h-full">
+          {/* Header: 2-line only on mobile, single line on desktop */}
+          <div className="p-4 md:p-4 border-b border-gray-700 dark:border-gray-700">
+            {/* Desktop: everything in a row. Mobile: heading, then buttons row */}
+            <div className="hidden md:flex md:flex-row md:items-center md:justify-between">
               <div className="flex items-center space-x-3">
-                {/* Custom header controls */}
+                <div className="font-bold text-blue-300 dark:text-blue-200 text-lg mr-2">Code Playground</div>
+                <div className="flex items-center gap-2 ml-2">
+                  <button
+                    type="button"
+                    className={`px-3 py-1 font-semibold text-xs rounded transition-colors border-2
+                      ${
+                        activeTab === "react"
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-white text-blue-600 border-blue-600 hover:bg-blue-50 dark:bg-gray-900 dark:hover:bg-gray-800"
+                      }
+                    `}
+                    onClick={() => setActiveTab("react")}
+                  >
+                    React
+                  </button>
+                  <button
+                    type="button"
+                    className={`px-3 py-1 font-semibold text-xs rounded border-2
+                      ${
+                        activeTab === "js"
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : hasJsTab
+                            ? "bg-white text-blue-600 border-blue-600 hover:bg-blue-50 dark:bg-gray-900 dark:hover:bg-gray-800"
+                            : "bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500"
+                      }
+                    `}
+                    onClick={() => hasJsTab && setActiveTab("js")}
+                    disabled={!hasJsTab}
+                    tabIndex={hasJsTab ? 0 : -1}
+                    aria-disabled={!hasJsTab}
+                  >
+                    JavaScript
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
                 {customHeaderControls}
-                
-                {/* Reset button */}
                 <button
                   onClick={handleReset}
                   className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
@@ -726,29 +774,66 @@ const PlaygroundWrapper = ({
                 </button>
               </div>
             </div>
-            <div className="flex-1 min-h-0 flex flex-col p-2 ">
+            {/* Mobile: 2 lines */}
+            <div className="flex flex-col md:hidden">
+              <div className="font-bold text-blue-300 dark:text-blue-200 text-lg mb-2">
+                Code Playground
+              </div>
+              <div className="flex flex-row items-center gap-2">
+                <button
+                  type="button"
+                  className={`px-3 py-1 font-semibold text-xs rounded transition-colors border-2
+                    ${
+                      activeTab === "react"
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-blue-600 border-blue-600 hover:bg-blue-50 dark:bg-gray-900 dark:hover:bg-gray-800"
+                    }
+                  `}
+                  onClick={() => setActiveTab("react")}
+                >
+                  React
+                </button>
+                <button
+                  type="button"
+                  className={`px-3 py-1 font-semibold text-xs rounded border-2
+                    ${
+                      activeTab === "js"
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : hasJsTab
+                          ? "bg-white text-blue-600 border-blue-600 hover:bg-blue-50 dark:bg-gray-900 dark:hover:bg-gray-800"
+                          : "bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500"
+                    }
+                  `}
+                  onClick={() => hasJsTab && setActiveTab("js")}
+                  disabled={!hasJsTab}
+                  tabIndex={hasJsTab ? 0 : -1}
+                  aria-disabled={!hasJsTab}
+                >
+                  JavaScript
+                </button>
+                <div className="flex-1" />
+                {customHeaderControls}
+                <button
+                  onClick={handleReset}
+                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                  title="Reset to original code and clear saved data"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex-1 min-h-0 flex flex-col p-2 overflow-y-auto">
+            <div className="w-full h-full max-h-[340px] md:max-h-none overflow-y-auto">
               <CodeEditor
-                value={body}
+                value={currentBody}
                 onChange={e => handleBodyChange(e.target.value)}
               />
             </div>
           </div>
         </div>
-      {/* Custom scrollbar style for dark mode only on console output window */}
-      <style>{`
-        .dark .console-output-scrollbar::-webkit-scrollbar {
-          background: #181a20;
-          width: 8px;
-        }
-        .dark .console-output-scrollbar::-webkit-scrollbar-thumb {
-          background: #22242c;
-          border-radius: 6px;
-        }
-        .dark .console-output-scrollbar {
-          scrollbar-color: #22242c #181a20;
-        }
-      `}</style>
-    </div> 
+      </div>
+    </div>
   );
 };
 

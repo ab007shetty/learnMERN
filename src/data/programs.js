@@ -12,6 +12,8 @@ import {
   BarChart2,
   DivideCircle,
   Repeat,
+  Layers,
+  Text,
 } from "lucide-react";
 
 import Counter from "../components/programs/Counter";
@@ -27,13 +29,16 @@ import LargestElement from "../components/programs/LargestElement";
 import PalindromeChecker from "../components/programs/PalindromeChecker";
 import Fibonacci from "../components/programs/Fibonacci";
 import FindIndex from "../components/programs/FindIndex";
+import LongestWord from "../components/programs/LongestWord";
+import ArrayOperations from "../components/programs/ArrayOperations";
 
 const programs = [
   {
     id: "playground",
     name: "JS Playground",
     icon: Play,
-    description: "Execute any JS code",
+    description:
+      "Execute any JavaScript code in real-time.\nPerfect for testing snippets and experimenting.",
     concept: "JavaScript, JSX, React.js",
     conceptDescription: "",
     component: JsPlayground,
@@ -42,20 +47,11 @@ const programs = [
     id: "counter",
     name: "Counter",
     icon: Hash,
-    description: "Demonstrates a simple counter using useState.",
+    description:
+      "Simple counter that increments and decrements numbers.\nDemonstrates basic state management.",
     concept: "useState",
     get conceptDescription() {
-      return (
-        <>
-          {this.concept} is a React Hook that lets you add state to functional
-          components.
-          <br />
-          In this example, useState(0) creates a counter state variable and a
-          setCounter function that updates it. When you click the buttons,
-          setCounter changes the state and causes the component to re-render and
-          display the new value.
-        </>
-      );
+      return "useState Hook adds state to functional components and triggers re-renders.";
     },
     component: Counter,
   },
@@ -64,19 +60,10 @@ const programs = [
     name: "Todo",
     icon: ListTodo,
     description:
-      "Demonstrates useState for managing both the todo array and input value in a functional component.",
+      "Add, display, and manage a list of tasks.\nBasic todo list functionality with input handling.",
     concept: "useState",
     get conceptDescription() {
-      return (
-        <>
-          {this.concept} lets you declare state variables in functional
-          components.
-          <br />
-          Here, useState([]) stores the list of todos and useState("") manages
-          the input field value. Each state update causes the component to
-          re-render and display the latest UI.
-        </>
-      );
+      return "Multiple useState calls manage different pieces of state independently.";
     },
     component: Todo,
   },
@@ -84,20 +71,10 @@ const programs = [
     id: "props",
     name: "Props",
     icon: Send,
-    description:
-      "Demonstrates passing data and functions as props from a parent to child component.",
+    description: "Pass data and functions between parent and child components.",
     concept: "props",
     get conceptDescription() {
-      return (
-        <>
-          {this.concept} are used to pass data and behavior from a parent
-          component to its children.
-          <br />
-          In this example, the Child component receives a name (string) and an
-          onGreet (function) as props. This allows the parent to control both
-          the text and the click behavior of each child.
-        </>
-      );
+      return "Props pass data and behavior from parent to child components.\nShows component communication patterns.";
     },
     component: Props,
   },
@@ -106,19 +83,10 @@ const programs = [
     name: "AnagramChecker",
     icon: Shuffle,
     description:
-      "Demonstrates checking if two input strings are anagrams and displaying the result.",
-    concept: "useState, string manipulation, event handling",
+      "Check if two words are anagrams (same letters, different order).\nExample: 'listen' and 'silent' are anagrams.",
+    concept: "useState, string manipulation",
     get conceptDescription() {
-      return (
-        <>
-          useState is used to store the two input strings and the result.
-          <br />
-          String normalization and sorting is performed to determine if the
-          inputs are anagrams.
-          <br />
-          Event handlers update state and trigger the check.
-        </>
-      );
+      return "String sorting and normalization to compare letter patterns.";
     },
     component: AnagramChecker,
   },
@@ -127,18 +95,10 @@ const programs = [
     name: "ReverseString",
     icon: RefreshCcw,
     description:
-      "Demonstrates reversing a string entered by the user and displaying the reversed version.",
-    concept: "useState, string manipulation, event handling",
+      "Reverse any text input backwards.\nTurns 'hello' into 'olleh'.",
+    concept: "useState, string methods",
     get conceptDescription() {
-      return (
-        <>
-          useState holds the user input and reversed output.
-          <br />
-          String methods (split, reverse, join) are used for reversing.
-          <br />
-          Controlled inputs and event handlers manage data and update output.
-        </>
-      );
+      return "split(), reverse(), and join() methods transform strings.";
     },
     component: ReverseString,
   },
@@ -147,19 +107,10 @@ const programs = [
     name: "FlattenArray",
     icon: ArrowRightLeft,
     description:
-      "Demonstrates flattening a nested array entered by the user and displaying the flat version.",
-    concept: "useState, recursion, array manipulation",
+      "Convert nested arrays into a single flat array.\nTurns [1, [2, 3], [4, [5]]] into [1, 2, 3, 4, 5].",
+    concept: "useState, recursion",
     get conceptDescription() {
-      return (
-        <>
-          useState stores array input and output.
-          <br />
-          Recursion is used to flatten nested arrays.
-          <br />
-          JSON.parse converts string input to array, and reduce with concat
-          flattens it.
-        </>
-      );
+      return "Recursive function processes nested array structures.";
     },
     component: FlattenArray,
   },
@@ -168,18 +119,10 @@ const programs = [
     name: "CountRepeatedChars",
     icon: Repeat,
     description:
-      "Demonstrates counting the frequency of each character in a string.",
-    concept: "useState, object/hash, iteration",
+      "Count how many times each character appears in text.\nShows frequency of letters, numbers, and symbols.",
+    concept: "useState, object/hash",
     get conceptDescription() {
-      return (
-        <>
-          useState manages the input string and result object.
-          <br />
-          A for...of loop and an object are used to count character occurrences.
-          <br />
-          State is updated and displayed as JSON.
-        </>
-      );
+      return "Object as hash map tracks character occurrences.";
     },
     component: CountRepeatedChars,
   },
@@ -188,18 +131,10 @@ const programs = [
     name: "RemoveDuplicates",
     icon: DivideCircle,
     description:
-      "Demonstrates removing duplicate numbers from an array using a hash/object.",
-    concept: "useState, object/hash, array manipulation",
+      "Remove duplicate numbers from an array.\nKeeps only the first occurrence of each number.",
+    concept: "useState, object/hash",
     get conceptDescription() {
-      return (
-        <>
-          useState stores array input and output.
-          <br />
-          An object/hash is used to track seen elements and filter duplicates.
-          <br />
-          JSON.parse is used for converting the string input to array.
-        </>
-      );
+      return "Hash map efficiently tracks and filters seen elements.";
     },
     component: RemoveDuplicates,
   },
@@ -208,18 +143,10 @@ const programs = [
     name: "LargestElement",
     icon: Maximize2,
     description:
-      "Demonstrates finding and displaying the largest element in an input array.",
-    concept: "useState, Math.max, array parsing",
+      "Find the biggest number in an array.\nReturns the maximum value from a list of numbers.",
+    concept: "useState, Math.max",
     get conceptDescription() {
-      return (
-        <>
-          useState stores the array input and result.
-          <br />
-          Math.max with the spread operator finds the largest element.
-          <br />
-          JSON.parse parses the string to array.
-        </>
-      );
+      return "Math.max with spread operator finds maximum value.";
     },
     component: LargestElement,
   },
@@ -228,18 +155,10 @@ const programs = [
     name: "PalindromeChecker",
     icon: Eye,
     description:
-      "Demonstrates checking if a string is a palindrome and displaying the result.",
-    concept: "useState, string manipulation, conditional rendering",
+      "Check if text reads the same forwards and backwards.\nWords like 'racecar' and 'madam' are palindromes.",
+    concept: "useState, string manipulation",
     get conceptDescription() {
-      return (
-        <>
-          useState stores the input string and result.
-          <br />
-          String is cleaned using regex and compared with its reversed version.
-          <br />
-          Result is conditionally rendered based on palindrome check.
-        </>
-      );
+      return "String cleaning and comparison with reversed version.";
     },
     component: PalindromeChecker,
   },
@@ -248,18 +167,10 @@ const programs = [
     name: "Fibonacci",
     icon: BarChart2,
     description:
-      "Demonstrates generating and displaying the first N numbers in the Fibonacci sequence.",
-    concept: "useState, iteration, array construction",
+      "Generate Fibonacci sequence numbers.\nEach number is the sum of the two preceding ones: 0, 1, 1, 2, 3, 5, 8...",
+    concept: "useState, iteration",
     get conceptDescription() {
-      return (
-        <>
-          useState stores the input n and Fibonacci sequence array.
-          <br />
-          A for loop constructs the sequence.
-          <br />
-          Controlled numeric input and button event update the result state.
-        </>
-      );
+      return "Loop constructs sequence by adding previous two numbers.";
     },
     component: Fibonacci,
   },
@@ -268,20 +179,36 @@ const programs = [
     name: "FindIndex",
     icon: Search,
     description:
-      "Demonstrates finding the index of a specified element in an input array.",
-    concept: "useState, array methods, type conversion",
+      "Find the position of a specific number in an array.\nReturns the index (position) where the number is located.",
+    concept: "useState, array methods",
     get conceptDescription() {
-      return (
-        <>
-          useState manages array input, target value, and result index.
-          <br />
-          JSON.parse and indexOf are used to find the index.
-          <br />
-          Controlled inputs and button event update the result state.
-        </>
-      );
+      return "indexOf method locates element position in arrays.";
     },
     component: FindIndex,
+  },
+  {
+    id: "longest-word",
+    name: "LongestWord",
+    icon: Text,
+    description:
+      "Find the longest word in an array of strings.\nReturns the word with the maximum length.",
+    concept: "useState, array iteration",
+    get conceptDescription() {
+      return "Loop or reduce can be used to find the longest element in an array.";
+    },
+    component: LongestWord,
+  },
+  {
+    id: "array-operations",
+    name: "ArrayOperations",
+    icon: Layers,
+    description:
+      "Demonstrates common array operations: map, filter, reduce, flatten.\nShows how to manipulate and transform arrays.",
+    concept: "map, filter, reduce, flat",
+    get conceptDescription() {
+      return "Array methods like map, filter, reduce, and flat allow powerful data transformation.";
+    },
+    component: ArrayOperations,
   },
 ];
 
