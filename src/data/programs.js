@@ -15,6 +15,7 @@ import {
   Layers,
   Text,
   Clock,
+  Globe,
 } from "lucide-react";
 
 import Counter from "../components/programs/Counter";
@@ -33,6 +34,7 @@ import FindIndex from "../components/programs/FindIndex";
 import LongestWord from "../components/programs/LongestWord";
 import ArrayOperations from "../components/programs/ArrayOperations";
 import Stopwatch from "../components/programs/Stopwatch";
+import FetchUsers from "../components/programs/FetchUsers";
 
 const programs = [
   {
@@ -68,6 +70,18 @@ const programs = [
       return "useEffect Hook handles side effects like timers and API calls. Cleanup is done via return function.";
     },
     component: Stopwatch,
+  },
+  {
+    id: "fetch-users",
+    name: "Fetch & Filter",
+    icon: Globe,
+    description:
+      "Fetches a user list from an API and filters it in real-time based on search input.\nDemonstrates API calls and filtering logic.",
+    concept: "useEffect, fetch, filter",
+    get conceptDescription() {
+      return "useEffect is used for side-effects like data fetching; fetch retrieves data from an API; filter is used to display matching results.";
+    },
+    component: FetchUsers,
   },
   {
     id: "todo",
