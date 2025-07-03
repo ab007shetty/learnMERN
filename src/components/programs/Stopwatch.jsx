@@ -8,8 +8,8 @@ function Stopwatch() {
   const [running, setRunning] = useState(false);
 
   useEffect(() => {
-    if (!running) return;                                   // Do nothing if not running
-    const id = setInterval(() => setTime(t => t + 10), 10); // Increment time every 10ms
+    if (!running) return;           // Builtin JS func, setInterval(callbackFunction, delayInMilliseconds)
+    const id = setInterval(() => setTime(t => t + 10), 10);
     return () => clearInterval(id);                         // Clean up interval on stop/unmount
   }, [running]);
 

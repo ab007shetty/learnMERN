@@ -16,6 +16,7 @@ import {
   Text,
   Clock,
   Globe,
+  ArrowDownWideNarrow,
 } from "lucide-react";
 
 import Counter from "../components/programs/Counter";
@@ -35,6 +36,7 @@ import LongestWord from "../components/programs/LongestWord";
 import ArrayOperations from "../components/programs/ArrayOperations";
 import Stopwatch from "../components/programs/Stopwatch";
 import FetchUsers from "../components/programs/FetchUsers";
+import MoveZeroes from "../components/programs/MoveZeroes";
 
 const programs = [
   {
@@ -108,7 +110,7 @@ const programs = [
   },
   {
     id: "anagram-checker",
-    name: "AnagramChecker",
+    name: "Anagram Checker",
     icon: Shuffle,
     description:
       "Check if two words are anagrams (same letters, different order).\nExample: 'listen' and 'silent' are anagrams.",
@@ -120,19 +122,19 @@ const programs = [
   },
   {
     id: "reverse-string",
-    name: "ReverseString",
+    name: "Reverse String",
     icon: RefreshCcw,
     description:
       "Reverse any text input backwards.\nTurns 'hello' into 'olleh'.",
     concept: "useState, string methods",
     get conceptDescription() {
-      return "split(), reverse(), and join() methods transform strings.";
+      return "without using split(), reverse(), and join() methods to transform strings.";
     },
     component: ReverseString,
   },
   {
     id: "flatten-array",
-    name: "FlattenArray",
+    name: "Flatten Array",
     icon: ArrowRightLeft,
     description:
       "Convert nested arrays into a single flat array.\nTurns [1, [2, 3], [4, [5]]] into [1, 2, 3, 4, 5].",
@@ -143,8 +145,20 @@ const programs = [
     component: FlattenArray,
   },
   {
+    id: "move-zeroes",
+    name: "Move Zeroes",
+    icon: ArrowDownWideNarrow,
+    description:
+      "Move all zeroes in the array to the end, keeping the order of non-zero elements.\n[0,1,0,3,12] ➝ [1,3,12,0,0]",
+    concept: "useState, array manipulation",
+    get conceptDescription() {
+      return "uses in-place swapping to move zeroes to the end while preserving order.";
+    },
+    component: MoveZeroes,
+  },
+  {
     id: "count-repeated-chars",
-    name: "CountRepeatedChars",
+    name: "Count Repeated Chars",
     icon: Repeat,
     description:
       "Count how many times each character appears in text.\nShows frequency of letters, numbers, and symbols.",
@@ -156,7 +170,7 @@ const programs = [
   },
   {
     id: "remove-duplicates",
-    name: "RemoveDuplicates",
+    name: "Remove Duplicates",
     icon: DivideCircle,
     description:
       "Remove duplicate numbers from an array.\nKeeps only the first occurrence of each number.",
@@ -168,7 +182,7 @@ const programs = [
   },
   {
     id: "largest-element",
-    name: "LargestElement",
+    name: "Largest Element",
     icon: Maximize2,
     description:
       "Find the biggest number in an array.\nReturns the maximum value from a list of numbers.",
@@ -180,7 +194,7 @@ const programs = [
   },
   {
     id: "palindrome-checker",
-    name: "PalindromeChecker",
+    name: "Palindrome Checker",
     icon: Eye,
     description:
       "Check if text reads the same forwards and backwards.\nWords like 'racecar' and 'madam' are palindromes.",
@@ -216,7 +230,7 @@ const programs = [
   },
   {
     id: "longest-word",
-    name: "LongestWord",
+    name: "Longest Word",
     icon: Text,
     description:
       "Find the longest word in an array of strings.\nReturns the word with the maximum length.",
@@ -228,7 +242,7 @@ const programs = [
   },
   {
     id: "array-operations",
-    name: "ArrayOperations",
+    name: "Array Operations",
     icon: Layers,
     description:
       "Demonstrates common array operations: map, filter, reduce, flatten.\nShows how to manipulate and transform arrays.",

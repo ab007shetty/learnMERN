@@ -8,8 +8,7 @@ function FlattenArray() {
   const [output, setOutput] = useState([]);
 
   const flatten = arr => arr.reduce(
-    (acc, cur) => acc.concat(Array.isArray(cur) ? flatten(cur) : cur), []
-  );
+    (acc, val) => Array.isArray(val) ? acc.concat(flatten(val)) : acc.concat(val), []);
 
   const handle = () => {
     try {
@@ -41,12 +40,31 @@ const arr = [1, [2, [3, [4, 5]]]];
 const flattened = arr.flat(Infinity); // Infinity for deeply nested arrays
 console.log(flattened); // Output: [1, 2, 3, 4, 5]
 
-//Manual
+
+//Manual flattening using reduce
 function flatten(arr) {
   return arr.reduce((acc, val) =>
     Array.isArray(val) ? acc.concat(flatten(val)) : acc.concat(val), []);
 }
 console.log(flatten([1, [2, [3, [4, 5]]]])); // [1, 2, 3, 4, 5]
+
+
+// Manual flattening using recursion
+function flatten(arr) {
+  let result = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      result = result.concat(flatten(arr[i])); // recursive call
+    } else {
+      result.push(arr[i]);
+    }
+  }
+
+  return result;
+}
+console.log(flatten([1, [2, [3, [4, 5]]]])); // Output: [1, 2, 3, 4, 5]
+
 `.trim();
 
 export default function FlattenArray(props) {
