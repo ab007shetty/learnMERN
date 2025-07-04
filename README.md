@@ -1,70 +1,118 @@
-# Getting Started with Create React App
+# React Basics
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a React-based learning resource for React fundamentals, deployed automatically to GitHub Pages using GitHub Actions.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Project Overview
 
-### `npm start`
+- Built with **React** and **Tailwind CSS** for modern web development learning
+- Hosted on GitHub Pages: [https://abshetty.in/react-basics/](https://abshetty.in/react-basics/)
+- Fully **automated deployment** on every push to the `main` branch via GitHub Actions (workflow file is already included in this repo at `.github/workflows/deploy.yml`)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Quick Start
 
-### `npm test`
+### 1. Clone the Repository
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+git clone https://github.com/ab007shetty/react-basics.git && cd react-basics
+```
 
-### `npm run build`
+### 2. Install Dependencies
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 3. Start Development Server
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm run dev
+```
 
-### `npm run eject`
+The application will be available at `http://localhost:5173`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📦 Installation from Scratch
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+If you want to recreate this project from scratch, follow these steps:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 1. Create Vite Project
 
-## Learn More
+```bash
+# Create a new Vite project with React template
+npm create vite@latest react-basics -- --template react
+cd react-basics
+npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 2. Install Tailwind CSS
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+# Install Tailwind CSS and its dependencies
+npm install -D tailwindcss postcss autoprefixer
 
-### Code Splitting
+# Generate Tailwind config files
+npx tailwindcss init -p
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🔧 Project Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Make sure the `"homepage"` field in `package.json` is set as follows (adjust for your repo):
 
-### Making a Progressive Web App
+```json
+"homepage": "https://ab007shetty.github.io/react-basics/"
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- The `dist/` folder is included in `.gitignore` since it is generated automatically.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📦 Manual Deployment (Optional)
 
-### Deployment
+If you want to deploy manually instead of relying on GitHub Actions, run:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```bash
+npm run deploy
+```
 
-### `npm run build` fails to minify
+This builds the app and pushes the `dist/` folder to the `gh-pages` branch on GitHub.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 📂 GitHub Actions Automatic Deployment
+
+- The workflow file `.github/workflows/deploy.yml` is already included in this repo.
+- On every push to the `main` branch, GitHub Actions:
+  - Installs dependencies
+  - Runs the build script
+  - Deploys the site to GitHub Pages by pushing the `dist/` folder to the `gh-pages` branch
+- This means **no manual deploy commands needed** after setup—just push your code!
+
+---
+
+## 🛠 GitHub Pages Settings
+
+Make sure GitHub Pages is configured correctly in your repo:
+
+1. Go to **Settings > Pages**.
+2. Set **Source** to:
+   - Branch: `gh-pages`
+   - Folder: `/ (root)`
+3. Save changes.
+
+Your site will then be live at:
+`https://<your-github-username>.github.io/<repo-name>/`
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---

@@ -42,7 +42,7 @@ function moveZeroes(arr) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] !== 0) {
       [arr[pos], arr[i]] = [arr[i], arr[pos]];
-      pos++;
+      pos++;              // Swap arr[i] (current element) with arr[pos] using array destructuring
     }
   }
 
