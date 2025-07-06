@@ -4,7 +4,7 @@ const DEFAULT_BODY = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function Fibonacci() {
-  const [num, setNum] = React.useState(5);
+  const [num, setNum] = React.useState(10);
   const [resultArr, setResultArr] = React.useState([]);
 
   const generateFibonacci = () => {

@@ -4,7 +4,7 @@ const DEFAULT_BODY = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function CountRepeatedChars() {
-  const [input, setInput] = useState("aabccde");
+  const [input, setInput] = useState("madam007");
   const [result, setResult] = useState({});
 
   const count = () => {

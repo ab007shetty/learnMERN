@@ -4,7 +4,7 @@ const DEFAULT_BODY = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function MoveZeroes() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState("0,1,0,3,12");
   const [output, setOutput] = useState([]);
 
   const moveZeroes = () => {

@@ -4,7 +4,7 @@ const DEFAULT_BODY = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function ReverseString() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState("hello");
   const [reversed, setReversed] = useState("");
 
   const reverse = () => {

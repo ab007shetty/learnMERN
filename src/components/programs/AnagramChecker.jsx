@@ -4,8 +4,8 @@ const DEFAULT_REACT_CODE = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function AnagramChecker() {
-  const [a, setA] = useState("");  
-  const [b, setB] = useState("");    
+  const [a, setA] = useState("listen");  
+  const [b, setB] = useState("silent");    
   const [result, setResult] = useState(null); 
 
   const check = () => {

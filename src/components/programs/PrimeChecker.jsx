@@ -1,0 +1,65 @@
+import PlaygroundWrapper from "../PlaygroundWrapper";
+
+const DEFAULT_BODY = `
+//Write React components, JSX, or pure JS. No need of any import statements.
+
+function PrimeChecker() {
+  const [input, setInput] = useState("7");
+  const [output, setOutput] = useState("");
+
+  const checkPrime = () => {
+    const number = parseInt(input);
+    if (number <= 1) {
+      setOutput("Not Prime");
+      return;
+    }
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+      if (number % i === 0) {
+        setOutput("Not Prime");
+        return;
+      }
+    }
+    setOutput("Prime");
+  };
+
+  return (
+    <div>
+      <input value={input} onChange={e => setInput(e.target.value)} />
+      <button onClick={checkPrime}>Check</button>
+      <div>{output}</div>
+    </div>
+  );
+}
+
+export default PrimeChecker;
+`.trim();
+
+const DEFAULT_JS_CODE = `
+//Write React components, JSX, or pure JS. No need of any import statements.
+
+function isPrime(num) {
+  if (num <= 1) return false;
+  if (num === 2) return true;
+  if (num % 2 === 0) return false;
+
+  for (let i = 3; i <= Math.sqrt(num); i += 2) {
+    if (num % i === 0) return false;
+  }
+
+  return true;
+}
+
+// Example usage:
+console.log(isPrime(7));  // true
+console.log(isPrime(10)); // false
+`.trim();
+
+export default function PrimeChecker(props) {
+  return (
+    <PlaygroundWrapper
+      defaultCode={DEFAULT_BODY}
+      defaultJsCode={DEFAULT_JS_CODE}
+      {...props}
+    />
+  );
+}

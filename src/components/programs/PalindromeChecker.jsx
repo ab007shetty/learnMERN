@@ -4,7 +4,7 @@ const DEFAULT_BODY = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function PalindromeChecker() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState("madam");
   const [isPalindrome, setIsPalindrome] = useState(null);
 
   const check = () => {           // Removes everything except letters & numbers.
