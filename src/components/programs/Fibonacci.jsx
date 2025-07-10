@@ -10,7 +10,7 @@ function Fibonacci() {
   const generateFibonacci = () => {
     const sequence = [];
     for (let i = 0; i < num; i++) {
-      sequence.push(i < 2 ? 1 : sequence[i - 1] + sequence[i - 2]);
+      sequence.push(i === 0 ? 0 : i===1 ? 1 : sequence[i - 1] + sequence[i - 2]);
     }
     setResultArr(sequence);
   };
@@ -35,15 +35,15 @@ const DEFAULT_JS_CODE = `
 function generateFibonacci(n) {
   const result = [];
   for (let i = 0; i < n; i++) {
-    result.push(i < 2 ? 1 : result[i - 1] + result[i - 2]);
+    result.push(i === 0 ? 0 : i===1 ? 1 : result[i - 1] + result[i - 2]);
   }
   return result;
 }
 
 // Example usage:
-const num = 5;
+const num = 10;
 const sequence = generateFibonacci(num);
-console.log("Fibonacci sequence:", sequence); // [1, 1, 2, 3, 5]
+console.log("Fibonacci sequence:", sequence);
 `.trim();
 
 export default function Fibonacci(props) {
