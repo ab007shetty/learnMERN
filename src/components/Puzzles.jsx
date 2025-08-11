@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, HelpCircle, Search, X } from 'lucide-react';
-import questions from '../data/questions';
+import { ChevronLeft, ChevronRight, Code2, Search, X, Eye, EyeOff, Lightbulb } from 'lucide-react';
+import puzzles from '../data/puzzles';
 
 // Helper to highlight search matches in text
 function highlightText(text, searchTerm) {
@@ -12,12 +12,14 @@ function highlightText(text, searchTerm) {
   );
 }
 
-const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
+const Puzzles = ({ icon: Icon = Code2, name = "JS Puzzles" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredIndexes, setFilteredIndexes] = useState([]);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
 
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
@@ -31,6 +33,12 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Reset answer/explanation when question changes
+  useEffect(() => {
+    setShowAnswer(false);
+    setShowExplanation(false);
+  }, [currentIndex]);
+
   // Search filtering and match detection
   useEffect(() => {
     if (searchTerm.trim() === '') {
@@ -38,16 +46,15 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
       setCurrentMatchIndex(0);
     } else {
       const term = searchTerm.toLowerCase();
-      const indexes = questions
-        .map((q, i) => {
-          const inQuestion = q.question.toLowerCase().includes(term);
-          const inAnswer = q.answer?.some(a => a.toLowerCase().includes(term));
-          return inQuestion || inAnswer ? i : -1;
+      const indexes = puzzles
+        .map((p, i) => {
+          const inQuestion = p.question.toLowerCase().includes(term);
+          const inExplanation = p.explanation?.some(e => e.toLowerCase().includes(term));
+          return inQuestion || inExplanation ? i : -1;
         })
         .filter(i => i !== -1);
 
       setFilteredIndexes(indexes);
-      // If currentIndex not in filtered, jump to first match
       if (indexes.length > 0 && !indexes.includes(currentIndex)) {
         setCurrentIndex(indexes[0]);
         setCurrentMatchIndex(0);
@@ -57,11 +64,9 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
         setCurrentMatchIndex(0);
       }
     }
-    // eslint-disable-next-line
   }, [searchTerm]);
 
   useEffect(() => {
-    // On question change, update match index in filtered
     if (filteredIndexes.length > 0) {
       const idx = filteredIndexes.indexOf(currentIndex);
       setCurrentMatchIndex(idx === -1 ? 0 : idx);
@@ -72,16 +77,15 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      // Don't navigate if focus is on input (search bar)
       if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
       switch (e.key) {
         case 'ArrowLeft':
           e.preventDefault();
-          prevQuestion();
+          prevPuzzle();
           break;
         case 'ArrowRight':
           e.preventDefault();
-          nextQuestion();
+          nextPuzzle();
           break;
         default:
           break;
@@ -89,49 +93,45 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     };
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-    // eslint-disable-next-line
-  }, [currentIndex, filteredIndexes, isMobile]);
+  }, [currentIndex, filteredIndexes]);
 
-  // Which questions to show (filtered or all)
-  const activeIndexes = filteredIndexes.length > 0 ? filteredIndexes : questions.map((_, i) => i);
+  const activeIndexes = filteredIndexes.length > 0 ? filteredIndexes : puzzles.map((_, i) => i);
   const activeCurrentIdx = activeIndexes.indexOf(currentIndex);
-  const totalQuestions = activeIndexes.length;
-  const currentQuestion = questions[currentIndex];
+  const totalPuzzles = activeIndexes.length;
+  const currentPuzzle = puzzles[currentIndex];
 
-  if (!currentQuestion || totalQuestions === 0) {
+  if (!currentPuzzle || totalPuzzles === 0) {
     return (
       <div className="w-full h-screen flex items-center justify-center text-red-600 dark:text-red-400 font-bold text-xl">
-        No question found.
+        No puzzle found.
       </div>
     );
   }
 
-  // Navigation functions
-  const nextQuestion = () => {
-    if (activeCurrentIdx < totalQuestions - 1) {
+  const nextPuzzle = () => {
+    if (activeCurrentIdx < totalPuzzles - 1) {
       setCurrentIndex(activeIndexes[activeCurrentIdx + 1]);
     }
   };
 
-  const prevQuestion = () => {
+  const prevPuzzle = () => {
     if (activeCurrentIdx > 0) {
       setCurrentIndex(activeIndexes[activeCurrentIdx - 1]);
     }
   };
 
-  // For moving to next/prev search match (in filtered)
   const nextSearchMatch = () => {
     if (filteredIndexes.length > 0 && currentMatchIndex < filteredIndexes.length - 1) {
       setCurrentIndex(filteredIndexes[currentMatchIndex + 1]);
     }
   };
+
   const prevSearchMatch = () => {
     if (filteredIndexes.length > 0 && currentMatchIndex > 0) {
       setCurrentIndex(filteredIndexes[currentMatchIndex - 1]);
     }
   };
 
-  // Touch/swipe handlers for mobile
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].clientX;
   };
@@ -143,27 +143,16 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     if (touchStartX.current !== null && touchEndX.current !== null) {
       const diff = touchStartX.current - touchEndX.current;
       if (Math.abs(diff) > threshold) {
-        if (diff > 0) nextQuestion();
-        else prevQuestion();
+        if (diff > 0) nextPuzzle();
+        else prevPuzzle();
       }
     }
     touchStartX.current = null;
     touchEndX.current = null;
   };
 
-  // Highlighted Q&A rendering
-  const questionHighlighted = searchTerm
-    ? highlightText(currentQuestion.question, searchTerm)
-    : currentQuestion.question;
-  const answerHighlighted = currentQuestion.answer
-    ? currentQuestion.answer.map((a, i) =>
-        <p key={i}>{searchTerm ? highlightText(a, searchTerm) : a}</p>)
-    : [];
-
-  // Show match navigation if searching and more than 1 match
   const showMatchNav = filteredIndexes.length > 0 && filteredIndexes.length > 1;
 
-  // Search match nav for desktop, fits inline next to search bar
   const SearchMatchNav = () =>
     showMatchNav ? (
       <div className="flex gap-1 items-center ml-2">
@@ -194,16 +183,15 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     ) : null;
 
   return (
-    <div className="w-full h-full flex flex-col p-4 rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 transition-all duration-300 mt-4 ">
-      {/* Header: All controls */}
+    <div className="w-full h-full flex flex-col p-4 rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 transition-all duration-300 mt-4">
+      {/* Header */}
       <div className="w-full flex flex-col gap-2 mb-4">
         <div className="flex items-center w-full gap-2">
-          {/* Icon & Q&A Heading */}
           <div className="flex items-center gap-2 flex-shrink-0 mr-2">
-            <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Q&amp;A</h1>
+            <Icon className="w-7 h-7 text-purple-600 dark:text-purple-400" />
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap">JS Puzzles</h1>
           </div>
-          {/* Desktop search bar & match nav */}
+
           {!isMobile && (
             <div className="flex items-center gap-2 flex-shrink-0 min-w-[230px] max-w-[350px] w-full">
               <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 px-2 py-1 shadow-sm w-full">
@@ -211,7 +199,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                 <input
                   type="text"
                   className="bg-transparent outline-none w-full text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-                  placeholder="Search questions…"
+                  placeholder="Search puzzles…"
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   spellCheck={false}
@@ -226,23 +214,21 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                   </button>
                 )}
               </div>
-              {/* Search match nav beside search bar on desktop */}
               <SearchMatchNav />
             </div>
           )}
-          {/* Progress bar: FULL width with clickable functionality */}
+
           {!isMobile && (
             <div className="flex-1 min-w-0 mx-2">
               <div className="flex justify-between items-center mb-0.5">
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                  {totalQuestions > 0
-                    ? <>Question {activeCurrentIdx + 1} of {totalQuestions}</>
-                    : 'No questions'}
+                  {totalPuzzles > 0
+                    ? <>Puzzle {activeCurrentIdx + 1} of {totalPuzzles}</>
+                    : 'No puzzles'}
                 </span>
-                {/* Hide percent complete on mobile */}
                 <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                  {totalQuestions > 0
-                    ? `${Math.round(((activeCurrentIdx + 1) / totalQuestions) * 100)}% Complete`
+                  {totalPuzzles > 0
+                    ? `${Math.round(((activeCurrentIdx + 1) / totalPuzzles) * 100)}% Complete`
                     : ''}
                 </span>
               </div>
@@ -252,44 +238,44 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                   const rect = e.currentTarget.getBoundingClientRect();
                   const x = e.clientX - rect.left;
                   const percentage = x / rect.width;
-                  const targetIndex = Math.floor(percentage * totalQuestions);
-                  const clampedIndex = Math.max(0, Math.min(targetIndex, totalQuestions - 1));
+                  const targetIndex = Math.floor(percentage * totalPuzzles);
+                  const clampedIndex = Math.max(0, Math.min(targetIndex, totalPuzzles - 1));
                   setCurrentIndex(activeIndexes[clampedIndex]);
                 }}
-                title="Click to jump to a specific question"
+                title="Click to jump to a specific puzzle"
               >
                 <div
-                  className="bg-blue-600 dark:bg-blue-500 h-1.5 rounded-full transition-all duration-300"
+                  className="bg-purple-600 dark:bg-purple-500 h-1.5 rounded-full transition-all duration-300"
                   style={{
-                    width: totalQuestions > 0
-                      ? `${((activeCurrentIdx + 1) / totalQuestions) * 100}%`
+                    width: totalPuzzles > 0
+                      ? `${((activeCurrentIdx + 1) / totalPuzzles) * 100}%`
                       : '0%'
                   }}
                 ></div>
                 {/* Invisible clickable segments for better UX */}
-                {totalQuestions > 0 && Array.from({ length: totalQuestions }, (_, i) => (
+                {totalPuzzles > 0 && Array.from({ length: totalPuzzles }, (_, i) => (
                   <div
                     key={i}
-                    className="absolute top-0 h-full hover:bg-blue-400 hover:bg-opacity-20 transition-colors duration-150"
+                    className="absolute top-0 h-full hover:bg-purple-400 hover:bg-opacity-20 transition-colors duration-150"
                     style={{
-                      left: `${(i / totalQuestions) * 100}%`,
-                      width: `${(1 / totalQuestions) * 100}%`
+                      left: `${(i / totalPuzzles) * 100}%`,
+                      width: `${(1 / totalPuzzles) * 100}%`
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setCurrentIndex(activeIndexes[i]);
                     }}
-                    title={`Jump to question ${i + 1}`}
+                    title={`Jump to puzzle ${i + 1}`}
                   />
                 ))}
               </div>
             </div>
           )}
-          {/* Desktop navigation buttons */}
+
           {!isMobile && (
             <div className="flex gap-2 flex-shrink-0 ml-2">
               <button
-                onClick={prevQuestion}
+                onClick={prevPuzzle}
                 disabled={activeCurrentIdx === 0}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md font-medium text-sm transition-all duration-200 ${
                   activeCurrentIdx === 0
@@ -301,12 +287,12 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                 Prev
               </button>
               <button
-                onClick={nextQuestion}
-                disabled={activeCurrentIdx === totalQuestions - 1}
+                onClick={nextPuzzle}
+                disabled={activeCurrentIdx === totalPuzzles - 1}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md font-medium text-sm transition-all duration-200 ${
-                  activeCurrentIdx === totalQuestions - 1
+                  activeCurrentIdx === totalPuzzles - 1
                     ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                    : 'bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white hover:shadow-md'
+                    : 'bg-purple-600 dark:bg-purple-500 hover:bg-purple-700 dark:hover:bg-purple-400 text-white hover:shadow-md'
                 }`}
               >
                 Next
@@ -314,7 +300,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
               </button>
             </div>
           )}
-          {/* Mobile: just a search icon */}
+
           {isMobile && (
             <button
               className="ml-auto flex items-center px-2 py-2"
@@ -325,7 +311,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
             </button>
           )}
         </div>
-        {/* Mobile search bar and match nav in one row, full width, compact */}
+
         {isMobile && showMobileSearch && (
           <div className="flex items-center w-full mt-1 relative z-20 gap-2">
             <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 px-2 py-1 shadow-sm flex-1 min-w-0">
@@ -334,7 +320,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                 type="text"
                 autoFocus
                 className="bg-transparent outline-none w-full text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-                placeholder="Search questions…"
+                placeholder="Search puzzles…"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 spellCheck={false}
@@ -346,7 +332,6 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                 <button
                   onClick={prevSearchMatch}
                   disabled={currentMatchIndex === 0}
-                  title="Previous search result"
                   className={`flex items-center p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-all ${
                     currentMatchIndex === 0 ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'
                   }`}
@@ -359,7 +344,6 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                 <button
                   onClick={nextSearchMatch}
                   disabled={currentMatchIndex === filteredIndexes.length - 1}
-                  title="Next search result"
                   className={`flex items-center p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-all ${
                     currentMatchIndex === filteredIndexes.length - 1 ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'
                   }`}
@@ -368,7 +352,6 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                 </button>
               </div>
             )}
-            {/* Only X to close */}
             <button
               className="ml-1 flex items-center px-2 py-2"
               onClick={() => setShowMobileSearch(false)}
@@ -379,57 +362,110 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
           </div>
         )}
       </div>
-      {/* Main Card */}
+
+      {/* Main Card - Two Column Layout */}
       <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300 mt-2 rounded-2xl overflow-hidden">
         <div
-          className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700  flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300"
-          style={{ backgroundColor: 'inherit' }} // Remove light grey bg around card!
+          className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 flex flex-col lg:flex-row w-full h-full min-h-[500px] overflow-hidden transition-all duration-300"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Question */}
-          <div className="mb-4 px-8 pt-4">
-            <h2 className="text-lg md:text-xl font-bold text-blue-800 dark:text-blue-300 mb-2">
-              Q{currentQuestion.id}: {questionHighlighted}
-            </h2>
-          </div>
-          {/* Answer */}
-          <div className="mb-8 px-8">
-            <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">Answer</h3>
-            <div className="space-y-4 text-lg text-green-900 dark:text-green-200 leading-relaxed">
-              {answerHighlighted}
+          {/* Left Side - Code Question */}
+          <div className="lg:w-1/2 flex flex-col border-r border-gray-200 dark:border-gray-700">
+            <div className="p-6 flex-1 flex flex-col">
+              <h2 className="text-lg md:text-xl font-bold text-purple-800 dark:text-purple-300 mb-4">
+                Puzzle #{currentPuzzle.id}: What will this code output?
+              </h2>
+              <div className="flex-1 flex flex-col">
+                <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-sm text-gray-100 dark:text-gray-200 border flex-1 min-h-0">
+                  <code className="block">{searchTerm ? highlightText(currentPuzzle.question, searchTerm) : currentPuzzle.question}</code>
+                </pre>
+              </div>
             </div>
           </div>
-          {/* Example (if present) */}
-          {currentQuestion.example && currentQuestion.example.length > 0 && (
-            <div className="mb-8 px-8">
-              <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2">Example</h3>
-              <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-base text-gray-100 dark:text-gray-200">
-                <code>
-                  {currentQuestion.example.map((line, idx) => (
-                    <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400 dark:text-green-300' : ''}>
-                      {line}
-                    </div>
+
+          {/* Right Side - Action Buttons and Content */}
+          <div className="lg:w-1/2 flex flex-col overflow-y-auto">
+            {/* Action Buttons at the top of right side */}
+            <div className="p-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex flex-wrap gap-3 mb-4">
+                <button
+                  onClick={() => {
+                    setShowAnswer(!showAnswer);
+                    if (!showAnswer) setShowExplanation(false);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                    showAnswer
+                      ? 'bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600'
+                      : 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800'
+                  }`}
+                >
+                  {showAnswer ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showAnswer ? 'Hide Answer' : 'Show Answer'}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowExplanation(!showExplanation);
+                    if (!showExplanation) setShowAnswer(false);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                    showExplanation
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600'
+                      : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800'
+                  }`}
+                >
+                  {showExplanation ? <EyeOff className="w-4 h-4" /> : <Lightbulb className="w-4 h-4" />}
+                  {showExplanation ? 'Hide Explanation' : 'Show Explanation'}
+                </button>
+              </div>
+            </div>
+
+            {/* Default state when nothing is shown */}
+            {!showAnswer && !showExplanation && (
+              <div className="flex-1 flex items-center justify-center p-6">
+                <div className="text-center text-gray-500 dark:text-gray-400">
+                  <Code2 className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p className="text-lg font-medium mb-2">Ready to see the answer?</p>
+                  <p className="text-sm">Click the buttons above to reveal the output and explanation.</p>
+                </div>
+              </div>
+            )}
+
+            {/* Answer Section */}
+            {showAnswer && (
+              <div className="p-6">
+                <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-3 flex items-center gap-2">
+                  <Eye className="w-5 h-5" />
+                  Output
+                </h3>
+                <pre className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded-lg text-sm text-green-900 dark:text-green-200">
+                  <code>{currentPuzzle.answer}</code>
+                </pre>
+              </div>
+            )}
+
+            {/* Explanation Section */}
+            {showExplanation && (
+              <div className="p-6 flex-1">
+                <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-400 mb-3 flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5" />
+                  Explanation
+                </h3>
+                <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-lg space-y-3">
+                  {currentPuzzle.explanation.map((line, idx) => (
+                    <p key={idx} className="text-sm text-blue-900 dark:text-blue-200 leading-relaxed">
+                      {searchTerm ? highlightText(line, searchTerm) : line}
+                    </p>
                   ))}
-                </code>
-              </pre>
-            </div>
-          )}
-          {/* Key Terms (if present) */}
-          {currentQuestion.keyterms && currentQuestion.keyterms.length > 0 && (
-            <div className="mb-2 px-8 pb-4">
-              <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
-              <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900 dark:text-yellow-200">
-                {currentQuestion.keyterms.map((term, idx) => (
-                  <li key={idx}>{term}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+
         {/* Mobile swipe hint */}
-        <div className="md:hidden mt-3 text-center text-sm text-gray-500 dark:text-gray-400 select-none">
+        <div className="lg:hidden mt-3 text-center text-sm text-gray-500 dark:text-gray-400 select-none">
           Swipe left/right to navigate
         </div>
       </div>
@@ -437,4 +473,4 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
   );
 };
 
-export default Questions;
+export default Puzzles;
