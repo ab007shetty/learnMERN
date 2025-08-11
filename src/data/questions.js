@@ -633,6 +633,183 @@ const questions = [
       "Access Before Declaration| Allowed (undefined)   | Error in TDZ           | Error in TDZ + Must initialize",
     ],
   },
+  {
+    id: 43,
+    question: "How do you handle asynchronous code in JavaScript?",
+    answer: [
+      "Use callbacks: Pass a function to run after an async task finishes (can cause callback hell).",
+      "Use Promises: Handle async results with .then()/.catch().",
+      "Use async/await: Cleaner syntax for Promises that looks synchronous.",
+    ],
+    example: [
+      "// Promise",
+      "fetch('data.json').then(r => r.json()).then(console.log);",
+      "",
+      "// async/await",
+      "const getData = async () => console.log(await (await fetch('data.json')).json());",
+    ],
+    keyterms: [
+      "Callback = function executed after async task",
+      "Promise = async result container",
+      "async/await = syntax sugar for Promises",
+    ],
+  },
+  {
+    id: 44,
+    question: "What are synchronous and asynchronous code in JavaScript?",
+    answer: [
+      "Synchronous code runs line-by-line, blocking further execution until the current task finishes.",
+      "Asynchronous code allows other tasks to run while waiting for an operation to complete, preventing blocking.",
+    ],
+    example: [
+      "// Synchronous",
+      "console.log('Start');",
+      "console.log('End');",
+      "",
+      "// Asynchronous",
+      "console.log('Start');",
+      "setTimeout(() => console.log('Async task'), 1000);",
+      "console.log('End');",
+    ],
+    keyterms: [
+      "Synchronous = tasks run one after another, blocking",
+      "Asynchronous = tasks run without waiting, non-blocking",
+    ],
+  },
+  {
+    id: 45,
+    question: "What is infinite currying in JavaScript?",
+    answer: [
+      "Infinite currying is a function technique where a function keeps returning another function, allowing repeated calls with new arguments.",
+      "It usually ends when a condition is met, such as receiving no arguments, at which point it returns the final result.",
+    ],
+    example: [
+      "function add(a) {",
+      "  return function(b) {",
+      "    if (b !== undefined) return add(a + b);",
+      "    return a;",
+      "  };",
+      "}",
+      "",
+      "console.log(add(1)(2)(3)()); // 6",
+    ],
+    keyterms: [
+      "Currying = breaking a function with multiple args into a chain of single-arg functions",
+      "Infinite currying = currying without a fixed number of arguments, ends with a stop condition",
+    ],
+  },
+  {
+    id: 46,
+    question: "What are template literals in JavaScript?",
+    answer: [
+      "Template literals are strings enclosed by backticks (`) that allow embedded expressions and multi-line strings.",
+      "They use ${} for interpolation, making it easy to insert variables or expressions directly in a string.",
+    ],
+    example: [
+      "const name = 'John';",
+      "console.log(`Hello, ${name}!`); // Hello, John!",
+    ],
+    keyterms: [
+      "Template literal = string with backticks (`) supporting expressions and multi-line text",
+      "Interpolation = inserting values using ${expression}",
+    ],
+  },
+  {
+    id: 47,
+    question:
+      "What is the difference between dependencies and devDependencies in Node.js?",
+    answer: [
+      "dependencies are packages required for the application to run in production.",
+      "devDependencies are packages only needed during development (e.g., testing, building, linting).",
+    ],
+    example: [
+      "// Installing a normal dependency",
+      "npm install express",
+      "",
+      "// Installing a dev dependency",
+      "npm install nodemon --save-dev",
+    ],
+    keyterms: [
+      "dependencies = required in production (e.g., express, mongoose)",
+      "devDependencies = used only in development (e.g., nodemon, jest)",
+    ],
+  },
+  {
+    id: 48,
+    question: "What is JWT and what are its types?",
+    answer: [
+      "JWT (JSON Web Token) is a compact, URL-safe way to transmit information securely between parties as a JSON object.",
+      "It has three parts: Header, Payload, and Signature. Types are usually based on usage — Access Tokens (short-lived) and Refresh Tokens (long-lived).",
+      "It is commonly used for authentication: server issues a token after login, and client sends it with each request for verification.",
+    ],
+    example: [
+      "// Creating JWT",
+      "const token = jwt.sign({ userId: 1 }, 'secret', { expiresIn: '1h' });",
+    ],
+    keyterms: [
+      "JWT = JSON Web Token (Header + Payload + Signature)",
+      "Access Token = short-lived token for API access",
+      "Refresh Token = long-lived token to get new access tokens",
+    ],
+  },
+  {
+    id: 49,
+    question: "What is the difference between <figure> and <img> tags in HTML?",
+    answer: [
+      "<img> is used to embed an image in a webpage.",
+      "<figure> is a semantic container for self-contained content like images, diagrams, or code snippets, often with a <figcaption>.",
+    ],
+    example: [
+      "<figure>",
+      "  <img src='photo.jpg' alt='A mountain view'>",
+      "  <figcaption>Beautiful mountain scenery</figcaption>",
+      "</figure>",
+    ],
+    keyterms: [
+      "<img> = embeds the image itself",
+      "<figure> = groups media content with an optional caption",
+      "<figcaption> = provides a caption for the content inside <figure>",
+    ],
+  },
+  {
+    id: 50,
+    question:
+      "What is the difference between display: none and visibility: hidden in CSS?",
+    answer: [
+      "display: none removes the element from the document flow as if it doesn't exist.",
+      "visibility: hidden hides the element but it still takes up space in the layout.",
+    ],
+    example: [
+      "/* display: none */",
+      "element { display: none; }",
+      "",
+      "/* visibility: hidden */",
+      "element { visibility: hidden; }",
+    ],
+    keyterms: [
+      "display: none = element removed from layout and not visible",
+      "visibility: hidden = element hidden but space reserved",
+    ],
+  },
+  {
+    id: 51,
+    question: "What is the difference between CSS border and outline?",
+    answer: [
+      "border is drawn inside the element’s box and affects its size.",
+      "outline is drawn outside the element’s box, doesn’t affect its size, and can’t have rounded corners.",
+    ],
+    example: [
+      "/* Border */",
+      "div { border: 2px solid red; }",
+      "",
+      "/* Outline */",
+      "div { outline: 2px solid blue; }",
+    ],
+    keyterms: [
+      "border = inside element, affects layout, supports border-radius",
+      "outline = outside element, no layout impact, no border-radius",
+    ],
+  },
 ];
 
 export default questions;

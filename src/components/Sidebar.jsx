@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, X, HelpCircle, Hash, BookOpen, Filter } from 'lucide-react';
+import { Search, X, HelpCircle, Hash, BookOpen, Filter, Code2 } from 'lucide-react';
 import questions from '../data/questions';
+import puzzles from '../data/puzzles';
 
 const MAX_NAME_LENGTH = 20;
 
@@ -59,6 +60,7 @@ const Sidebar = ({
   programs,
   INTRO,
   QUESTIONS_KEY,
+  PUZZLES_KEY, // Add this new key for puzzles
   SIDEBAR_WIDTH,
   questionsCount
 }) => {
@@ -67,6 +69,7 @@ const Sidebar = ({
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
   const actualQuestionsCount = questionsCount !== undefined ? questionsCount : questions.length;
+  const puzzlesCount = puzzles.length;
 
   const playgroundProgram = programs.find(prog => prog.id === "playground");
   const otherPrograms = programs.filter(prog => prog.id !== "playground");
@@ -139,7 +142,7 @@ const Sidebar = ({
         </div>
         
         <div className="p-6 flex flex-col h-full bg-white dark:bg-gray-900 overflow-hidden">
-          {/* Top: Introduction and Questions */}
+          {/* Top: Introduction, Questions, and JS Puzzles */}
           <nav className="flex flex-col gap-2 flex-shrink-0">
             <button
               onClick={() => setSelected(INTRO)}
@@ -173,6 +176,28 @@ const Sidebar = ({
                   : 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
               }`}>
                 {actualQuestionsCount}
+              </span>
+            </button>
+
+            {/* JS Puzzles Button - Added here */}
+            <button
+              onClick={() => setSelected(PUZZLES_KEY)}
+              className={`flex items-center px-3 py-2.5 rounded-xl text-left transition-all duration-200 gap-3 w-full relative group ${
+                selected === PUZZLES_KEY
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg transform scale-[1.02]'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:transform hover:scale-[1.01]'
+              }`}
+            >
+              <div className={`p-1 rounded-lg ${selected === PUZZLES_KEY ? 'bg-white/20' : 'bg-purple-100 dark:bg-purple-900/30'}`}>
+                <Code2 className={`w-4 h-4 ${selected === PUZZLES_KEY ? 'text-white' : 'text-purple-600 dark:text-purple-400'}`} />
+              </div>
+              <span className="font-medium">Puzzles</span>
+              <span className={`absolute right-3 px-1.5 py-0.5 rounded-full text-xs font-bold ${
+                selected === PUZZLES_KEY 
+                  ? 'bg-white/20 text-white' 
+                  : 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300'
+              }`}>
+                {puzzlesCount}
               </span>
             </button>
           </nav>
