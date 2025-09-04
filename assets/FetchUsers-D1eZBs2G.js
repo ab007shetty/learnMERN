@@ -1,4 +1,4 @@
-import{j as s}from"./index-CrHNwBj-.js";import{P as t}from"./PlaygroundWrapper-BCWwELyH.js";const r=`
+import{j as s}from"./index-DFz3m4oZ.js";import{P as t}from"./PlaygroundWrapper-_VVRH7F6.js";const r=`
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function FetchUsers() {

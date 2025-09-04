@@ -1,4 +1,4 @@
-import{j as e}from"./index-CrHNwBj-.js";import{P as r}from"./PlaygroundWrapper-BCWwELyH.js";const u=`
+import{j as e}from"./index-DFz3m4oZ.js";import{P as r}from"./PlaygroundWrapper-_VVRH7F6.js";const u=`
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function PrimeChecker() {

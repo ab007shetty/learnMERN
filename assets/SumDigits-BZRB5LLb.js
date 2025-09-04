@@ -1,4 +1,4 @@
-import{j as e}from"./index-CrHNwBj-.js";import{P as u}from"./PlaygroundWrapper-BCWwELyH.js";const s=`
+import{j as e}from"./index-DFz3m4oZ.js";import{P as u}from"./PlaygroundWrapper-_VVRH7F6.js";const s=`
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function SumDigits() {

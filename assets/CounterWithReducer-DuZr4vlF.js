@@ -1,4 +1,4 @@
-import{j as e}from"./index-CrHNwBj-.js";import{P as n}from"./PlaygroundWrapper-BCWwELyH.js";const o=`
+import{j as e}from"./index-DFz3m4oZ.js";import{P as n}from"./PlaygroundWrapper-_VVRH7F6.js";const o=`
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function CounterWithReducer() {

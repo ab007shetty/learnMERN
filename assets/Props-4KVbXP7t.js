@@ -1,4 +1,4 @@
-import{j as r}from"./index-CrHNwBj-.js";import{P as a}from"./PlaygroundWrapper-BCWwELyH.js";const o=`
+import{j as r}from"./index-DFz3m4oZ.js";import{P as a}from"./PlaygroundWrapper-_VVRH7F6.js";const o=`
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 const users = [{ id: 1, name: "john", age: 23 }, { id: 2, name: "mary", age: 53 }];

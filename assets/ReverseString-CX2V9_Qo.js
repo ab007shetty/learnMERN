@@ -1,4 +1,4 @@
-import{j as t}from"./index-CrHNwBj-.js";import{P as r}from"./PlaygroundWrapper-BCWwELyH.js";const n=`
+import{j as t}from"./index-DFz3m4oZ.js";import{P as r}from"./PlaygroundWrapper-_VVRH7F6.js";const n=`
 //Write React components, JSX, or pure JS. No need of any import statements.
 
 function ReverseString() {
