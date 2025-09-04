@@ -1,13 +1,13 @@
-# React Basics
+# Learn MERN
 
-This is a React-based learning resource for React fundamentals, deployed automatically to GitHub Pages using GitHub Actions.
+Learning resource for Js and MERN fundamentals, deployed automatically to GitHub Pages using GitHub Actions.
 
 ---
 
 ## 🚀 Project Overview
 
 - Built with **React** and **Tailwind CSS** for modern web development learning
-- Hosted on GitHub Pages: [https://abshetty.in/react-basics/](https://abshetty.in/react-basics/)
+- Hosted on GitHub Pages: [https://abshetty.in/learnMERN/](https://abshetty.in/learnMERN/)
 - Fully **automated deployment** on every push to the `main` branch via GitHub Actions (workflow file is already included in this repo at `.github/workflows/deploy.yml`)
 
 ---
@@ -17,7 +17,7 @@ This is a React-based learning resource for React fundamentals, deployed automat
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/ab007shetty/react-basics.git && cd react-basics
+git clone https://github.com/ab007shetty/learnMERN.git && cd learnMERN
 ```
 
 ### 2. Install Dependencies
@@ -44,8 +44,8 @@ If you want to recreate this project from scratch, follow these steps:
 
 ```bash
 # Create a new Vite project with React template
-npm create vite@latest react-basics -- --template react
-cd react-basics
+npm create vite@latest learnMERN -- --template react
+cd learnMERN
 npm install
 ```
 
@@ -66,7 +66,7 @@ npx tailwindcss init -p
 - Make sure the `"homepage"` field in `package.json` is set as follows (adjust for your repo):
 
 ```json
-"homepage": "https://ab007shetty.github.io/react-basics/"
+"homepage": "https://ab007shetty.github.io/learnMERN/"
 ```
 
 - The `dist/` folder is included in `.gitignore` since it is generated automatically.
