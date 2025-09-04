@@ -32,7 +32,7 @@ const DEFAULT_JS_CODE = `
 function isPalindrome(str) {
   const clean = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();   // dont use 's'
   const reversed = clean.split('').reverse().join('');
-  return clean === reversed;
+  return clean === reversed ? "Palindrome" : "Not a Palindrome";
 }
 
 // Example usage:

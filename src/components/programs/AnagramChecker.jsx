@@ -21,7 +21,7 @@ function AnagramChecker() {
          .sort()               // sort alphabetically
          .join('');            // join back to string
 
-    setResult(normalize(a) === normalize(b));        // Compare normalized strings
+      return normalize(a) === normalize(b) ? "Anagram" : "Not an Anagram";
   };
 
   return (

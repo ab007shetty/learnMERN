@@ -50,6 +50,26 @@ console.log(abc);`,
       "Since undefined ?? 'hello' returns 'hello', that's what gets printed.",
     ],
   },
+  {
+    id: 5,
+    question: `
+let a = "5" - 2;
+console.log("hello" + 50);
+console.log(typeof a, a);
+console.log("3" + 4 - "1");
+`,
+    answer: `
+hello50
+number 3
+33
+`,
+    explanation: [
+      `"5" - 2 → string gets converted to number → 5 - 2 = 3 (number).`,
+      `"hello" + 50 → + with a string does concatenation → "hello50".`,
+      `"3" + 4 → "34" (string).`,
+      `"34" - "1" → both converted to numbers → 34 - 1 = 33.`,
+    ],
+  },
 ];
 
 export default puzzles;
