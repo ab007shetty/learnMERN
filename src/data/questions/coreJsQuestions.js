@@ -251,5 +251,569 @@ const coreJsQuestions = [
       "Access Before Declaration| Allowed (undefined)   | Error in TDZ           | Error in TDZ + Must initialize",
     ],
   },
+  {
+    id: 15,
+    question: "What is a Callback Function in JavaScript?",
+    answer: [
+      "A callback is a function passed as an argument to another function.",
+      "It runs later, typically after an operation completes.",
+      "Common with timers, event listeners, and network requests.",
+    ],
+    example: [
+      "function greet(name, cb){",
+      "  console.log('Hello ' + name);",
+      "  cb();",
+      "}",
+      "greet('Ani', () => console.log('Done'));",
+    ],
+    keyterms: [
+      "Callback = function passed to another function",
+      "Used for async flow control",
+    ],
+  },
+  {
+    id: 16,
+    question: "Why is JavaScript called single-threaded and synchronous?",
+    answer: [
+      "JS runs on a single main thread executing one task at a time.",
+      "By default, code runs synchronously in order.",
+      "Async APIs defer work to the environment to avoid blocking.",
+    ],
+    example: [
+      "console.log('A');",
+      "console.log('B');",
+      "console.log('C'); // strict order",
+    ],
+    keyterms: [
+      "Single-threaded = one call stack",
+      "Synchronous = sequential execution",
+    ],
+  },
+  {
+    id: 17,
+    question: "What does blocking the main thread mean in JavaScript?",
+    answer: [
+      "A long synchronous task stops the event loop from processing other work.",
+      "UI freezes and events wait until the task ends.",
+      "Use async patterns or Web Workers to avoid blocking.",
+    ],
+    example: ["for(let i=0;i<1e9;i++){} // blocks", "console.log('Done');"],
+    keyterms: [
+      "Blocking = main thread is busy",
+      "Non-blocking = yields to the loop",
+    ],
+  },
+  {
+    id: 18,
+    question: "What is the power of callbacks in JavaScript?",
+    answer: [
+      "Enable async programming in a single-threaded language.",
+      "Support event-driven designs (clicks, timers, responses).",
+      "Allow sequencing tasks without blocking.",
+    ],
+    example: ["setTimeout(() => console.log('Later'), 1000);"],
+    keyterms: [
+      "Event-driven = callbacks on events",
+      "Async flow without blocking",
+    ],
+  },
+  {
+    id: 19,
+    question: "What are Event Listeners in JavaScript?",
+    answer: [
+      "They run a handler when an event occurs (click, input, etc.).",
+      "Handlers are callbacks wired to elements or the window.",
+      "Multiple listeners can exist per event/element.",
+    ],
+    example: [
+      "document.getElementById('btn')",
+      "  .addEventListener('click', () => console.log('Clicked'));",
+    ],
+    keyterms: [
+      "Listener = callback for an event",
+      "addEventListener(type, handler)",
+    ],
+  },
+  {
+    id: 20,
+    question: "How do closures work with Event Listeners?",
+    answer: [
+      "Listeners capture variables from their creation scope.",
+      "State can persist across multiple event triggers.",
+      "Be mindful: captured state keeps memory alive.",
+    ],
+    example: [
+      "function counter(){",
+      "  let count = 0;",
+      "  btn.addEventListener('click', () => console.log(++count));",
+      "}",
+      "counter();",
+    ],
+    keyterms: [
+      "Closure = function + lexical scope",
+      "Stateful listeners via closure",
+    ],
+  },
+  {
+    id: 21,
+    question: "How does scope affect Event Listeners (var vs let)?",
+    answer: [
+      "`var` is function-scoped; `let` is block-scoped.",
+      "`let` in loops preserves each iteration value in closures.",
+      "`var` needs an IIFE/closure wrapper to capture values.",
+    ],
+    example: [
+      "for(let i=1;i<=3;i++){",
+      "  setTimeout(()=>console.log(i), i*500); // 1,2,3",
+      "}",
+    ],
+    keyterms: ["var = function scope", "let = block scope"],
+  },
+  {
+    id: 22,
+    question: "Why should you remove Event Listeners?",
+    answer: [
+      "Listeners hold references via closures -> memory use.",
+      "Unused listeners can leak memory and slow apps.",
+      "Always remove when not needed.",
+    ],
+    example: [
+      "function handle(){ console.log('Click'); }",
+      "btn.addEventListener('click', handle);",
+      "// later",
+      "btn.removeEventListener('click', handle);",
+    ],
+    keyterms: [
+      "removeEventListener = cleanup",
+      "Garbage collection needs no refs",
+    ],
+  },
+  {
+    id: 23,
+    question: "What is a Closure in JavaScript?",
+    answer: [
+      "A function bundled with references to its lexical environment.",
+      "Lets inner functions access outer variables after return.",
+      "Enables data hiding and async patterns.",
+    ],
+    example: [
+      "function outer(){",
+      "  let secret = 'hidden';",
+      "  return () => console.log(secret);",
+      "}",
+      "const fn = outer();",
+      "fn(); // 'hidden'",
+    ],
+    keyterms: ["Closure = remembered scope", "Lexical environment"],
+  },
+  {
+    id: 24,
+    question: "What are pros and cons of closures?",
+    answer: [
+      "Pros: encapsulation, stateful functions, modularity.",
+      "Cons: can retain memory and hinder GC if referenced.",
+      "Modern engines optimize, but cleanup still matters.",
+    ],
+    example: [
+      "function makeCounter(){",
+      "  let c = 0;",
+      "  return () => ++c;",
+      "}",
+      "const inc = makeCounter();",
+      "inc(); // 1",
+    ],
+    keyterms: ["Pro = data hiding", "Con = memory if not released"],
+  },
+  {
+    id: 25,
+    question:
+      "What is a Function Statement (Declaration) and how does hoisting work?",
+    answer: [
+      "A named function defined with the `function` keyword at top level or inside scopes.",
+      "Function declarations are hoisted with their definitions.",
+      "You can call them before their appearance in code.",
+    ],
+    example: ["foo(); // works", "function foo(){ console.log('Hi'); }"],
+    keyterms: [
+      "Function declaration = hoisted",
+      "Hoisting = definition available earlier",
+    ],
+  },
+  {
+    id: 26,
+    question: "What is a Function Expression and how is it hoisted?",
+    answer: [
+      "A function assigned to a variable/constant.",
+      "Only the variable is hoisted (initialized later).",
+      "Calling before assignment causes error.",
+    ],
+    example: [
+      "bar(); // TypeError/undefined at call time",
+      "var bar = function(){ console.log('Hi'); };",
+    ],
+    keyterms: [
+      "Function expression = not fully hoisted",
+      "Declaration vs expression hoisting",
+    ],
+  },
+  {
+    id: 27,
+    question: "What is an Anonymous Function and where is it used?",
+    answer: [
+      "A function without a name.",
+      "Common in callbacks and IIFEs.",
+      "Useful when the function is not reused.",
+    ],
+    example: ["setTimeout(function(){", "  console.log('Timer');", "}, 500);"],
+    keyterms: ["Anonymous = no name", "Used as inline callback"],
+  },
+  {
+    id: 28,
+    question: "What is a Named Function Expression and why use it?",
+    answer: [
+      "A function expression with an internal name.",
+      "Improves stack traces and allows self-recursion.",
+      "Name is not available in the outer scope.",
+    ],
+    example: [
+      "const a = function xyz(n){",
+      "  if(n<=1) return 1;",
+      "  return n*xyz(n-1);",
+      "};",
+      "a(3); // ok, xyz is not global",
+    ],
+    keyterms: [
+      "Named expression = inner name only",
+      "Better debugging, recursion",
+    ],
+  },
+  {
+    id: 29,
+    question: "What is the difference between Parameters and Arguments?",
+    answer: [
+      "Parameters are placeholders in the function definition.",
+      "Arguments are actual values passed during the call.",
+      "Arity = number of declared parameters.",
+    ],
+    example: [
+      "function add(a, b){ return a + b; } // a,b = parameters",
+      "add(4, 5); // 4,5 = arguments",
+    ],
+    keyterms: ["Parameter = declared variable", "Argument = runtime value"],
+  },
+  {
+    id: 30,
+    question: "What are First-Class and Higher-Order Functions?",
+    answer: [
+      "First-class: functions are values (assign, pass, return).",
+      "Higher-order: functions that take/return functions.",
+      "Enables map/filter/reduce, composition, callbacks.",
+    ],
+    example: [
+      "function hof(fn){ return x => fn(x); }",
+      "const twice = hof(n => n*2);",
+      "twice(3); // 6",
+    ],
+    keyterms: [
+      "First-class = functions as values",
+      "HOF = takes/returns functions",
+    ],
+  },
+  {
+    id: 31,
+    question: "What is an IIFE (Immediately Invoked Function Expression)?",
+    answer: [
+      "A function that runs immediately after it is defined.",
+      "Creates a private scope (module pattern).",
+      "Can accept parameters.",
+    ],
+    example: ["(function(msg){", "  console.log(msg);", "})('Hello');"],
+    keyterms: ["IIFE = (function(){...})()", "Private scope, init code"],
+  },
+  {
+    id: 32,
+    question: "How do closures enable data hiding and encapsulation?",
+    answer: [
+      "Private variables live in the lexical scope of a function.",
+      "Expose only necessary methods (privileged methods).",
+      "Common in module patterns and factories.",
+    ],
+    example: [
+      "const bank = (()=>{",
+      "  let balance = 0;",
+      "  return {",
+      "    deposit(x){ balance += x; },",
+      "    getBalance(){ return balance; }",
+      "  };",
+      "})();",
+    ],
+    keyterms: [
+      "Encapsulation = hide internal state",
+      "Privileged methods = controlled access",
+    ],
+  },
+  {
+    id: 33,
+    question: "How does setTimeout demonstrate closures (let vs var)?",
+    answer: [
+      "`let` preserves per-iteration value in loops.",
+      "`var` needs a closure wrapper to capture i.",
+      "Both rely on closures to remember i later.",
+    ],
+    example: [
+      "// let version",
+      "for(let i=1;i<=5;i++){",
+      "  setTimeout(()=>console.log(i), i*1000);",
+      "}",
+      "// var + IIFE",
+      "for(var i=1;i<=5;i++){",
+      "  (function(i){",
+      "    setTimeout(()=>console.log(i), i*1000);",
+      "  })(i);",
+      "}",
+    ],
+    keyterms: ["let = block scoped loop index", "IIFE captures var i"],
+  },
+  {
+    id: 34,
+    question: "Arrow Functions vs Regular Functions: what are key differences?",
+    answer: [
+      "Arrow functions have lexical `this` (no dynamic binding).",
+      "No `arguments` object; use rest parameters instead.",
+      "Concise syntax and implicit return for expressions.",
+    ],
+    example: [
+      "const obj = {",
+      "  val: 10,",
+      "  reg(){ return this.val; },",
+      "  arr: () => this && this.val",
+      "};",
+      "obj.reg(); // 10",
+      "obj.arr; // undefined in most cases",
+    ],
+    keyterms: [
+      "Lexical this = arrow binds outer this",
+      "No arguments in arrow",
+    ],
+  },
+  {
+    id: 35,
+    question: "What are default parameters and rest parameters?",
+    answer: [
+      "Default parameters give fallback values when args are missing.",
+      "Rest parameters collect remaining args into an array.",
+      "Use rest instead of `arguments` for clarity.",
+    ],
+    example: [
+      "function greet(name='Guest'){ return 'Hi '+name; }",
+      "function sum(...nums){ return nums.reduce((a,b)=>a+b,0); }",
+    ],
+    keyterms: ["Default params = fallback", "Rest params = variable arity"],
+  },
+  {
+    id: 36,
+    question: "What are call, apply, and bind used for?",
+    answer: [
+      "They control `this` and pass arguments to functions.",
+      "`call`/`apply` invoke immediately (`apply` takes array).",
+      "`bind` returns a new function with `this` preset.",
+    ],
+    example: [
+      "function hi(g){ console.log(g + ' ' + this.name); }",
+      "const user = { name: 'Ani' };",
+      "hi.call(user, 'Hello');",
+      "hi.apply(user, ['Hi']);",
+      "const bound = hi.bind(user, 'Hey'); bound();",
+    ],
+    keyterms: [
+      "call/apply = immediate invoke",
+      "bind = returns bound function",
+    ],
+  },
+  {
+    id: 37,
+    question: "What is Function Currying?",
+    answer: [
+      "Transforming a function of n args into a chain of unary functions.",
+      "Uses closures to remember earlier arguments.",
+      "Useful for partial application and composition.",
+    ],
+    example: ["const add = a => b => a + b;", "add(2)(3); // 5"],
+    keyterms: ["Currying = f(a,b)->f(a)(b)", "Partial application"],
+  },
+  {
+    id: 38,
+    question: "What is Memoization and how does it use closures?",
+    answer: [
+      "Caching function results to avoid recomputation.",
+      "Closure keeps a private cache map/object.",
+      "Great for expensive pure functions.",
+    ],
+    example: [
+      "function memoize(fn){",
+      "  const cache = {};",
+      "  return n => cache[n] ?? (cache[n]=fn(n));",
+      "}",
+      "const slowSquare = n => { for(let i=0;i<1e6;i++){}; return n*n; };",
+      "const fastSquare = memoize(slowSquare);",
+    ],
+    keyterms: ["Memoization = cache results", "Closure holds cache"],
+  },
+  {
+    id: 39,
+    question: "What are Pure vs Impure Functions?",
+    answer: [
+      "Pure: same inputs -> same output, no side effects.",
+      "Impure: modifies external state or relies on it.",
+      "Pure functions are predictable and testable.",
+    ],
+    example: [
+      "// pure",
+      "const add = (a,b)=>a+b;",
+      "// impure",
+      "let total=0; function addToTotal(x){ total+=x; }",
+    ],
+    keyterms: [
+      "Pure = deterministic, no side effects",
+      "Impure = side effects",
+    ],
+  },
+  {
+    id: 40,
+    question: "What are Debouncing and Throttling with event listeners?",
+    answer: [
+      "Debounce: delay execution until user stops triggering.",
+      "Throttle: limit executions to once per interval.",
+      "Both reduce unnecessary handler calls.",
+    ],
+    example: [
+      "function debounce(fn, wait){",
+      "  let t; return (...args)=>{",
+      "    clearTimeout(t); t=setTimeout(()=>fn(...args), wait);",
+      "  };",
+      "}",
+    ],
+    keyterms: ["Debounce = wait then run", "Throttle = run at fixed rate"],
+  },
+  {
+    id: 41,
+    question: "What is Recursion and when should you use it?",
+    answer: [
+      "A function calling itself to solve smaller subproblems.",
+      "Useful for tree/graph traversals, divide-and-conquer.",
+      "Tail-call optimization isn’t guaranteed in most JS engines.",
+    ],
+    example: ["function fact(n){", "  return n<=1 ? 1 : n*fact(n-1);", "}"],
+    keyterms: ["Recursion = self-calling function", "TCO not reliable in JS"],
+  },
+  {
+    id: 42,
+    question: "How do functions relate to constructors and prototypes?",
+    answer: [
+      "Functions can be used with `new` as constructors.",
+      "Methods should be placed on `FunctionName.prototype` to share across instances.",
+      "Saves memory versus redefining methods per instance.",
+    ],
+    example: [
+      "function Person(name){ this.name = name; }",
+      "Person.prototype.sayHi = function(){",
+      "  console.log('Hi ' + this.name);",
+      "};",
+      "new Person('Ani').sayHi();",
+    ],
+    keyterms: ["Constructor = function with new", "Prototype = shared methods"],
+  },
+  {
+    id: 43,
+    question:
+      "What is the difference between prototypal inheritance and classical inheritance?",
+    answer: [
+      "Classical → objects inherit from classes.",
+      "Prototypal → objects inherit directly from other objects.",
+      "JS uses prototypal inheritance.",
+    ],
+    example: [`function Person(){}; Person.prototype.sayHi=()=>"Hi";`],
+    keyterms: ["prototype = parent object", "prototype chain = lookup path"],
+  },
+  {
+    id: 44,
+    question: "What are JavaScript generators?",
+    answer: [
+      "Special functions that can pause and resume.",
+      "Use function* and yield keyword.",
+    ],
+    example: [`function* gen(){ yield 1; yield 2; }`],
+    keyterms: ["generator = resumable function", "yield = pause/return value"],
+  },
+  {
+    id: 45,
+    question: "What are Symbols in JavaScript?",
+    answer: [
+      "Unique and immutable primitive values.",
+      "Used as object keys to avoid conflicts.",
+    ],
+    example: [`const id = Symbol(); obj[id] = 10;`],
+    keyterms: ["Symbol = unique key", "hidden properties"],
+  },
+  {
+    id: 46,
+    question: "What is currying?",
+    answer: [
+      "Transforming a multi-argument function into a chain of single-argument functions.",
+      "Helps reuse with partial application.",
+    ],
+    example: [`const add=a=>b=>a+b;`],
+    keyterms: [
+      "currying = chaining single arg functions",
+      "partial application = pre-filling args",
+    ],
+  },
+  {
+    id: 47,
+    question: "What is memoization?",
+    answer: [
+      "Caching function results to avoid recalculations.",
+      "Improves performance for expensive operations.",
+    ],
+    example: [`const cache={}; f=(x)=>cache[x]||(cache[x]=x*x);`],
+    keyterms: ["memoization = caching results", "optimization technique"],
+  },
+  {
+    id: 48,
+    question: "What are Web Workers?",
+    answer: [
+      "Background scripts that run in parallel with main thread.",
+      "Used for heavy tasks without blocking UI.",
+    ],
+    example: [`const w = new Worker("worker.js");`],
+    keyterms: ["worker = parallel thread", "main thread = UI execution"],
+  },
+  {
+    id: 49,
+    question: "What is a Service Worker?",
+    answer: [
+      "Script that runs in background, separate from main JS.",
+      "Enables caching, offline support, push notifications.",
+    ],
+    example: [`navigator.serviceWorker.register("/sw.js");`],
+    keyterms: [
+      "service worker = background proxy",
+      "PWA = progressive web app",
+    ],
+  },
+  {
+    id: 50,
+    question: "What is the difference between throttling and debouncing?",
+    answer: [
+      "Debounce → delays execution until after wait time has passed.",
+      "Throttle → ensures execution at fixed intervals.",
+      "Used for performance optimization.",
+    ],
+    example: [`debounce(fn,300); throttle(fn,500);`],
+    keyterms: [
+      "debounce = wait after last call",
+      "throttle = limit execution rate",
+    ],
+  },
 ];
 export default coreJsQuestions;
