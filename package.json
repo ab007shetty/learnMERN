@@ -1,8 +1,8 @@
 {
-  "name": "react-basics",
+  "name": "learn-mern",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ab007shetty.github.io/react-basics",
+  "homepage": "https://ab007shetty.github.io/learnMERN/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
