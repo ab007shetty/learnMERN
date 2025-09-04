@@ -14,18 +14,20 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
-
+  
   const toggleTheme = () => {
     const newTheme = !isDark;
     setIsDark(newTheme);
     
+    // Use in-memory storage instead of localStorage for hosted environment
     if (typeof window !== 'undefined') {
       if (newTheme) {
         document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
+        // Store in a global variable instead of localStorage
+        window.__theme = 'dark';
       } else {
         document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
+        window.__theme = 'light';
       }
     }
   };
@@ -33,7 +35,8 @@ export const ThemeProvider = ({ children }) => {
   // Initialize theme on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
+      // Check for saved theme in global variable or default to light
+      const saved = window.__theme;
       const shouldBeDark = saved === 'dark';
       
       setIsDark(shouldBeDark);
@@ -53,18 +56,21 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-const Navbar = ({ sidebarOpen, onSidebarToggle }) => {
+const Navbar = ({ sidebarOpen, onSidebarToggle, setSelected, INTRO }) => {
   const { isDark, toggleTheme } = useTheme();
-  
+    
   const handleThemeToggle = () => {
     console.log('Theme toggle clicked, current isDark:', isDark);
     toggleTheme();
   };
 
   const handleLogoClick = () => {
-    window.location.href = './introduction.html'; // Adjust path as needed
+    // Use the same setSelected function and INTRO constant as sidebar
+    if (setSelected && INTRO !== undefined) {
+      setSelected(INTRO);
+    }
   };
-  
+    
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-6 transition-colors duration-200">
       {/* Sidebar toggle button */}
@@ -78,7 +84,7 @@ const Navbar = ({ sidebarOpen, onSidebarToggle }) => {
       
       {/* Logo and Title - Clickable */}
       <div 
-        className="flex items-center gap-3 flex-1 cursor-pointer"
+        className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity duration-200"
         onClick={handleLogoClick}
         role="button"
         tabIndex={0}
