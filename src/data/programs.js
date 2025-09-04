@@ -1,3 +1,4 @@
+// src/data/programs.js (Updated - removed component imports and properties)
 import {
   Hash,
   ListTodo,
@@ -28,34 +29,6 @@ import {
   Code2,
 } from "lucide-react";
 
-import Counter from "../components/programs/Counter";
-import Todo from "../components/programs/Todo";
-import Props from "../components/programs/Props";
-import JsPlayground from "../components/programs/JsPlayground";
-import AnagramChecker from "../components/programs/AnagramChecker";
-import ReverseString from "../components/programs/ReverseString";
-import FlattenArray from "../components/programs/FlattenArray";
-import CountChars from "../components/programs/CountChars";
-import RemoveDuplicates from "../components/programs/RemoveDuplicates";
-import LargestNumber from "../components/programs/LargestNumber";
-import PalindromeChecker from "../components/programs/PalindromeChecker";
-import Fibonacci from "../components/programs/Fibonacci";
-import FindIndex from "../components/programs/FindIndex";
-import LongestWord from "../components/programs/LongestWord";
-import ArrayOperations from "../components/programs/ArrayOperations";
-import Stopwatch from "../components/programs/Stopwatch";
-import FetchUsers from "../components/programs/FetchUsers";
-import MoveZeroes from "../components/programs/MoveZeroes";
-import CounterWithReducer from "../components/programs/CounterWithReducer";
-import Pagination from "../components/programs/Pagination";
-import PrimeChecker from "../components/programs/PrimeChecker";
-import FactorialCalculator from "../components/programs/Factorial";
-import SumDigits from "../components/programs/SumDigits";
-import VowelCounter from "../components/programs/VowelCounter";
-import SnakeCaseConverter from "../components/programs/SnakeCaseConverter";
-import DebounceSearch from "../components/programs/DebounceSearch";
-import ClosureSetTimeout from "../components/programs/ClosureSetTimeout";
-
 // --- Programs grouped and sorted alphabetically by category ---
 
 // React
@@ -69,7 +42,6 @@ const react = [
     concept: "useState",
     conceptDescription:
       "useState Hook adds state to functional components and triggers re-renders.",
-    component: Counter,
     category: "react",
   },
   {
@@ -81,7 +53,6 @@ const react = [
     concept: "useState",
     conceptDescription:
       "Multiple useState calls manage different pieces of state independently.",
-    component: Todo,
     category: "react",
   },
   {
@@ -93,7 +64,6 @@ const react = [
     concept: "useRef, setTimeout",
     conceptDescription:
       "Debounce delays function execution to avoid firing on every keystroke, managed with setTimeout and useRef.",
-    component: DebounceSearch,
     category: "react",
   },
   {
@@ -105,7 +75,6 @@ const react = [
     concept: "useEffect, fetch, filter",
     conceptDescription:
       "useEffect is used for side-effects like data fetching; fetch retrieves data from an API; filter is used to display matching results.",
-    component: FetchUsers,
     category: "react",
   },
   {
@@ -117,7 +86,6 @@ const react = [
     concept: "useState, slice",
     conceptDescription:
       "State tracks page number and array.slice is used to limit what gets displayed per page.",
-    component: Pagination,
     category: "react",
   },
   {
@@ -128,7 +96,6 @@ const react = [
     concept: "props",
     conceptDescription:
       "Props pass data and behavior from parent to child components. Shows component communication patterns.",
-    component: Props,
     category: "react",
   },
   {
@@ -140,7 +107,6 @@ const react = [
     concept: "useRef, setInterval",
     conceptDescription:
       "useRef persists the timer ID across renders without causing re-renders, suitable for intervals.",
-    component: Stopwatch,
     category: "react",
   },
   {
@@ -152,7 +118,6 @@ const react = [
     concept: "useReducer",
     conceptDescription:
       "useReducer helps manage complex state logic with a reducer function and dispatch mechanism.",
-    component: CounterWithReducer,
     category: "react",
   },
 ];
@@ -168,7 +133,6 @@ const algo = [
     concept: "useState, string manipulation",
     conceptDescription:
       "String sorting and normalization to compare letter patterns.",
-    component: AnagramChecker,
     category: "algo",
   },
   {
@@ -180,7 +144,6 @@ const algo = [
     concept: "loop",
     conceptDescription:
       "A simple for loop multiplies numbers from 1 to n to compute factorial.",
-    component: FactorialCalculator,
     category: "algo",
   },
   {
@@ -192,7 +155,6 @@ const algo = [
     concept: "useState, iteration",
     conceptDescription:
       "Loop constructs sequence by adding previous two numbers.",
-    component: Fibonacci,
     category: "algo",
   },
   {
@@ -203,7 +165,6 @@ const algo = [
       "Check if text reads the same forwards and backwards. Words like 'racecar' and 'madam' are palindromes.",
     concept: "useState, string manipulation",
     conceptDescription: "String cleaning and comparison with reversed version.",
-    component: PalindromeChecker,
     category: "algo",
   },
   {
@@ -215,7 +176,6 @@ const algo = [
     concept: "Math, conditionals",
     conceptDescription:
       "Loops check divisibility; primes are numbers greater than 1 that are not divisible by other numbers.",
-    component: PrimeChecker,
     category: "algo",
   },
 ];
@@ -231,7 +191,6 @@ const arrays = [
     concept: "map, filter, reduce, flat",
     conceptDescription:
       "Array methods like map, filter, reduce, and flat allow powerful data transformation.",
-    component: ArrayOperations,
     category: "arrays",
   },
   {
@@ -242,7 +201,6 @@ const arrays = [
       "Find the position of a specific number in an array. Returns the index (position) where the number is located.",
     concept: "useState, array methods",
     conceptDescription: "indexOf method locates element position in arrays.",
-    component: FindIndex,
     category: "arrays",
   },
   {
@@ -253,7 +211,6 @@ const arrays = [
       "Convert nested arrays into a single flat array. Turns [1, [2, 3], [4, [5]]] into [1, 2, 3, 4, 5].",
     concept: "useState, recursion",
     conceptDescription: "Recursive function processes nested array structures.",
-    component: FlattenArray,
     category: "arrays",
   },
   {
@@ -264,7 +221,6 @@ const arrays = [
       "Find the biggest number in an array. Returns the maximum value from a list of numbers.",
     concept: "useState, Math.max",
     conceptDescription: "Math.max with spread operator finds maximum value.",
-    component: LargestNumber,
     category: "arrays",
   },
   {
@@ -276,7 +232,6 @@ const arrays = [
     concept: "useState, array manipulation",
     conceptDescription:
       "uses in-place swapping to move zeroes to the end while preserving order.",
-    component: MoveZeroes,
     category: "arrays",
   },
   {
@@ -288,7 +243,6 @@ const arrays = [
     concept: "useState, object/hash",
     conceptDescription:
       "Hash map efficiently tracks and filters seen elements.",
-    component: RemoveDuplicates,
     category: "arrays",
   },
 ];
@@ -303,7 +257,6 @@ const strings = [
       "Count how many times each character appears in text. Shows frequency of letters, numbers, and symbols.",
     concept: "useState, object/hash",
     conceptDescription: "Object as hash map tracks character occurrences.",
-    component: CountChars,
     category: "strings",
   },
   {
@@ -315,7 +268,6 @@ const strings = [
     concept: "useState, array iteration",
     conceptDescription:
       "Loop or reduce can be used to find the longest element in an array.",
-    component: LongestWord,
     category: "strings",
   },
   {
@@ -327,7 +279,6 @@ const strings = [
     concept: "useState, string methods",
     conceptDescription:
       "without using split(), reverse(), and join() methods to transform strings.",
-    component: ReverseString,
     category: "strings",
   },
   {
@@ -339,7 +290,6 @@ const strings = [
     concept: "regex, replace",
     conceptDescription:
       "Replace spaces or camelCase with underscores using regex.",
-    component: SnakeCaseConverter,
     category: "strings",
   },
   {
@@ -351,7 +301,6 @@ const strings = [
     concept: "reduce",
     conceptDescription:
       "Convert number to string, split to array, convert back to digits, and sum using reduce.",
-    component: SumDigits,
     category: "strings",
   },
   {
@@ -363,12 +312,11 @@ const strings = [
     concept: "string, loop",
     conceptDescription:
       "Loop through string and count characters that are vowels (a, e, i, o, u).",
-    component: VowelCounter,
     category: "strings",
   },
 ];
 
-// Strings
+// Core JS
 const corejs = [
   {
     id: "closure-settimeout",
@@ -379,7 +327,6 @@ const corejs = [
     concept: "closure, setTimeout, async",
     conceptDescription:
       "Closures or block-scoped variables (let) allow each loop iteration to capture its own value, ensuring correct output with setTimeout.",
-    component: ClosureSetTimeout,
     category: "corejs",
   },
 ];
@@ -393,7 +340,6 @@ const programs = [
     description:
       "Execute any JavaScript code in real-time. Perfect for testing snippets and experimenting.",
     concept: "JavaScript, JSX, React.js",
-    component: JsPlayground,
     // Not categorized; always shown for all
   },
   ...react,

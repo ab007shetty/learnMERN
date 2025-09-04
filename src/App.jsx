@@ -3,11 +3,12 @@ import Navbar, { ThemeProvider } from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Introduction from "./components/Introduction";
 import Questions from "./components/Questions";
-import Puzzles from "./components/Puzzles"; // Add this import
+import Puzzles from "./components/Puzzles";
+import ProgramLoader from "./components/ProgramLoader";
 import programs from "./data/programs";
 
 const QUESTIONS_KEY = "questions";
-const PUZZLES_KEY = "puzzles"; // Add this constant
+const PUZZLES_KEY = "puzzles";
 const INTRO = "INTRO";
 const SIDEBAR_WIDTH = 288; // 72 * 4 = 288px (w-72 in Tailwind)
 
@@ -23,6 +24,8 @@ const App = () => {
         <Navbar
           sidebarOpen={sidebarOpen}
           onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
+          setSelected={setSelected}
+          INTRO={INTRO}
         />
 
         <Sidebar
@@ -31,9 +34,8 @@ const App = () => {
           selected={selected}
           setSelected={setSelected}
           programs={programs}
-          INTRO={INTRO}
           QUESTIONS_KEY={QUESTIONS_KEY}
-          PUZZLES_KEY={PUZZLES_KEY} // Add this prop
+          PUZZLES_KEY={PUZZLES_KEY}
           SIDEBAR_WIDTH={SIDEBAR_WIDTH}
         />
 
@@ -48,28 +50,29 @@ const App = () => {
           }}
         >
           {selected === INTRO && <Introduction totalTopics={programs.length} />}
-          
+
           {selected === QUESTIONS_KEY && (
             <Questions
               name="Q&A Practice"
               description="Test your knowledge with interactive question cards"
             />
           )}
-          
-          {/* Add JS Puzzles section */}
+
           {selected === PUZZLES_KEY && (
             <Puzzles
               name="JS Puzzles"
               description="Challenge yourself with tricky JavaScript code snippets"
             />
           )}
-          
+
           {selectedProgram &&
-            selectedProgram.component &&
             selected !== INTRO &&
             selected !== QUESTIONS_KEY &&
-            selected !== PUZZLES_KEY && ( // Add this condition
-              <selectedProgram.component {...selectedProgram} />
+            selected !== PUZZLES_KEY && (
+              <ProgramLoader 
+                programId={selected}
+                programProps={selectedProgram}
+              />
             )}
         </main>
       </div>
