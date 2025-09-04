@@ -1,6 +1,43 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, HelpCircle, Search, X } from 'lucide-react';
-import questions from '../data/questions';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  HelpCircle, 
+  Search, 
+  X, 
+  Layout, 
+  Code, 
+  Atom, 
+  Server, 
+  Database, 
+  Network, 
+  Globe,
+  Loader2,
+  ChevronDown,
+  Filter
+} from 'lucide-react';
+
+// Lazy load question modules for performance
+const loadQuestions = async (category) => {
+  switch (category) {
+    case 'htmlcss':
+      return (await import('../data/questions/htmlCssQuestions.js')).default;
+    case 'corejs':
+      return (await import('../data/questions/coreJsQuestions.js')).default;
+    case 'react':
+      return (await import('../data/questions/reactQuestions.js')).default;
+    case 'nodejs':
+      return (await import('../data/questions/nodeJsQuestions.js')).default;
+    case 'database':
+      return (await import('../data/questions/databaseQuestions.js')).default;
+    case 'systemdesign':
+      return (await import('../data/questions/systemDesignQuestions.js')).default;
+    case 'other':
+      return (await import('../data/questions/otherQuestions.js')).default;
+    default:
+      return [];
+  }
+};
 
 // Helper to highlight search matches in text
 function highlightText(text, searchTerm) {
@@ -12,18 +49,142 @@ function highlightText(text, searchTerm) {
   );
 }
 
+// Enhanced categories with question counts that will be loaded dynamically
+const categories = [
+  { 
+    id: 'htmlcss', 
+    name: 'HTML & CSS', 
+    icon: Layout, 
+    color: 'from-orange-500 to-red-500',
+    iconColor: 'text-orange-500',
+    bgGradient: 'from-orange-100 via-red-50 to-pink-100 dark:from-orange-900/30 dark:via-red-900/20 dark:to-pink-900/30',
+    description: 'Markup, styling, and layout fundamentals'
+  },
+  { 
+    id: 'corejs', 
+    name: 'Core JavaScript', 
+    icon: Code, 
+    color: 'from-yellow-500 to-orange-500',
+    iconColor: 'text-yellow-500',
+    bgGradient: 'from-yellow-100 via-amber-50 to-orange-100 dark:from-yellow-900/30 dark:via-amber-900/20 dark:to-orange-900/30',
+    description: 'JavaScript language concepts and APIs'
+  },
+  { 
+    id: 'react', 
+    name: 'React', 
+    icon: Atom, 
+    color: 'from-blue-500 to-cyan-500',
+    iconColor: 'text-blue-500',
+    bgGradient: 'from-blue-100 via-sky-50 to-cyan-100 dark:from-blue-900/30 dark:via-sky-900/20 dark:to-cyan-900/30',
+    description: 'Components, hooks, and React ecosystem'
+  },
+  { 
+    id: 'nodejs', 
+    name: 'Node.js', 
+    icon: Server, 
+    color: 'from-green-500 to-emerald-500',
+    iconColor: 'text-green-500',
+    bgGradient: 'from-green-100 via-emerald-50 to-teal-100 dark:from-green-900/30 dark:via-emerald-900/20 dark:to-teal-900/30',
+    description: 'Server-side JavaScript and APIs'
+  },
+  { 
+    id: 'database', 
+    name: 'Database', 
+    icon: Database, 
+    color: 'from-indigo-500 to-purple-500',
+    iconColor: 'text-indigo-500',
+    bgGradient: 'from-indigo-100 via-purple-50 to-violet-100 dark:from-indigo-900/30 dark:via-purple-900/20 dark:to-violet-900/30',
+    description: 'SQL, NoSQL, and data modeling'
+  },
+  { 
+    id: 'systemdesign', 
+    name: 'System Design', 
+    icon: Network, 
+    color: 'from-slate-500 to-gray-500',
+    iconColor: 'text-slate-500',
+    bgGradient: 'from-slate-100 via-gray-50 to-zinc-100 dark:from-slate-900/30 dark:via-gray-900/20 dark:to-zinc-900/30',
+    description: 'Scalability, architecture, and patterns'
+  },
+  { 
+    id: 'other', 
+    name: 'Other Topics', 
+    icon: Globe, 
+    color: 'from-teal-500 to-cyan-500',
+    iconColor: 'text-teal-500',
+    bgGradient: 'from-teal-100 via-cyan-50 to-blue-100 dark:from-teal-900/30 dark:via-cyan-900/20 dark:to-blue-900/30',
+    description: 'General programming and tech concepts'
+  },
+];
+
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center p-8">
+    <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+    <span className="ml-2 text-gray-600 dark:text-gray-400">Loading questions...</span>
+  </div>
+);
+
 const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
+  // All hooks must be called in the same order every render
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredIndexes, setFilteredIndexes] = useState([]);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [loadingCounts, setLoadingCounts] = useState(false);
 
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
 
+  const [open, setOpen] = useState(false);
+const dropdownRef = useRef(null);
+
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setOpen(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+  // Load category question counts
+  useEffect(() => {
+    const loadCategoryCounts = async () => {
+      setLoadingCounts(true);
+      try {
+        const counts = {};
+        for (const category of categories) {
+          try {
+            const questions = await loadQuestions(category.id);
+            counts[category.id] = questions?.length || 0;
+          } catch (err) {
+            console.error(`Failed to load questions for ${category.id}:`, err);
+            counts[category.id] = 0;
+          }
+        }
+        setCategoryCounts(counts);
+      } catch (err) {
+        console.error('Failed to load category counts:', err);
+        setError('Failed to load category counts. Some categories may show zero questions.');
+      } finally {
+        setLoadingCounts(false);
+      }
+    };
+
+    // Only load counts if not already loaded
+    if (Object.keys(categoryCounts).length === 0) {
+      loadCategoryCounts();
+    }
+  }, [categoryCounts]);
+
   // Responsive: detect mobile
-  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -31,8 +192,29 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Load questions when category is selected
+  useEffect(() => {
+    if (selectedCategory) {
+      setLoading(true);
+      setError(null);
+      loadQuestions(selectedCategory.id)
+        .then(loadedQuestions => {
+          setQuestions(loadedQuestions || []);
+          setCurrentIndex(0);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Failed to load questions:', err);
+          setError('Failed to load questions. Please try again.');
+          setLoading(false);
+        });
+    }
+  }, [selectedCategory]);
+
   // Search filtering and match detection
   useEffect(() => {
+    if (!questions.length) return;
+    
     if (searchTerm.trim() === '') {
       setFilteredIndexes([]);
       setCurrentMatchIndex(0);
@@ -40,7 +222,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
       const term = searchTerm.toLowerCase();
       const indexes = questions
         .map((q, i) => {
-          const inQuestion = q.question.toLowerCase().includes(term);
+          const inQuestion = q.question?.toLowerCase().includes(term);
           const inAnswer = q.answer?.some(a => a.toLowerCase().includes(term));
           return inQuestion || inAnswer ? i : -1;
         })
@@ -57,8 +239,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
         setCurrentMatchIndex(0);
       }
     }
-    // eslint-disable-next-line
-  }, [searchTerm]);
+  }, [searchTerm, questions, currentIndex]);
 
   useEffect(() => {
     // On question change, update match index in filtered
@@ -89,31 +270,20 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     };
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-    // eslint-disable-next-line
-  }, [currentIndex, filteredIndexes, isMobile]);
-
-  // Which questions to show (filtered or all)
-  const activeIndexes = filteredIndexes.length > 0 ? filteredIndexes : questions.map((_, i) => i);
-  const activeCurrentIdx = activeIndexes.indexOf(currentIndex);
-  const totalQuestions = activeIndexes.length;
-  const currentQuestion = questions[currentIndex];
-
-  if (!currentQuestion || totalQuestions === 0) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center text-red-600 dark:text-red-400 font-bold text-xl">
-        No question found.
-      </div>
-    );
-  }
+  }, []);
 
   // Navigation functions
   const nextQuestion = () => {
-    if (activeCurrentIdx < totalQuestions - 1) {
+    const activeIndexes = filteredIndexes.length > 0 ? filteredIndexes : questions.map((_, i) => i);
+    const activeCurrentIdx = activeIndexes.indexOf(currentIndex);
+    if (activeCurrentIdx < activeIndexes.length - 1) {
       setCurrentIndex(activeIndexes[activeCurrentIdx + 1]);
     }
   };
 
   const prevQuestion = () => {
+    const activeIndexes = filteredIndexes.length > 0 ? filteredIndexes : questions.map((_, i) => i);
+    const activeCurrentIdx = activeIndexes.indexOf(currentIndex);
     if (activeCurrentIdx > 0) {
       setCurrentIndex(activeIndexes[activeCurrentIdx - 1]);
     }
@@ -150,6 +320,147 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     touchStartX.current = null;
     touchEndX.current = null;
   };
+
+  // Category selection view - Enhanced design without outer card
+  if (!selectedCategory) {
+    return (
+      <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/30 p-6">
+        {/* Header */}
+        <div className="max-w-7xl mx-auto mb-12">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Icon className="w-12 h-12 text-blue-600 dark:text-blue-400" />
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                Interview Q&A
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        {/* Categories Grid */}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {categories.map((cat) => {
+              const IconComponent = cat.icon;
+              const count = categoryCounts[cat.id] || 0;
+              
+              return (
+                <div
+                  key={cat.id}
+                  className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${cat.bgGradient} backdrop-blur-sm border border-white/20 dark:border-gray-700/30 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2`}
+                  onClick={() => setSelectedCategory(cat)}
+                >
+                  {/* Animated gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  {/* Content */}
+                  <div className="relative p-8">
+                    {/* Icon with animated background */}
+                    <div className="relative mb-6">
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${cat.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500 blur-xl`}></div>
+                      <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm group-hover:scale-110 transition-transform duration-500">
+                        <IconComponent className={`w-8 h-8 ${cat.iconColor} group-hover:scale-110 transition-transform duration-500`} />
+                      </div>
+                    </div>
+                    
+                    {/* Category name */}
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                      {cat.name}
+                    </h2>
+                    
+                    {/* Description */}
+                    <p className="text-gray-600 dark:text-gray-300 mb-6 text-sm leading-relaxed">
+                      {cat.description}
+                    </p>
+                    
+                    {/* Question count and arrow */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {loadingCounts ? (
+                          <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin text-gray-400" />
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                              {count}
+                            </span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                              questions
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Animated arrow */}
+                      <div className="flex items-center text-blue-500 dark:text-blue-400 group-hover:translate-x-1 transition-transform duration-300">
+                        <ChevronRight className="w-5 h-5" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Subtle pattern overlay */}
+                  <div className="absolute top-0 right-0 w-32 h-32 opacity-5 dark:opacity-10">
+                    <IconComponent className="w-full h-full transform rotate-12 translate-x-8 -translate-y-8" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+      </div>
+    );
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="w-full h-full flex flex-col p-4 rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 transition-all duration-300 mt-4">
+        <div className="flex items-center gap-2 mb-6">
+          <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            {selectedCategory.name} Questions
+          </h1>
+        </div>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="w-full h-full flex flex-col p-4 rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 transition-all duration-300 mt-4">
+        <div className="flex items-center gap-2 mb-6">
+          <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Error</h1>
+        </div>
+        <div className="flex flex-col items-center justify-center p-8 text-center">
+          <div className="text-red-500 mb-4">⚠️</div>
+          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+          <button
+            onClick={() => setSelectedCategory(null)}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Which questions to show (filtered or all)
+  const activeIndexes = filteredIndexes.length > 0 ? filteredIndexes : questions.map((_, i) => i);
+  const activeCurrentIdx = activeIndexes.indexOf(currentIndex);
+  const totalQuestions = activeIndexes.length;
+  const currentQuestion = questions[currentIndex];
+
+  if (!currentQuestion || totalQuestions === 0) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center text-red-600 dark:text-red-400 font-bold text-xl">
+        No question found.
+      </div>
+    );
+  }
 
   // Highlighted Q&A rendering
   const questionHighlighted = searchTerm
@@ -194,15 +505,56 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     ) : null;
 
   return (
-    <div className="w-full h-full flex flex-col p-4 rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 transition-all duration-300 mt-4 ">
+    <div className="w-full h-full flex flex-col p-4 rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 transition-all duration-300 mt-4">
       {/* Header: All controls */}
       <div className="w-full flex flex-col gap-2 mb-4">
         <div className="flex items-center w-full gap-2">
           {/* Icon & Q&A Heading */}
           <div className="flex items-center gap-2 flex-shrink-0 mr-2">
             <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Q&amp;A</h1>
+
+            <div className="relative flex items-center gap-2" ref={dropdownRef}>
+              {/* Heading - bold title, no count */}
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                {selectedCategory?.name || "All Categories"}
+              </h2>
+
+              {/* Filter Icon */}
+              <button
+                onClick={() => setOpen(!open)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              >
+                <Filter className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              </button>
+
+              {/* Dropdown aligned to right of filter button */}
+              {open && (
+                <div className="absolute top-0 left-full ml-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 z-50">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        setOpen(false);
+                      }}
+                      className={`flex items-center justify-between w-full px-4 py-2 text-sm font-medium ${
+                        selectedCategory?.id === cat.id
+                          ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      }`}
+                    >
+                      <span>{cat.name}</span>
+                      <span className="ml-2 rounded-full bg-gray-200 dark:bg-gray-700 px-2 py-0.5 text-xs text-gray-700 dark:text-gray-300">
+                        {categoryCounts[cat.id] || 0}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
           </div>
+
           {/* Desktop search bar & match nav */}
           {!isMobile && (
             <div className="flex items-center gap-2 flex-shrink-0 min-w-[230px] max-w-[350px] w-full">
@@ -239,7 +591,6 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                     ? <>Question {activeCurrentIdx + 1} of {totalQuestions}</>
                     : 'No questions'}
                 </span>
-                {/* Hide percent complete on mobile */}
                 <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
                   {totalQuestions > 0
                     ? `${Math.round(((activeCurrentIdx + 1) / totalQuestions) * 100)}% Complete`
@@ -266,7 +617,6 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                       : '0%'
                   }}
                 ></div>
-                {/* Invisible clickable segments for better UX */}
                 {totalQuestions > 0 && Array.from({ length: totalQuestions }, (_, i) => (
                   <div
                     key={i}
@@ -382,8 +732,8 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
       {/* Main Card */}
       <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300 mt-2 rounded-2xl overflow-hidden">
         <div
-          className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700  flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300"
-          style={{ backgroundColor: 'inherit' }} // Remove light grey bg around card!
+          className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300"
+          style={{ backgroundColor: 'inherit' }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -429,9 +779,11 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
           )}
         </div>
         {/* Mobile swipe hint */}
-        <div className="md:hidden mt-3 text-center text-sm text-gray-500 dark:text-gray-400 select-none">
-          Swipe left/right to navigate
-        </div>
+        {isMobile && (
+          <div className="mt-3 text-center text-sm text-gray-500 dark:text-gray-400 select-none">
+            Swipe left/right to navigate • {activeCurrentIdx + 1}/{totalQuestions}
+          </div>
+        )}
       </div>
     </div>
   );

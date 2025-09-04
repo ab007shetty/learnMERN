@@ -60,6 +60,10 @@ const Navbar = ({ sidebarOpen, onSidebarToggle }) => {
     console.log('Theme toggle clicked, current isDark:', isDark);
     toggleTheme();
   };
+
+  const handleLogoClick = () => {
+    window.location.href = './introduction.html'; // Adjust path as needed
+  };
   
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-6 transition-colors duration-200">
@@ -72,11 +76,22 @@ const Navbar = ({ sidebarOpen, onSidebarToggle }) => {
         {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
       
-      <div className="flex items-center gap-3 flex-1">
+      {/* Logo and Title - Clickable */}
+      <div 
+        className="flex items-center gap-3 flex-1 cursor-pointer"
+        onClick={handleLogoClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            handleLogoClick();
+          }
+        }}
+      >
         <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
           <Code2 className="w-6 h-6 text-white" />
         </div>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white">React Basics</h1>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Learn MERN</h1>
       </div>
       
       {/* Dark theme toggle */}

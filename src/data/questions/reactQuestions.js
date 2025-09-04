@@ -1,4 +1,4 @@
-const questions = [
+const reactQuestions = [
   {
     id: 1,
     question:
@@ -170,19 +170,87 @@ const questions = [
   {
     id: 13,
     question:
-      "What is the event loop in JavaScript and how does it relate to React?",
+      "What is useStrict in React and what are common use cases for unit testing?",
     answer: [
-      "The event loop is a JavaScript mechanism that handles asynchronous tasks by managing the call stack and message queue, ensuring non-blocking execution.",
-      "In React, the event loop allows handling async operations like data fetching, timers, and event handlers without freezing the UI.",
+      "<React.StrictMode> is a wrapper that activates additional checks and warnings for its children in development mode. It helps identify unsafe lifecycle methods, side effects, and potential bugs.",
+      "Use Cases: Detect unexpected side effects, Highlight deprecated APIs, Help with future React updates.",
+      "Unit tests check individual components or functions in isolation.",
+      "Common use cases: Rendering components with different props, Testing state updates and events (e.g., button clicks), Validating conditional rendering, Checking API call functions with mocks.",
     ],
     keyterms: [
-      "Event loop = manages async callbacks in JS",
-      "Call stack = where functions execute",
-      "Message queue = stores async callbacks. React relies on it for smooth UI updates during async work.",
+      "StrictMode = helps catch potential issues",
+      "Unit test = test one piece of logic/component at a time.",
     ],
   },
   {
     id: 14,
+    question: "What is an Error Boundary in React?",
+    answer: [
+      "An Error Boundary is a class component that catches JavaScript errors in its child component tree and shows a fallback UI instead of crashing the whole app.",
+      "It uses lifecycle methods: static getDerivedStateFromError(), componentDidCatch().",
+      "Note: React doesn't catch errors in event handlers or async code—those need try/catch.",
+    ],
+    keyterms: [
+      "Error boundary = catches runtime errors in UI. Only works for class components, not functional (yet). Used to prevent app crashes and show fallback UIs.",
+    ],
+  },
+  {
+    id: 15,
+    question:
+      "How do you analyze performance in React and what is the React Profiler?",
+    answer: [
+      "React Profiler is a dev tool that helps measure render performance of components—how often they render and how long they take.",
+      "You can use the Profiler tab in React DevTools to: Identify slow components, Spot unnecessary re-renders, Optimize expensive updates.",
+      "You can also use React.memo, useMemo, and useCallback to optimize based on Profiler insights.",
+    ],
+    keyterms: [
+      "Profiler = tool to track render time",
+      "Re-render = component renders again due to state/prop change",
+      "Helps with performance tuning and improving user experience.",
+    ],
+  },
+  {
+    id: 16,
+    question:
+      "What are browser tools like Lighthouse and how are they useful in React apps?",
+    answer: [
+      "Lighthouse is a Chrome DevTool that audits your web app for performance, accessibility, SEO, and best practices.",
+      "Other useful tools: React DevTools - inspect component tree, props, state, and use Profiler; Network tab — monitor API calls and asset loading; Performance tab - analyze frame rate, paint time, and scripting; Console tab - view errors, warnings, and logs.",
+      "These tools help ensure your React app runs fast, is accessible, and debugged efficiently.",
+    ],
+    keyterms: [
+      "Lighthouse = automated audit tool",
+      "React DevTools = debug React components",
+      "Network/Performance tabs = diagnose speed and loading issues.",
+    ],
+  },
+  {
+    id: 17,
+    question:
+      "What is the difference between debouncing and throttling in React?",
+    answer: [
+      "Debouncing delays a function until a certain time has passed after the last event. Example: search input waits for user to stop typing.",
+      "Throttling limits a function to run at most once in a fixed time. Example: handling scroll or resize events every 300ms.",
+    ],
+    keyterms: [
+      "Debounce = wait for pause",
+      "Throttle = run at intervals. Both improve performance by reducing unnecessary function calls.",
+    ],
+  },
+  {
+    id: 18,
+    question: "What are class and functional components in React?",
+    answer: [
+      "Class components are ES6 classes extending React.Component. They use this.state for state and lifecycle methods like componentDidMount.",
+      "Functional components are simple JavaScript functions that return JSX. They use hooks like useState and useEffect for state and side effects.",
+    ],
+    keyterms: [
+      "Class components = older style, use this, lifecycle methods.",
+      "Functional components = simpler, use hooks, recommended now. Functional components are preferred for cleaner and easier code.",
+    ],
+  },
+  {
+    id: 19,
     question:
       "What are key lifecycle methods in class components and their functional component equivalents?",
     example: [
@@ -199,241 +267,7 @@ const questions = [
     ],
   },
   {
-    id: 15,
-    question: "What are class and functional components in React?",
-    answer: [
-      "Class components are ES6 classes extending React.Component. They use this.state for state and lifecycle methods like componentDidMount.",
-      "Functional components are simple JavaScript functions that return JSX. They use hooks like useState and useEffect for state and side effects.",
-    ],
-    keyterms: [
-      "Class components = older style, use this, lifecycle methods.",
-      "Functional components = simpler, use hooks, recommended now. Functional components are preferred for cleaner and easier code.",
-    ],
-  },
-  {
-    id: 16,
-    question:
-      "What is useStrict in React and what are common use cases for unit testing?",
-    answer: [
-      "<React.StrictMode> is a wrapper that activates additional checks and warnings for its children in development mode. It helps identify unsafe lifecycle methods, side effects, and potential bugs.",
-      "Use Cases: Detect unexpected side effects, Highlight deprecated APIs, Help with future React updates.",
-      "Unit tests check individual components or functions in isolation.",
-      "Common use cases: Rendering components with different props, Testing state updates and events (e.g., button clicks), Validating conditional rendering, Checking API call functions with mocks.",
-    ],
-    keyterms: [
-      "StrictMode = helps catch potential issues",
-      "Unit test = test one piece of logic/component at a time.",
-    ],
-  },
-  {
-    id: 17,
-    question: "What is an Error Boundary in React?",
-    answer: [
-      "An Error Boundary is a class component that catches JavaScript errors in its child component tree and shows a fallback UI instead of crashing the whole app.",
-      "It uses lifecycle methods: static getDerivedStateFromError(), componentDidCatch().",
-      "Note: React doesn't catch errors in event handlers or async code—those need try/catch.",
-    ],
-    keyterms: [
-      "Error boundary = catches runtime errors in UI. Only works for class components, not functional (yet). Used to prevent app crashes and show fallback UIs.",
-    ],
-  },
-  {
-    id: 18,
-    question:
-      "How do you analyze performance in React and what is the React Profiler?",
-    answer: [
-      "React Profiler is a dev tool that helps measure render performance of components—how often they render and how long they take.",
-      "You can use the Profiler tab in React DevTools to: Identify slow components, Spot unnecessary re-renders, Optimize expensive updates.",
-      "You can also use React.memo, useMemo, and useCallback to optimize based on Profiler insights.",
-    ],
-    keyterms: [
-      "Profiler = tool to track render time",
-      "Re-render = component renders again due to state/prop change",
-      "Helps with performance tuning and improving user experience.",
-    ],
-  },
-  {
-    id: 19,
-    question:
-      "What are browser tools like Lighthouse and how are they useful in React apps?",
-    answer: [
-      "Lighthouse is a Chrome DevTool that audits your web app for performance, accessibility, SEO, and best practices.",
-      "Other useful tools: React DevTools - inspect component tree, props, state, and use Profiler; Network tab — monitor API calls and asset loading; Performance tab - analyze frame rate, paint time, and scripting; Console tab - view errors, warnings, and logs.",
-      "These tools help ensure your React app runs fast, is accessible, and debugged efficiently.",
-    ],
-    keyterms: [
-      "Lighthouse = automated audit tool",
-      "React DevTools = debug React components",
-      "Network/Performance tabs = diagnose speed and loading issues.",
-    ],
-  },
-  {
     id: 20,
-    question:
-      "What is the difference between debouncing and throttling in React?",
-    answer: [
-      "Debouncing delays a function until a certain time has passed after the last event. Example: search input waits for user to stop typing.",
-      "Throttling limits a function to run at most once in a fixed time. Example: handling scroll or resize events every 300ms.",
-    ],
-    keyterms: [
-      "Debounce = wait for pause",
-      "Throttle = run at intervals. Both improve performance by reducing unnecessary function calls.",
-    ],
-  },
-  {
-    id: 21,
-    question: "What is the difference between HTML, HTML5, and Web 3.0?",
-    answer: [
-      "HTML is the standard markup language for creating web pages.",
-      "HTML5 is the latest version with new tags (<video>, <canvas>, etc.), semantic elements, and offline support.",
-      "Web 3.0 is not a markup language—it's the next evolution of the web focused on decentralization, blockchain, and smart applications.",
-    ],
-    keyterms: [
-      "HTML = basic structure",
-      "HTML5 = modern features, multimedia, semantic tags",
-      "Web 3.0 = concept of a decentralized, intelligent web (not part of HTML).",
-    ],
-  },
-  {
-    id: 22,
-    question: "What are closures and hoisting in JavaScript?",
-    answer: [
-      "Closure is when a function remembers variables from its outer scope, even after the outer function has finished. Example: useful in React for preserving state in event handlers.",
-      "Hoisting means JavaScript moves declarations (not initializations) to the top of their scope. var is hoisted with undefined; let and const are hoisted but stay in a temporal dead zone.",
-    ],
-    keyterms: [
-      "Closure = function + its lexical scope",
-      "Hoisting = JS moves declarations up during compile phase. Closures help with data privacy; hoisting affects variable behavior.",
-    ],
-  },
-  {
-    id: 23,
-    question: "What is the Temporal Dead Zone (TDZ) in JavaScript?",
-    answer: [
-      "The Temporal Dead Zone is the period between entering a scope and the point where a let or const variable is declared. Accessing it before declaration throws a ReferenceError.",
-    ],
-    example: ["console.log(a); // ReferenceError", "let a = 5;"],
-    keyterms: [
-      "TDZ = time before a let/const is declared",
-      "Prevents access to variables before they're defined",
-      "Applies only to let and const, not var. TDZ helps avoid bugs by enforcing proper variable declaration order.",
-    ],
-  },
-  {
-    id: 24,
-    question: "What are primitive and non-primitive data types in JavaScript?",
-    answer: [
-      "Primitive types are immutable and hold single values. Examples: string, number, boolean, null, undefined, symbol, bigint.",
-      "Non-primitive types (reference types) store collections or objects, and are mutable. Examples: object, array, function.",
-      "Key Differences:",
-    ],
-    example: [
-      "Feature           Primitive         Non-Primitive",
-      "Stored as         Value             Reference (in memory)",
-      "Mutable           No                Yes",
-      "Compared by       Value             Reference",
-    ],
-    keyterms: [
-      "In React: Primitives are used in state; non-primitives (like objects/arrays) require careful handling to avoid unwanted re-renders.",
-    ],
-  },
-  {
-    id: 25,
-    question:
-      "What is the difference between let, const, and var in JavaScript?",
-    answer: [
-      "TDZ = Temporal Dead Zone (access before declaration causes error). const still allows mutation of objects/arrays, but not reassignment.",
-      "Use let for variables that change, const for fixed values, and avoid var in modern React/JS.",
-    ],
-    example: [
-      "Feature    | var              | let                  | const",
-      "-----------|------------------|----------------------|---------------------",
-      "Scope      | Function scope   | Block scope          | Block scope",
-      "Hoisting   | Yes (undefined)  | Yes (TDZ applies)    | Yes (TDZ applies)",
-      "Reassign   | Allowed          | Allowed              | Not allowed",
-      "Redeclare  | Allowed          | Not allowed          | Not allowed",
-    ],
-  },
-  {
-    id: 26,
-    question:
-      "What is the difference between spread and rest operators in JavaScript?",
-    answer: [
-      "Spread operator (...) expands an iterable (like array or object) into individual elements.",
-      "Rest operator (...) collects multiple elements into an array, often used in function parameters.",
-    ],
-    example: [
-      "const arr = [1, 2];                                                      // Spread Operator",
-      "const newArr = [...arr, 3]; // [1, 2, 3]",
-      "function sum(...args) { return args.reduce((a, b) => a + b, 0); }        // Rest Operator",
-    ],
-    keyterms: [
-      "Both use ... but differ by context: spread expands, rest collects. Used heavily in React for props and state management.",
-    ],
-  },
-  {
-    id: 27,
-    question:
-      "What are real-world use cases of spread and rest operators in React?",
-    answer: [
-      "Spread operator:",
-      "- Copying arrays or objects to avoid mutation",
-      "- Merging props into components",
-      "- Adding/removing items immutably in state updates",
-      "Rest operator:",
-      "- Collecting remaining props to pass down or separate specific ones",
-      "- Handling variable number of function arguments",
-    ],
-    example: [
-      "setState(prev => ({ ...prev, newProp: value }));",
-      "function Button({ onClick, ...rest }) {",
-      "  return <button {...rest} onClick={onClick} />;",
-      "}",
-    ],
-    keyterms: [
-      "Spread = expand/copy data",
-      "Rest = gather leftover data. Both help write cleaner, immutable React code.",
-    ],
-  },
-  {
-    id: 28,
-    question:
-      "What is array flattening in JavaScript, and how to do it with and without built-in methods?",
-    answer: [
-      "Array flattening means converting a nested array into a single-level array.",
-      "With built-in method: Use Array.prototype.flat()",
-      "Without built-in method: Use recursion to flatten deeply nested arrays.",
-    ],
-    example: [
-      "const arr = [1, [2, 3], [4, [5]]];",
-      "const flatArr = arr.flat(2); // [1, 2, 3, 4, 5]",
-      "function flatten(arr) { return arr.reduce((acc, val) => Array.isArray(val) ? acc.concat(flatten(val)) : acc.concat(val), []); }",
-    ],
-    keyterms: [
-      "Flattening = removing nested levels",
-      "flat() = ES2019 method with depth param",
-      "Recursive function = manual approach for any depth. Flattening is useful in React for processing nested data like menus or lists.",
-    ],
-  },
-  {
-    id: 29,
-    question:
-      "What is the difference between deep copy and shallow copy in JavaScript?",
-    answer: [
-      "Shallow copy copies only the first level of an object/array; nested objects still reference the original.",
-      "Deep copy copies all nested levels, creating a fully independent clone.",
-    ],
-    example: [
-      "const copy = {...obj}; // shallow copy",
-      "const deepCopy = JSON.parse(JSON.stringify(obj));",
-    ],
-    keyterms: [
-      "Shallow copy = top-level copy, nested references shared.",
-      "Deep copy = fully independent clone of all nested data. In React, shallow copies are often used for state updates, but deep copies are needed when nested objects change.",
-    ],
-  },
-  {
-    id: 30,
     question:
       "What is the difference between useEffect and useLayoutEffect in React?",
     answer: [
@@ -446,7 +280,7 @@ const questions = [
     ],
   },
   {
-    id: 31,
+    id: 21,
     question: "What is the difference between useMemo and useCallback?",
     answer: [
       "useMemo memoizes a computed value to avoid expensive recalculations.",
@@ -458,7 +292,7 @@ const questions = [
     ],
   },
   {
-    id: 32,
+    id: 22,
     question:
       "Explain event delegation in JavaScript and how React handles events?",
     answer: [
@@ -471,7 +305,7 @@ const questions = [
     ],
   },
   {
-    id: 33,
+    id: 23,
     question: "What are Pure Components in React?",
     answer: [
       "A Pure Component implements shouldComponentUpdate with a shallow prop and state comparison to avoid unnecessary re-renders.",
@@ -483,7 +317,7 @@ const questions = [
     ],
   },
   {
-    id: 34,
+    id: 24,
     question: "What is React Fiber?",
     answer: [
       "React Fiber is the new reconciliation engine in React (from v16).",
@@ -500,7 +334,7 @@ const questions = [
     ],
   },
   {
-    id: 35,
+    id: 25,
     question: "What is the difference between state and props in React?",
     answer: [
       "State is local and managed within the component. It changes over time using useState or this.setState.",
@@ -517,7 +351,7 @@ const questions = [
     ],
   },
   {
-    id: 36,
+    id: 26,
     question: "What is props drilling in React?",
     answer: [
       "Props drilling is passing props through multiple layers of components, even if intermediate components don’t need them.",
@@ -533,7 +367,7 @@ const questions = [
     ],
   },
   {
-    id: 37,
+    id: 27,
     question: "What is the Context API in React?",
     answer: [
       "Context API provides a way to share values between components without passing props manually through every level.",
@@ -550,7 +384,7 @@ const questions = [
     ],
   },
   {
-    id: 38,
+    id: 28,
     question: "What is the useState hook in React?",
     answer: [
       "useState is a hook that lets you add state to functional components.",
@@ -564,7 +398,7 @@ const questions = [
     ],
   },
   {
-    id: 39,
+    id: 29,
     question: "What is the useEffect hook in React?",
     answer: [
       "useEffect runs side-effects in function components, like fetching data or subscriptions.",
@@ -581,7 +415,7 @@ const questions = [
     ],
   },
   {
-    id: 40,
+    id: 30,
     question: "What are custom hooks in React?",
     answer: [
       "Custom hooks are user-defined functions that use built-in hooks to share reusable logic across components.",
@@ -598,7 +432,7 @@ const questions = [
     ],
   },
   {
-    id: 41,
+    id: 31,
     question: "What is Redux and how is it used in React?",
     answer: [
       "Redux is a state management library that stores the global state in a single store.",
@@ -614,202 +448,6 @@ const questions = [
       "Middleware like thunk used for async logic.",
     ],
   },
-  {
-    id: 42,
-    question:
-      "What is hoisting and how do var, let, and const behave differently in JavaScript?",
-    answer: [
-      "Hoisting is JavaScript’s behavior of moving variable declarations to the top of their scope.",
-      "var is hoisted and initialized as undefined.",
-      "let and const are also hoisted, but not initialized. They stay in the Temporal Dead Zone (TDZ) until their declaration is reached.",
-      "Accessing let or const before declaration causes a ReferenceError.",
-    ],
-    example: [
-      "Keyword                  | var                   | let                    | const",
-      "-------------------------|-----------------------|------------------------|-------------------------------",
-      "Hoisted?                 | Yes                   | Yes                    | Yes",
-      "Initialized?             | Yes (as undefined)    | No                     | No",
-      "TDZ Exists?              | No                    | Yes                    | Yes",
-      "Access Before Declaration| Allowed (undefined)   | Error in TDZ           | Error in TDZ + Must initialize",
-    ],
-  },
-  {
-    id: 43,
-    question: "How do you handle asynchronous code in JavaScript?",
-    answer: [
-      "Use callbacks: Pass a function to run after an async task finishes (can cause callback hell).",
-      "Use Promises: Handle async results with .then()/.catch().",
-      "Use async/await: Cleaner syntax for Promises that looks synchronous.",
-    ],
-    example: [
-      "// Promise",
-      "fetch('data.json').then(r => r.json()).then(console.log);",
-      "",
-      "// async/await",
-      "const getData = async () => console.log(await (await fetch('data.json')).json());",
-    ],
-    keyterms: [
-      "Callback = function executed after async task",
-      "Promise = async result container",
-      "async/await = syntax sugar for Promises",
-    ],
-  },
-  {
-    id: 44,
-    question: "What are synchronous and asynchronous code in JavaScript?",
-    answer: [
-      "Synchronous code runs line-by-line, blocking further execution until the current task finishes.",
-      "Asynchronous code allows other tasks to run while waiting for an operation to complete, preventing blocking.",
-    ],
-    example: [
-      "// Synchronous",
-      "console.log('Start');",
-      "console.log('End');",
-      "",
-      "// Asynchronous",
-      "console.log('Start');",
-      "setTimeout(() => console.log('Async task'), 1000);",
-      "console.log('End');",
-    ],
-    keyterms: [
-      "Synchronous = tasks run one after another, blocking",
-      "Asynchronous = tasks run without waiting, non-blocking",
-    ],
-  },
-  {
-    id: 45,
-    question: "What is infinite currying in JavaScript?",
-    answer: [
-      "Infinite currying is a function technique where a function keeps returning another function, allowing repeated calls with new arguments.",
-      "It usually ends when a condition is met, such as receiving no arguments, at which point it returns the final result.",
-    ],
-    example: [
-      "function add(a) {",
-      "  return function(b) {",
-      "    if (b !== undefined) return add(a + b);",
-      "    return a;",
-      "  };",
-      "}",
-      "",
-      "console.log(add(1)(2)(3)()); // 6",
-    ],
-    keyterms: [
-      "Currying = breaking a function with multiple args into a chain of single-arg functions",
-      "Infinite currying = currying without a fixed number of arguments, ends with a stop condition",
-    ],
-  },
-  {
-    id: 46,
-    question: "What are template literals in JavaScript?",
-    answer: [
-      "Template literals are strings enclosed by backticks (`) that allow embedded expressions and multi-line strings.",
-      "They use ${} for interpolation, making it easy to insert variables or expressions directly in a string.",
-    ],
-    example: [
-      "const name = 'John';",
-      "console.log(`Hello, ${name}!`); // Hello, John!",
-    ],
-    keyterms: [
-      "Template literal = string with backticks (`) supporting expressions and multi-line text",
-      "Interpolation = inserting values using ${expression}",
-    ],
-  },
-  {
-    id: 47,
-    question:
-      "What is the difference between dependencies and devDependencies in Node.js?",
-    answer: [
-      "dependencies are packages required for the application to run in production.",
-      "devDependencies are packages only needed during development (e.g., testing, building, linting).",
-    ],
-    example: [
-      "// Installing a normal dependency",
-      "npm install express",
-      "",
-      "// Installing a dev dependency",
-      "npm install nodemon --save-dev",
-    ],
-    keyterms: [
-      "dependencies = required in production (e.g., express, mongoose)",
-      "devDependencies = used only in development (e.g., nodemon, jest)",
-    ],
-  },
-  {
-    id: 48,
-    question: "What is JWT and what are its types?",
-    answer: [
-      "JWT (JSON Web Token) is a compact, URL-safe way to transmit information securely between parties as a JSON object.",
-      "It has three parts: Header, Payload, and Signature. Types are usually based on usage — Access Tokens (short-lived) and Refresh Tokens (long-lived).",
-      "It is commonly used for authentication: server issues a token after login, and client sends it with each request for verification.",
-    ],
-    example: [
-      "// Creating JWT",
-      "const token = jwt.sign({ userId: 1 }, 'secret', { expiresIn: '1h' });",
-    ],
-    keyterms: [
-      "JWT = JSON Web Token (Header + Payload + Signature)",
-      "Access Token = short-lived token for API access",
-      "Refresh Token = long-lived token to get new access tokens",
-    ],
-  },
-  {
-    id: 49,
-    question: "What is the difference between <figure> and <img> tags in HTML?",
-    answer: [
-      "<img> is used to embed an image in a webpage.",
-      "<figure> is a semantic container for self-contained content like images, diagrams, or code snippets, often with a <figcaption>.",
-    ],
-    example: [
-      "<figure>",
-      "  <img src='photo.jpg' alt='A mountain view'>",
-      "  <figcaption>Beautiful mountain scenery</figcaption>",
-      "</figure>",
-    ],
-    keyterms: [
-      "<img> = embeds the image itself",
-      "<figure> = groups media content with an optional caption",
-      "<figcaption> = provides a caption for the content inside <figure>",
-    ],
-  },
-  {
-    id: 50,
-    question:
-      "What is the difference between display: none and visibility: hidden in CSS?",
-    answer: [
-      "display: none removes the element from the document flow as if it doesn't exist.",
-      "visibility: hidden hides the element but it still takes up space in the layout.",
-    ],
-    example: [
-      "/* display: none */",
-      "element { display: none; }",
-      "",
-      "/* visibility: hidden */",
-      "element { visibility: hidden; }",
-    ],
-    keyterms: [
-      "display: none = element removed from layout and not visible",
-      "visibility: hidden = element hidden but space reserved",
-    ],
-  },
-  {
-    id: 51,
-    question: "What is the difference between CSS border and outline?",
-    answer: [
-      "border is drawn inside the element’s box and affects its size.",
-      "outline is drawn outside the element’s box, doesn’t affect its size, and can’t have rounded corners.",
-    ],
-    example: [
-      "/* Border */",
-      "div { border: 2px solid red; }",
-      "",
-      "/* Outline */",
-      "div { outline: 2px solid blue; }",
-    ],
-    keyterms: [
-      "border = inside element, affects layout, supports border-radius",
-      "outline = outside element, no layout impact, no border-radius",
-    ],
-  },
 ];
 
-export default questions;
+export default reactQuestions;

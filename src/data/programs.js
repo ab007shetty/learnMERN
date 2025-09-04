@@ -25,6 +25,7 @@ import {
   Minus,
   Globe,
   Search,
+  Code2,
 } from "lucide-react";
 
 import Counter from "../components/programs/Counter";
@@ -53,6 +54,7 @@ import SumDigits from "../components/programs/SumDigits";
 import VowelCounter from "../components/programs/VowelCounter";
 import SnakeCaseConverter from "../components/programs/SnakeCaseConverter";
 import DebounceSearch from "../components/programs/DebounceSearch";
+import ClosureSetTimeout from "../components/programs/ClosureSetTimeout";
 
 // --- Programs grouped and sorted alphabetically by category ---
 
@@ -366,6 +368,22 @@ const strings = [
   },
 ];
 
+// Strings
+const corejs = [
+  {
+    id: "closure-settimeout",
+    name: "Closure with setTimeout",
+    icon: Clock,
+    description:
+      "Demonstrates how closures and setTimeout work together to print numbers in sequence.",
+    concept: "closure, setTimeout, async",
+    conceptDescription:
+      "Closures or block-scoped variables (let) allow each loop iteration to capture its own value, ensuring correct output with setTimeout.",
+    component: ClosureSetTimeout,
+    category: "corejs",
+  },
+];
+
 // Compose the final list, keeping playground first, then sorted sections
 const programs = [
   {
@@ -382,6 +400,7 @@ const programs = [
   ...algo,
   ...arrays,
   ...strings,
+  ...corejs,
 ];
 
 export default programs;

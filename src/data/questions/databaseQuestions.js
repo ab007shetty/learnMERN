@@ -1,0 +1,63 @@
+const databaseQuestions = [
+  {
+    id: 1,
+    question: "What is the difference between SQL and NoSQL databases?",
+    answer: [
+      "SQL databases are relational with structured data in tables, ACID compliance, and use SQL queries.",
+      "NoSQL databases are non-relational, handle unstructured data, are horizontally scalable, and use various data models (document, key-value, graph).",
+    ],
+    example: [
+      "// SQL (MySQL)",
+      "SELECT * FROM users WHERE age > 25;",
+      "",
+      "// NoSQL (MongoDB)",
+      "db.users.find({ age: { $gt: 25 } });",
+    ],
+    keyterms: [
+      "SQL = Structured, ACID, relationships, vertical scaling",
+      "NoSQL = Flexible, BASE, horizontal scaling, various models",
+    ],
+  },
+  {
+    id: 2,
+    question: "What are database indexes and why are they important?",
+    answer: [
+      "Indexes are data structures that improve query performance by creating shortcuts to data.",
+      "They trade storage space and write performance for faster read operations.",
+    ],
+    example: [
+      "-- Creating an index",
+      "CREATE INDEX idx_user_email ON users(email);",
+      "",
+      "-- MongoDB index",
+      "db.users.createIndex({ email: 1 });",
+    ],
+    keyterms: [
+      "Index = data structure for faster queries",
+      "B-tree = common index structure",
+      "Trade-off = storage space vs query speed",
+    ],
+  },
+  {
+    id: 3,
+    question: "What is database normalization?",
+    answer: [
+      "Normalization is organizing data to reduce redundancy and improve data integrity.",
+      "It involves dividing large tables into smaller ones and defining relationships between them.",
+    ],
+    example: [
+      "-- Before normalization (1NF violation)",
+      "users: id, name, hobbies (comma-separated)",
+      "",
+      "-- After normalization",
+      "users: id, name",
+      "user_hobbies: user_id, hobby",
+    ],
+    keyterms: [
+      "1NF = atomic values, no repeating groups",
+      "2NF = 1NF + no partial dependencies",
+      "3NF = 2NF + no transitive dependencies",
+    ],
+  },
+];
+export default databaseQuestions;
