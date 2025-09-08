@@ -124,7 +124,6 @@ const LoadingSpinner = () => (
 );
 
 const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
-  // All hooks must be called in the same order every render
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
@@ -134,25 +133,24 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false);
   const [categoryCounts, setCategoryCounts] = useState({});
   const [loadingCounts, setLoadingCounts] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
+  const dropdownRef = useRef(null);
 
-  const [open, setOpen] = useState(false);
-const dropdownRef = useRef(null);
-
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setOpen(false);
-    }
-  };
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Load category question counts
   useEffect(() => {
@@ -178,18 +176,17 @@ useEffect(() => {
       }
     };
 
-    // Only load counts if not already loaded
     if (Object.keys(categoryCounts).length === 0) {
       loadCategoryCounts();
     }
   }, [categoryCounts]);
 
-  // Responsive: detect mobile
+  // Responsive: detect mobile or tablet (below 1280px to exclude 14-inch desktop screens)
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkMobileOrTablet = () => setIsMobileOrTablet(window.innerWidth < 1280);
+    checkMobileOrTablet();
+    window.addEventListener('resize', checkMobileOrTablet);
+    return () => window.removeEventListener('resize', checkMobileOrTablet);
   }, []);
 
   // Load questions when category is selected
@@ -229,7 +226,6 @@ useEffect(() => {
         .filter(i => i !== -1);
 
       setFilteredIndexes(indexes);
-      // If currentIndex not in filtered, jump to first match
       if (indexes.length > 0 && !indexes.includes(currentIndex)) {
         setCurrentIndex(indexes[0]);
         setCurrentMatchIndex(0);
@@ -242,7 +238,6 @@ useEffect(() => {
   }, [searchTerm, questions, currentIndex]);
 
   useEffect(() => {
-    // On question change, update match index in filtered
     if (filteredIndexes.length > 0) {
       const idx = filteredIndexes.indexOf(currentIndex);
       setCurrentMatchIndex(idx === -1 ? 0 : idx);
@@ -251,9 +246,9 @@ useEffect(() => {
     }
   }, [currentIndex, filteredIndexes]);
 
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e) => {
-      // Don't navigate if focus is on input (search bar)
       if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
       switch (e.key) {
         case 'ArrowLeft':
@@ -270,7 +265,7 @@ useEffect(() => {
     };
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, []);
+  }, [currentIndex, filteredIndexes]);
 
   // Navigation functions
   const nextQuestion = () => {
@@ -289,12 +284,12 @@ useEffect(() => {
     }
   };
 
-  // For moving to next/prev search match (in filtered)
   const nextSearchMatch = () => {
     if (filteredIndexes.length > 0 && currentMatchIndex < filteredIndexes.length - 1) {
       setCurrentIndex(filteredIndexes[currentMatchIndex + 1]);
     }
   };
+
   const prevSearchMatch = () => {
     if (filteredIndexes.length > 0 && currentMatchIndex > 0) {
       setCurrentIndex(filteredIndexes[currentMatchIndex - 1]);
@@ -321,11 +316,10 @@ useEffect(() => {
     touchEndX.current = null;
   };
 
-  // Category selection view - Enhanced design without outer card
+  // Category selection view
   if (!selectedCategory) {
     return (
       <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/30 p-6">
-        {/* Header */}
         <div className="max-w-7xl mx-auto mb-12">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -336,8 +330,6 @@ useEffect(() => {
             </div>
           </div>
         </div>
-
-        {/* Categories Grid */}
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {categories.map((cat) => {
@@ -350,30 +342,20 @@ useEffect(() => {
                   className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${cat.bgGradient} backdrop-blur-sm border border-white/20 dark:border-gray-700/30 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2`}
                   onClick={() => setSelectedCategory(cat)}
                 >
-                  {/* Animated gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  
-                  {/* Content */}
                   <div className="relative p-8">
-                    {/* Icon with animated animated background */}
                     <div className="relative mb-6">
                       <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${cat.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500 blur-xl`}></div>
                       <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm group-hover:scale-110 transition-transform duration-500">
                         <IconComponent className={`w-8 h-8 ${cat.iconColor} group-hover:scale-110 transition-transform duration-500`} />
                       </div>
                     </div>
-                    
-                    {/* Category name */}
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                       {cat.name}
                     </h2>
-                    
-                    {/* Description */}
                     <p className="text-gray-600 dark:text-gray-300 mb-6 text-sm leading-relaxed">
                       {cat.description}
                     </p>
-                    
-                    {/* Question count and arrow */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         {loadingCounts ? (
@@ -389,15 +371,11 @@ useEffect(() => {
                           </div>
                         )}
                       </div>
-                      
-                      {/* Animated arrow */}
                       <div className="flex items-center text-blue-500 dark:text-blue-400 group-hover:translate-x-1 transition-transform duration-300">
                         <ChevronRight className="w-5 h-5" />
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Subtle pattern overlay */}
                   <div className="absolute top-0 right-0 w-32 h-32 opacity-5 dark:opacity-10">
                     <IconComponent className="w-full h-full transform rotate-12 translate-x-8 -translate-y-8" />
                   </div>
@@ -406,7 +384,6 @@ useEffect(() => {
             })}
           </div>
         </div>
-
       </div>
     );
   }
@@ -471,10 +448,8 @@ useEffect(() => {
         <p key={i}>{searchTerm ? highlightText(a, searchTerm) : a}</p>)
     : [];
 
-  // Show match navigation if searching and more than 1 match
   const showMatchNav = filteredIndexes.length > 0 && filteredIndexes.length > 1;
 
-  // Search match nav for desktop, fits inline next to search bar
   const SearchMatchNav = () =>
     showMatchNav ? (
       <div className="flex gap-1 items-center ml-2">
@@ -506,28 +481,20 @@ useEffect(() => {
 
   return (
     <div className="w-full h-full flex flex-col p-4 rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 transition-all duration-300 mt-4">
-      {/* Header: All controls */}
       <div className="w-full flex flex-col gap-2 mb-4">
         <div className="flex items-center w-full gap-2">
-          {/* Icon & Q&A Heading */}
           <div className="flex items-center gap-2 flex-shrink-0 mr-2">
             <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-
             <div className="relative flex items-center gap-2" ref={dropdownRef}>
-              {/* Heading - bold title, no count */}
               <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                 {selectedCategory?.name || "All Categories"}
               </h2>
-
-              {/* Filter Icon */}
               <button
                 onClick={() => setOpen(!open)}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
                 <Filter className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </button>
-
-              {/* Dropdown aligned to right of filter button */}
               {open && (
                 <div className="absolute top-0 left-full ml-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 z-50">
                   {categories.map((cat) => (
@@ -552,11 +519,8 @@ useEffect(() => {
                 </div>
               )}
             </div>
-
           </div>
-
-          {/* Desktop search bar & match nav */}
-          {!isMobile && (
+          {!isMobileOrTablet && (
             <div className="flex items-center gap-2 flex-shrink-0 min-w-[230px] max-w-[350px] w-full">
               <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 px-2 py-1 shadow-sm w-full">
                 <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2" />
@@ -578,12 +542,10 @@ useEffect(() => {
                   </button>
                 )}
               </div>
-              {/* Search match nav beside search bar on desktop */}
               <SearchMatchNav />
             </div>
           )}
-          {/* Progress bar: FULL width with clickable functionality */}
-          {!isMobile && (
+          {!isMobileOrTablet && (
             <div className="flex-1 min-w-0 mx-2">
               <div className="flex justify-between items-center mb-0.5">
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
@@ -635,8 +597,7 @@ useEffect(() => {
               </div>
             </div>
           )}
-          {/* Desktop navigation buttons */}
-          {!isMobile && (
+          {!isMobileOrTablet && (
             <div className="flex gap-2 flex-shrink-0 ml-2">
               <button
                 onClick={prevQuestion}
@@ -664,8 +625,7 @@ useEffect(() => {
               </button>
             </div>
           )}
-          {/* Mobile: just a search icon */}
-          {isMobile && (
+          {isMobileOrTablet && (
             <button
               className="ml-auto flex items-center px-2 py-2"
               onClick={() => setShowMobileSearch(true)}
@@ -675,8 +635,7 @@ useEffect(() => {
             </button>
           )}
         </div>
-        {/* Mobile search bar and match nav in one row, full width, compact */}
-        {isMobile && showMobileSearch && (
+        {isMobileOrTablet && showMobileSearch && (
           <div className="flex items-center w-full mt-1 relative z-20 gap-2">
             <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 px-2 py-1 shadow-sm flex-1 min-w-0">
               <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2" />
@@ -718,7 +677,6 @@ useEffect(() => {
                 </button>
               </div>
             )}
-            {/* Only X to close */}
             <button
               className="ml-1 flex items-center px-2 py-2"
               onClick={() => setShowMobileSearch(false)}
@@ -729,7 +687,6 @@ useEffect(() => {
           </div>
         )}
       </div>
-      {/* Main Card */}
       <div className="flex-1 flex flex-col min-h-0 items-stretch justify-center transition-all duration-300 mt-2 rounded-2xl overflow-hidden">
         <div
           className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 flex flex-col w-full h-full min-h-[400px] overflow-auto transition-all duration-300"
@@ -738,25 +695,22 @@ useEffect(() => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Question */}
           <div className="mb-4 px-8 pt-4">
             <h2 className="text-lg md:text-xl font-bold text-blue-800 dark:text-blue-300 mb-2">
               Q{currentQuestion.id}: {questionHighlighted}
             </h2>
           </div>
-          {/* Body */}
           <div className="flex-1 overflow-y-auto">
-            {isMobile ? (
-              <>
-                {/* Mobile: Stacked as original */}
-                <div className="mb-8 px-8">
+            {isMobileOrTablet ? (
+              <div className="px-8 pb-8 flex flex-col">
+                <div className="mb-8">
                   <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">Answer</h3>
                   <div className="space-y-4 text-lg text-green-900 dark:text-green-200 leading-relaxed">
                     {answerHighlighted}
                   </div>
                 </div>
                 {currentQuestion.example && currentQuestion.example.length > 0 && (
-                  <div className="mb-8 px-8">
+                  <div className="mb-8">
                     <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2">Example</h3>
                     <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-base text-gray-100 dark:text-gray-200">
                       <code>
@@ -770,7 +724,7 @@ useEffect(() => {
                   </div>
                 )}
                 {currentQuestion.keyterms && currentQuestion.keyterms.length > 0 && (
-                  <div className="mb-2 px-8 pb-4">
+                  <div className="mb-2">
                     <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
                     <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900 dark:text-yellow-200">
                       {currentQuestion.keyterms.map((term, idx) => (
@@ -779,19 +733,16 @@ useEffect(() => {
                     </ul>
                   </div>
                 )}
-              </>
+              </div>
             ) : (
-              /* Desktop: Two columns if example exists */
               <div className={`px-8 pb-8 flex ${currentQuestion.example && currentQuestion.example.length > 0 ? 'flex-row gap-8' : 'flex-col'}`}>
                 <div className={`${currentQuestion.example && currentQuestion.example.length > 0 ? 'w-[50%] pr-8' : 'w-full'}`}>
-                  {/* Answer */}
                   <div className="mb-8">
                     <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">Answer</h3>
                     <div className="space-y-4 text-lg text-green-900 dark:text-green-200 leading-relaxed">
                       {answerHighlighted}
                     </div>
                   </div>
-                  {/* Key Terms */}
                   {currentQuestion.keyterms && currentQuestion.keyterms.length > 0 && (
                     <div className="mb-2">
                       <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
@@ -821,10 +772,9 @@ useEffect(() => {
             )}
           </div>
         </div>
-        {/* Mobile swipe hint */}
-        {isMobile && (
+        {isMobileOrTablet && (
           <div className="mt-3 text-center text-sm text-gray-500 dark:text-gray-400 select-none">
-            Swipe left/right to navigate • {activeCurrentIdx + 1}/{totalQuestions}
+            Swipe left/right or use arrow keys to navigate • {activeCurrentIdx + 1}/{totalQuestions}
           </div>
         )}
       </div>
