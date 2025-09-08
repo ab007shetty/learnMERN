@@ -19,11 +19,9 @@ export const ThemeProvider = ({ children }) => {
     const newTheme = !isDark;
     setIsDark(newTheme);
     
-    // Use in-memory storage instead of localStorage for hosted environment
     if (typeof window !== 'undefined') {
       if (newTheme) {
         document.documentElement.classList.add('dark');
-        // Store in a global variable instead of localStorage
         window.__theme = 'dark';
       } else {
         document.documentElement.classList.remove('dark');
@@ -32,10 +30,8 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
-  // Initialize theme on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Check for saved theme in global variable or default to light
       const saved = window.__theme;
       const shouldBeDark = saved === 'dark';
       
@@ -60,12 +56,10 @@ const Navbar = ({ sidebarOpen, onSidebarToggle, setSelected, INTRO }) => {
   const { isDark, toggleTheme } = useTheme();
     
   const handleThemeToggle = () => {
-    console.log('Theme toggle clicked, current isDark:', isDark);
     toggleTheme();
   };
 
   const handleLogoClick = () => {
-    // Use the same setSelected function and INTRO constant as sidebar
     if (setSelected && INTRO !== undefined) {
       setSelected(INTRO);
     }
@@ -73,6 +67,7 @@ const Navbar = ({ sidebarOpen, onSidebarToggle, setSelected, INTRO }) => {
     
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-6 transition-colors duration-200">
+      
       {/* Sidebar toggle button */}
       <button
         onClick={onSidebarToggle}
@@ -84,7 +79,7 @@ const Navbar = ({ sidebarOpen, onSidebarToggle, setSelected, INTRO }) => {
       
       {/* Logo and Title - Clickable */}
       <div 
-        className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity duration-200"
+        className="flex items-center gap-3 cursor-pointer"
         onClick={handleLogoClick}
         role="button"
         tabIndex={0}
@@ -99,7 +94,10 @@ const Navbar = ({ sidebarOpen, onSidebarToggle, setSelected, INTRO }) => {
         </div>
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">Learn MERN</h1>
       </div>
-      
+
+      {/* Spacer to push dark mode button to right */}
+      <div className="flex-1" />
+
       {/* Dark theme toggle */}
       <button
         onClick={handleThemeToggle}

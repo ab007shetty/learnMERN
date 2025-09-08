@@ -355,7 +355,7 @@ useEffect(() => {
                   
                   {/* Content */}
                   <div className="relative p-8">
-                    {/* Icon with animated background */}
+                    {/* Icon with animated animated background */}
                     <div className="relative mb-6">
                       <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${cat.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500 blur-xl`}></div>
                       <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm group-hover:scale-110 transition-transform duration-500">
@@ -744,39 +744,82 @@ useEffect(() => {
               Q{currentQuestion.id}: {questionHighlighted}
             </h2>
           </div>
-          {/* Answer */}
-          <div className="mb-8 px-8">
-            <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">Answer</h3>
-            <div className="space-y-4 text-lg text-green-900 dark:text-green-200 leading-relaxed">
-              {answerHighlighted}
-            </div>
-          </div>
-          {/* Example (if present) */}
-          {currentQuestion.example && currentQuestion.example.length > 0 && (
-            <div className="mb-8 px-8">
-              <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2">Example</h3>
-              <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-base text-gray-100 dark:text-gray-200">
-                <code>
-                  {currentQuestion.example.map((line, idx) => (
-                    <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400 dark:text-green-300' : ''}>
-                      {line}
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto">
+            {isMobile ? (
+              <>
+                {/* Mobile: Stacked as original */}
+                <div className="mb-8 px-8">
+                  <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">Answer</h3>
+                  <div className="space-y-4 text-lg text-green-900 dark:text-green-200 leading-relaxed">
+                    {answerHighlighted}
+                  </div>
+                </div>
+                {currentQuestion.example && currentQuestion.example.length > 0 && (
+                  <div className="mb-8 px-8">
+                    <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2">Example</h3>
+                    <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-base text-gray-100 dark:text-gray-200">
+                      <code>
+                        {currentQuestion.example.map((line, idx) => (
+                          <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400 dark:text-green-300' : ''}>
+                            {line}
+                          </div>
+                        ))}
+                      </code>
+                    </pre>
+                  </div>
+                )}
+                {currentQuestion.keyterms && currentQuestion.keyterms.length > 0 && (
+                  <div className="mb-2 px-8 pb-4">
+                    <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
+                    <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900 dark:text-yellow-200">
+                      {currentQuestion.keyterms.map((term, idx) => (
+                        <li key={idx}>{term}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>
+            ) : (
+              /* Desktop: Two columns if example exists */
+              <div className={`px-8 pb-8 flex ${currentQuestion.example && currentQuestion.example.length > 0 ? 'flex-row gap-8' : 'flex-col'}`}>
+                <div className={`${currentQuestion.example && currentQuestion.example.length > 0 ? 'w-[50%] pr-8' : 'w-full'}`}>
+                  {/* Answer */}
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">Answer</h3>
+                    <div className="space-y-4 text-lg text-green-900 dark:text-green-200 leading-relaxed">
+                      {answerHighlighted}
                     </div>
-                  ))}
-                </code>
-              </pre>
-            </div>
-          )}
-          {/* Key Terms (if present) */}
-          {currentQuestion.keyterms && currentQuestion.keyterms.length > 0 && (
-            <div className="mb-2 px-8 pb-4">
-              <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
-              <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900 dark:text-yellow-200">
-                {currentQuestion.keyterms.map((term, idx) => (
-                  <li key={idx}>{term}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+                  </div>
+                  {/* Key Terms */}
+                  {currentQuestion.keyterms && currentQuestion.keyterms.length > 0 && (
+                    <div className="mb-2">
+                      <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
+                      <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900 dark:text-yellow-200">
+                        {currentQuestion.keyterms.map((term, idx) => (
+                          <li key={idx}>{term}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                {currentQuestion.example && currentQuestion.example.length > 0 && (
+                  <div className="w-[50%] border-l border-gray-200 dark:border-gray-700 pl-8">
+                    <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2">Example</h3>
+                    <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-base text-gray-100 dark:text-gray-200">
+                      <code>
+                        {currentQuestion.example.map((line, idx) => (
+                          <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400 dark:text-green-300' : ''}>
+                            {line}
+                          </div>
+                        ))}
+                      </code>
+                    </pre>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         {/* Mobile swipe hint */}
         {isMobile && (
