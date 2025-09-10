@@ -43,7 +43,7 @@ const htmlCssQuestions = [
     example: [
       "/* display: none */",
       "element { display: none; }",
-      "",
+      " ",
       "/* visibility: hidden */",
       "element { visibility: hidden; }",
     ],
@@ -62,13 +62,107 @@ const htmlCssQuestions = [
     example: [
       "/* Border */",
       "div { border: 2px solid red; }",
-      "",
+      " ",
       "/* Outline */",
       "div { outline: 2px solid blue; }",
     ],
     keyterms: [
       "border = inside element, affects layout, supports border-radius",
       "outline = outside element, no layout impact, no border-radius",
+    ],
+  },
+  {
+    id: 5,
+    question: "What are semantic HTML elements and why are they important?",
+    answer: [
+      "Semantic elements clearly describe their meaning to both the browser and developer.",
+      "Examples: <header>, <footer>, <article>, <section>, <nav>.",
+      "They improve accessibility, SEO, and maintainability.",
+    ],
+    keyterms: [
+      "Semantic HTML = elements with meaningful names",
+      "Accessibility = helps screen readers understand content",
+      "SEO = search engine optimization",
+    ],
+  },
+  {
+    id: 6,
+    question:
+      "Explain the difference between relative, absolute, fixed, and sticky positioning in CSS.",
+    answer: [
+      "relative: positioned relative to its normal position.",
+      "absolute: positioned relative to the nearest positioned ancestor.",
+      "fixed: positioned relative to the viewport, doesn’t move on scroll.",
+      "sticky: toggles between relative and fixed based on scroll position.",
+    ],
+    keyterms: [
+      "relative = offset from normal position",
+      "absolute = positioned by ancestor",
+      "fixed = viewport-fixed, ignores ancestor",
+      "sticky = scroll-based relative/fixed",
+    ],
+  },
+  {
+    id: 7,
+    question:
+      "What is the difference between inline, inline-block, and block elements?",
+    answer: [
+      "block: occupies full width, starts on a new line.",
+      "inline: occupies only as much width as needed, does not start on a new line.",
+      "inline-block: like inline but allows width and height.",
+    ],
+    keyterms: [
+      "block = new line, full width",
+      "inline = no new line, only content width",
+      "inline-block = inline behavior with block properties",
+    ],
+  },
+  {
+    id: 8,
+    question:
+      "What are the differences between relative, em, rem, %, and vh/vw units in CSS?",
+    answer: [
+      "relative units adjust sizes relative to another value or viewport.",
+      "em = relative to parent font-size.",
+      "rem = relative to root font-size.",
+      "% = relative to parent container.",
+      "vh/vw = relative to viewport height/width.",
+    ],
+  },
+  {
+    id: 9,
+    question: "What is the difference between CSS Grid and Flexbox?",
+    answer: [
+      "Flexbox is 1-dimensional (row or column) layout, good for alignment and spacing.",
+      "Grid is 2-dimensional (rows and columns) layout, good for complex layouts.",
+      "They can be combined for responsive designs.",
+    ],
+    example: [
+      "// Flexbox example ",
+      ".container { display: flex; justify-content: space-between; }",
+      " ",
+      "// Grid example ",
+      ".grid-container { ",
+      "display: grid; grid-template-columns: 1fr 2fr; gap: 10px; ",
+      "}",
+    ],
+    keyterms: [
+      "Flexbox = 1D layout",
+      "Grid = 2D layout",
+      "Responsive design = adapts to screen size",
+    ],
+  },
+  {
+    id: 10,
+    question:
+      "What is the difference between relative units and absolute units in CSS?",
+    answer: [
+      "Relative units (%, em, rem, vh, vw) adapt to parent or viewport size.",
+      "Absolute units (px, pt, cm) remain fixed regardless of other elements.",
+    ],
+    keyterms: [
+      "Relative units = scalable, responsive",
+      "Absolute units = fixed size",
     ],
   },
 ];
