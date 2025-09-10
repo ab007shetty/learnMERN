@@ -208,7 +208,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     }
   }, [selectedCategory]);
 
-  // Search filtering and match detection
+  // Enhanced search filtering that includes question, answer, example, and keyterms
   useEffect(() => {
     if (!questions.length) return;
     
@@ -219,9 +219,19 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
       const term = searchTerm.toLowerCase();
       const indexes = questions
         .map((q, i) => {
+          // Search in question
           const inQuestion = q.question?.toLowerCase().includes(term);
+          
+          // Search in answer array
           const inAnswer = q.answer?.some(a => a.toLowerCase().includes(term));
-          return inQuestion || inAnswer ? i : -1;
+          
+          // Search in example array
+          const inExample = q.example?.some(ex => ex.toLowerCase().includes(term));
+          
+          // Search in keyterms array
+          const inKeyterms = q.keyterms?.some(kt => kt.toLowerCase().includes(term));
+          
+          return inQuestion || inAnswer || inExample || inKeyterms ? i : -1;
         })
         .filter(i => i !== -1);
 
@@ -439,13 +449,28 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
     );
   }
 
-  // Highlighted Q&A rendering
+  // Enhanced highlighted rendering with all fields
   const questionHighlighted = searchTerm
     ? highlightText(currentQuestion.question, searchTerm)
     : currentQuestion.question;
+  
   const answerHighlighted = currentQuestion.answer
     ? currentQuestion.answer.map((a, i) =>
         <p key={i}>{searchTerm ? highlightText(a, searchTerm) : a}</p>)
+    : [];
+
+  const exampleHighlighted = currentQuestion.example
+    ? currentQuestion.example.map((line, idx) => (
+        <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400 dark:text-green-300' : ''}>
+          {searchTerm ? highlightText(line, searchTerm) : line}
+        </div>
+      ))
+    : [];
+
+  const keytermsHighlighted = currentQuestion.keyterms
+    ? currentQuestion.keyterms.map((term, idx) => (
+        <li key={idx}>{searchTerm ? highlightText(term, searchTerm) : term}</li>
+      ))
     : [];
 
   const showMatchNav = filteredIndexes.length > 0 && filteredIndexes.length > 1;
@@ -714,11 +739,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                     <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2">Example</h3>
                     <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-base text-gray-100 dark:text-gray-200">
                       <code>
-                        {currentQuestion.example.map((line, idx) => (
-                          <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400 dark:text-green-300' : ''}>
-                            {line}
-                          </div>
-                        ))}
+                        {exampleHighlighted}
                       </code>
                     </pre>
                   </div>
@@ -727,9 +748,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                   <div className="mb-2">
                     <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
                     <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900 dark:text-yellow-200">
-                      {currentQuestion.keyterms.map((term, idx) => (
-                        <li key={idx}>{term}</li>
-                      ))}
+                      {keytermsHighlighted}
                     </ul>
                   </div>
                 )}
@@ -747,9 +766,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                     <div className="mb-2">
                       <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-400 mb-2">Key Terms</h3>
                       <ul className="list-disc ml-6 space-y-1 text-base text-yellow-900 dark:text-yellow-200">
-                        {currentQuestion.keyterms.map((term, idx) => (
-                          <li key={idx}>{term}</li>
-                        ))}
+                        {keytermsHighlighted}
                       </ul>
                     </div>
                   )}
@@ -759,11 +776,7 @@ const Questions = ({ icon: Icon = HelpCircle, name = "Questions" }) => {
                     <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2">Example</h3>
                     <pre className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto text-base text-gray-100 dark:text-gray-200">
                       <code>
-                        {currentQuestion.example.map((line, idx) => (
-                          <div key={idx} className={line.trim().startsWith('//') ? 'text-green-400 dark:text-green-300' : ''}>
-                            {line}
-                          </div>
-                        ))}
+                        {exampleHighlighted}
                       </code>
                     </pre>
                   </div>
