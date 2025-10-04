@@ -38,6 +38,16 @@ export const programRegistry = {
   "vowel-counter": () => import("../components/programs/VowelCounter"),
 
   // Core JS Programs
+  "two-sum": () => import("../components/programs/TwoSum"),
+  "longest-common-prefix": () =>
+    import("../components/programs/LongestCommonPrefix"),
   "closure-settimeout": () =>
     import("../components/programs/ClosureSetTimeout"),
+  fizzbuzz: () => import("../components/programs/FizzBuzz"),
+  "find-missing-number": () =>
+    import("../components/programs/FindMissingNumber"),
+  "merge-sorted-arrays": () =>
+    import("../components/programs/MergeSortedArrays"),
+  "valid-parentheses": () => import("../components/programs/ValidParentheses"),
+  "second-largest": () => import("../components/programs/SecondLargest"),
 };
