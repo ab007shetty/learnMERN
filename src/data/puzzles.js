@@ -70,6 +70,25 @@ number 3
       `"34" - "1" → both converted to numbers → 34 - 1 = 33.`,
     ],
   },
+  {
+    id: 6,
+    question: `
+let arr = [1, 2];
+let holey = [, 3, 4];
+console.log(arr + holey);
+`,
+    answer: `
+1,2,3,4
+`,
+    explanation: [
+      `**Sparse (holey) array** → an array with missing elements (like [,3,4]).`,
+      `When arrays are used with '+' → they are converted to strings using toString().`,
+      `[1,2].toString() → "1,2".`,
+      `[ ,3,4 ].toString() → ",3,4" (hole becomes a comma).`,
+      `"1,2" + ",3,4" → "1,2,3,4".`,
+      `So sparse array holes appear as commas when converted to strings.`,
+    ],
+  },
 ];
 
 export default puzzles;

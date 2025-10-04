@@ -27,6 +27,9 @@ import {
   Globe,
   Search,
   Code2,
+  Braces,
+  Code,
+  Type,
 } from "lucide-react";
 
 // --- Programs grouped and sorted alphabetically by category ---
@@ -61,7 +64,7 @@ const react = [
     icon: Search,
     description:
       "Search input that triggers search only after user stops typing. Great for optimizing API calls or filtering.",
-    concept: "useRef, setTimeout",
+    concept: "setTimeout",
     conceptDescription:
       "Debounce delays function execution to avoid firing on every keystroke, managed with setTimeout and useRef.",
     category: "react",
@@ -317,7 +320,30 @@ const strings = [
 ];
 
 // Core JS
+
 const corejs = [
+  {
+    id: "two-sum",
+    name: "Two Sum",
+    icon: Target,
+    description:
+      "Finds indices of two numbers in an array that add up to a target value.",
+    concept: "hashmap, array, logic",
+    conceptDescription:
+      "Stores visited numbers in an object and checks if the complement (target - current) exists.",
+    category: "corejs",
+  },
+  {
+    id: "longest-common-prefix",
+    name: "Longest Common Prefix",
+    icon: Type,
+    description:
+      "Finds the longest common starting substring among an array of strings.",
+    concept: "string, prefix, loops",
+    conceptDescription:
+      "Iteratively trims prefix until all strings start with it, returning the shared beginning characters.",
+    category: "corejs",
+  },
   {
     id: "closure-settimeout",
     name: "Closure with setTimeout",
@@ -327,6 +353,60 @@ const corejs = [
     concept: "closure, setTimeout, async",
     conceptDescription:
       "Closures or block-scoped variables (let) allow each loop iteration to capture its own value, ensuring correct output with setTimeout.",
+    category: "corejs",
+  },
+  {
+    id: "fizzbuzz",
+    name: "FizzBuzz",
+    icon: Hash,
+    description:
+      "Prints numbers 1 to N with Fizz for multiples of 3, Buzz for multiples of 5, and FizzBuzz for both.",
+    concept: "loop, conditionals",
+    conceptDescription:
+      "Uses modulus (%) operator and conditional checks to replace numbers with Fizz, Buzz, or FizzBuzz.",
+    category: "corejs",
+  },
+  {
+    id: "find-missing-number",
+    name: "Find Missing Number",
+    icon: Braces,
+    description:
+      "Finds the missing number in a sequence of consecutive integers.",
+    concept: "math, array, reduce",
+    conceptDescription:
+      "Uses sum of first N natural numbers formula and compares with actual array sum to find the missing value.",
+    category: "corejs",
+  },
+  {
+    id: "merge-sorted-arrays",
+    name: "Merge Two Sorted Arrays",
+    icon: Shuffle,
+    description:
+      "Merges two sorted arrays into one sorted array without using sort().",
+    concept: "array, two pointers",
+    conceptDescription:
+      "Uses pointer-based traversal for both arrays to merge efficiently in O(n+m) time.",
+    category: "corejs",
+  },
+  {
+    id: "valid-parentheses",
+    name: "Valid Parentheses",
+    icon: Layers,
+    description:
+      "Checks if parentheses in a string are balanced and properly nested.",
+    concept: "stack, string, logic",
+    conceptDescription:
+      "Uses a stack data structure to push open brackets and pop when matching close brackets appear.",
+    category: "corejs",
+  },
+  {
+    id: "second-largest",
+    name: "Find Second Largest Number",
+    icon: Code,
+    description: "Finds the second largest unique number in an array.",
+    concept: "sorting, logic",
+    conceptDescription:
+      "Removes duplicates using Set and sorts descending to find the second highest element.",
     category: "corejs",
   },
 ];

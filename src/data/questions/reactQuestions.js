@@ -448,6 +448,24 @@ const reactQuestions = [
       "Middleware like thunk used for async logic.",
     ],
   },
+  {
+    id: 32,
+    question: "Why is the 'key' prop important in React lists?",
+    answer: [
+      "Keys help React identify which list items have changed, been added, or removed.",
+      "They make updates efficient by preventing unnecessary re-renders.",
+      "Without keys, React may reuse or reorder DOM nodes incorrectly.",
+    ],
+    example: [
+      "items.map(item => <li key={item.id}>{item.name}</li>);",
+      "// Wrong: <li id={item.id}>{item.name}</li> // 'id' is just HTML, not used by React",
+    ],
+    keyterms: [
+      "key = special React prop used during reconciliation.",
+      "id = normal HTML attribute, not used for diffing.",
+      "Reconciliation = React’s process of updating the DOM efficiently.",
+    ],
+  },
 ];
 
 export default reactQuestions;
