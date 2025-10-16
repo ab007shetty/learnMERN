@@ -89,6 +89,196 @@ console.log(arr + holey);
       `So sparse array holes appear as commas when converted to strings.`,
     ],
   },
+  {
+    id: 7,
+    question: `
+const fs = require("fs");
+
+console.log("A: main start");
+
+fs.readFile(__filename, () => {
+  console.log("D: poll (I/O callback)");
+
+  setTimeout(() => console.log("F: timer inside I/O"), 0);
+  setImmediate(() => console.log("E: immediate inside I/O"));
+});
+
+setTimeout(() => console.log("C: timer outside I/O"), 0);
+
+Promise.resolve().then(() => console.log("B: promise microtask"));
+`,
+    answer: `
+A: main start  
+B: promise microtask  
+C: timer outside I/O  
+D: poll (I/O callback)  
+E: immediate inside I/O  
+F: timer inside I/O
+`,
+    explanation: [
+      `🌀 **Event loop (timer = 0)** order:`,
+      `1️⃣ Main thread (sync code)`,
+      `2️⃣ Microtasks (Promises, nextTick)`,
+      `3️⃣ Timers (setTimeout, setInterval)`,
+      `4️⃣ Poll (I/O callbacks like fs.readFile)`,
+      `5️⃣ Check (setImmediate)`,
+      `6️⃣ Close callbacks`,
+      `⚡ **Special case:** Inside I/O callbacks → event loop goes from Poll → Check phase directly.`,
+      `✅ So **setImmediate()** runs before **setTimeout(..., 0)**.`,
+      `👉 Outside I/O: timeout first → then immediate.`,
+    ],
+  },
+  {
+    id: 8,
+    question: `
+const arr = [1,2,3];
+arr.push(4);
+arr.key = "string";
+arr.length = 10;
+console.log( arr, arr.length, typeof(arr));
+`,
+    answer: `
+[1,2,3,4,<6 empty items>] 10 "object"
+`,
+    explanation: [
+      "push(4) → adds 4 at end.",
+      "arr.key = 'string' → adds a property (not an element).",
+      "length = 10 → pads with empty slots.",
+      "Arrays are objects → typeof arr = 'object'.",
+    ],
+  },
+
+  {
+    id: 9,
+    question: `
+let arr = [1,2];
+arr[5] = 10;
+console.log(arr.length, arr);
+`,
+    answer: `
+6 [1,2,<3 empty items>,10]
+`,
+    explanation: [
+      "Assigning to index 5 creates holes.",
+      "Length auto-updates to highest index + 1.",
+      "Empty slots remain 'undefined' (not stored).",
+    ],
+  },
+
+  {
+    id: 10,
+    question: `
+let str = "abc";
+str[0] = "z";
+console.log(str);
+`,
+    answer: `
+"abc"
+`,
+    explanation: [
+      "Strings are immutable in JS.",
+      "Index assignment doesn’t change the original string.",
+    ],
+  },
+
+  {
+    id: 11,
+    question: `
+let arr = [10,20];
+delete arr[0];
+console.log(arr.length, arr[0]);
+`,
+    answer: `
+2 undefined
+`,
+    explanation: [
+      "delete removes value but not slot.",
+      "Length stays same.",
+      "arr[0] becomes a hole (undefined).",
+    ],
+  },
+
+  {
+    id: 12,
+    question: `
+let arr = [1,2,3];
+arr.length = 1;
+console.log(arr);
+`,
+    answer: `
+[1]
+`,
+    explanation: [
+      "Setting smaller length truncates array.",
+      "Removes elements beyond new length.",
+    ],
+  },
+  {
+    id: 13,
+    question: `
+const arr = [10, 20, 30];
+arr.name = "myArray";
+arr.processed = true;
+
+console.log(arr.length);
+console.log(arr.name);
+console.log(arr.processed);
+for (let i in arr) {
+  console.log(i);
+}
+`,
+    answer: `
+3
+myArray
+true
+0
+1
+2
+name
+processed
+`,
+    explanation: [
+      "arr.length → 3, custom properties don't affect length.",
+      "arr.name → 'myArray', arr.processed → true, both are normal object properties.",
+      "for...in iterates over all enumerable keys, including custom properties.",
+      "Numeric indices (0,1,2) appear first, then custom keys ('name', 'processed').",
+      "Array methods like forEach/map ignore custom properties, only iterate numeric indices.",
+      "Shows how arrays can hold metadata alongside elements.",
+    ],
+  },
+  {
+    id: 14,
+    question: `
+const arr = [1, null, , undefined, 5];
+console.log(arr[0]);
+console.log(arr[1]);
+console.log(arr[2]);
+console.log(arr[3]);
+console.log(arr[4]);
+console.log(arr.hasOwnProperty(2));
+console.log(arr.hasOwnProperty(3));
+`,
+    answer: `
+1
+null
+undefined
+undefined
+5
+false
+true
+`,
+    explanation: [
+      "arr[0] → 1, normal value.",
+      "arr[1] → null, explicitly set.",
+      "arr[2] → undefined, slot empty (default undefined for missing element).",
+      "arr[3] → undefined, explicitly assigned undefined.",
+      "arr[4] → 5, normal value.",
+      "arr.hasOwnProperty(2) → false, because slot 2 is empty.",
+      "arr.hasOwnProperty(3) → true, because slot 3 has explicit undefined.",
+      "Key point: default empty slots return undefined when accessed, but no property exists.",
+      "Explicit undefined is different: property exists.",
+    ],
+  },
 ];
 
 export default puzzles;
