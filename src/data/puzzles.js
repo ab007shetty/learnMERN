@@ -279,6 +279,58 @@ true
       "Explicit undefined is different: property exists.",
     ],
   },
+  {
+    id: 15,
+    question: `
+console.log("A");
+
+new Promise(resolve => {
+  console.log("B");
+  resolve("C");
+}).then(msg => console.log(msg));
+
+console.log("D");
+`,
+    answer: `
+A
+B
+D
+C
+`,
+    explanation: [
+      "B runs immediately inside executor (sync).",
+      ".then() runs later as microtask.",
+      "D runs in main thread after B.",
+    ],
+  },
+  {
+    id: 16,
+    question: `
+console.log(1);
+
+Promise.resolve(2).then(console.log);
+
+new Promise(resolve => resolve(3)).then(console.log);
+
+(async () => {
+  console.log(await Promise.resolve(5));
+})();
+
+console.log(4);
+`,
+    answer: `
+1
+4
+2
+3
+5
+`,
+    explanation: [
+      "1 and 4 run synchronously (main thread).",
+      "Promise.then() callbacks and async await continuation are microtasks.",
+      "Microtasks run after main thread ends, in order they were queued: 2 → 3 → 5.",
+    ],
+  },
 ];
 
 export default puzzles;

@@ -165,5 +165,48 @@ const htmlCssQuestions = [
       "Absolute units = fixed size",
     ],
   },
+  {
+    id: 11,
+    question:
+      "What does the 'this' keyword refer to in HTML event attributes, and how is it used with properties like .tagName?",
+    answer: [
+      "In inline HTML event attributes (like onclick, onmouseover), 'this' refers to the element that triggered the event.",
+      "It allows direct access to the element’s properties and methods within the same tag.",
+      "For example, 'this.tagName' returns the name of the HTML tag in uppercase (e.g., BUTTON, DIV).",
+      "You can also use 'this' to modify styles or content dynamically (e.g., this.style.color = 'red').",
+    ],
+    example: [
+      '<button onclick="alert(this.tagName)">Show Tag</button>',
+      "<div onclick=\"this.style.background='yellow'\">Click to Highlight</div>",
+    ],
+    keyterms: [
+      "this = refers to the current HTML element handling the event",
+      "tagName = returns the element’s tag in uppercase",
+      "inline event = event defined directly inside the HTML tag",
+    ],
+  },
+  {
+    id: 12,
+    question: "CSS vs SCSS: key differences and a short SCSS example",
+    answer: [
+      "SCSS (Sass) is a superset of CSS adding variables, nesting, mixins, and better maintainability.",
+      "SCSS needs a build step (preprocessor) to compile to CSS.",
+      "Use SCSS for larger projects to keep styles organized.",
+    ],
+    example: [
+      "// SCSS",
+      "$primary: #0070f3;",
+      ".card {",
+      "  color: $primary;",
+      "  .title { font-weight: bold; }",
+      "}",
+      "// compiles to nested CSS selectors",
+    ],
+    keyterms: [
+      "SCSS = Sass syntax with nesting & variables",
+      "preprocessor = compiles SCSS → CSS",
+      "mixins = reusable style blocks",
+    ],
+  },
 ];
 export default htmlCssQuestions;

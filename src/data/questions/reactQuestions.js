@@ -466,6 +466,450 @@ const reactQuestions = [
       "Reconciliation = React’s process of updating the DOM efficiently.",
     ],
   },
+  {
+    id: 33,
+    question:
+      "How does useEffect work in React, and why is the dependency array important?",
+    answer: [
+      "Runs side-effects after render (data fetch, subscriptions, DOM ops).",
+      "Dependency array controls when the effect runs: [] → once, [a] → when a changes, no array → after every render.",
+      "Cleanup function (returned) runs before next effect or on unmount, useful to remove listeners/timers.",
+    ],
+    example: [
+      "useEffect(() => {",
+      "  // mount: fetch data",
+      "  const id = setInterval(() => console.log('tick'), 1000);",
+      "  return () => clearInterval(id); // cleanup on unmount",
+      "}, []);",
+      "",
+      "useEffect(() => {",
+      "  // runs whenever `userId` changes",
+      "  fetch(`/api/user/${userId}`).then(r => r.json()).then(setUser);",
+      "}, [userId]);",
+    ],
+    keyterms: [
+      "side-effect = work outside render (fetch, timers, subscriptions)",
+      "dependency array = controls re-run",
+      "cleanup = function returned by effect",
+    ],
+  },
+  {
+    id: 34,
+    question: "What is useContext and how do you use it?",
+    answer: [
+      "Provides a way to pass data through the component tree without prop drilling.",
+      "Create a Context with createContext(), provide value via Provider, consume with useContext().",
+      "Good for theme, auth, language — not for frequently changing large state (use redux/zustand for that).",
+    ],
+    example: [
+      "const AuthContext = createContext(null);",
+      "",
+      "function App() {",
+      "  const user = {name: 'Ani'};",
+      "  return (<AuthContext.Provider value={user}><Profile/></AuthContext.Provider>);",
+      "}",
+      "",
+      "function Profile() {",
+      "  const user = useContext(AuthContext);",
+      "  return <div>{user.name}</div>; // Ani",
+      "}",
+    ],
+    keyterms: [
+      "createContext() = creates context object",
+      "Provider = supplies value to subtree",
+      "useContext() = consumes context value",
+    ],
+  },
+  {
+    id: 35,
+    question: "What is useMemo and when should you use it?",
+    answer: [
+      "Memoizes a computed value so expensive calculations run only when dependencies change.",
+      "Use when an expensive function is called on every render and result can be reused.",
+      "Do not overuse — memoization has its own cost; use when measurable benefit exists.",
+    ],
+    example: [
+      "const heavy = (n) => { /* CPU heavy loop */ return n * 1000; };",
+      "const result = useMemo(() => heavy(input), [input]);",
+      "// heavy runs only when `input` changes",
+    ],
+    keyterms: [
+      "memoization = cache computed result",
+      "useMemo = caches value between renders",
+      "dependency = triggers recompute",
+    ],
+  },
+  {
+    id: 36,
+    question:
+      "Explain useReducer with a concise example and when to prefer it over useState.",
+    answer: [
+      "useReducer manages complex state transitions using a reducer function (state, action) ⇒ newState.",
+      "Prefer it for complex state logic, multiple sub-values, or when next state depends on previous state.",
+      "It centralizes update logic and improves testability/readability.",
+    ],
+    example: [
+      "function reducer(state, action) {",
+      "  switch(action.type) {",
+      "    case 'inc': return {...state, count: state.count + 1};",
+      "    case 'setName': return {...state, name: action.payload};",
+      "    default: return state;",
+      "  }",
+      "}",
+      "const [state, dispatch] = useReducer(reducer, {count:0, name:''});",
+      "dispatch({type:'inc'});",
+      "dispatch({type:'setName', payload:'Ani'});",
+    ],
+    keyterms: [
+      "reducer = (state, action) => newState",
+      "dispatch = send action to reducer",
+      "initialState = starting state for reducer",
+    ],
+  },
+  {
+    id: 37,
+    question: "What is useCallback and why use it?",
+    answer: [
+      "useCallback memoizes a function reference so it doesn't recreate on every render.",
+      "Useful when passing functions to memoized children to avoid unnecessary re-renders.",
+      "Works like useMemo but for functions.",
+    ],
+    example: [
+      "const increment = useCallback(() => setCount(c => c + 1), []);",
+      "<Child onClick={increment} /> // Child won't re-render if props same",
+    ],
+    keyterms: [
+      "useCallback = memoize function",
+      "dependency array = controls when function reference updates",
+      "referential equality = same function object across renders",
+    ],
+  },
+  {
+    id: 38,
+    question: "What is useRef and what are its uses?",
+    answer: [
+      "useRef returns a mutable object {current} that persists across renders.",
+      "Used to access DOM nodes, keep mutable values without causing re-render, store timers or previous values.",
+      "Updating ref does not trigger re-render.",
+    ],
+    example: [
+      "const inputRef = useRef(null);",
+      "useEffect(() => inputRef.current.focus(), []);",
+      "return <input ref={inputRef} />;",
+      "",
+      "// store previous value",
+      "const prev = useRef();",
+      "useEffect(()=> { prev.current = value; }, [value]);",
+    ],
+    keyterms: [
+      "ref.current = mutable container",
+      "DOM ref = connect to DOM element",
+      "no re-render = updates do not cause UI update",
+    ],
+  },
+  {
+    id: 39,
+    question: "What is a Higher-Order Component (HOC) and why use one?",
+    answer: [
+      "HOC is a function that takes a component and returns an enhanced component.",
+      "Used to share reusable logic (e.g., logging, auth checks) across multiple components.",
+      "HOCs wrap original component and inject props or behavior.",
+    ],
+    example: [
+      "function withAuth(Wrapped){",
+      "  return function(props){",
+      "    const user = useContext(AuthContext);",
+      "    if(!user) return <Login/>;",
+      "    return <Wrapped {...props} />;",
+      "  }",
+      "}",
+      "// const Protected = withAuth(Dashboard);",
+    ],
+    keyterms: [
+      "HOC = function(Component) => Component",
+      "composition = wrap component with extra behavior",
+      "do not mutate wrapped component = return new component",
+    ],
+  },
+  {
+    id: 40,
+    question: "React class component lifecycle: 3 phases and main methods.",
+    answer: [
+      "Mounting: constructor → render → componentDidMount (init side-effects).",
+      "Updating: shouldComponentUpdate → render → componentDidUpdate (respond to prop/state changes).",
+      "Unmounting: componentWillUnmount (cleanup).",
+    ],
+    example: [
+      "class MyComp extends React.Component {",
+      "  componentDidMount(){ /* fetch */ }",
+      "  shouldComponentUpdate(nextProps){ return true; }",
+      "  componentDidUpdate(prev){ /* react to change */ }",
+      "  componentWillUnmount(){ /* cleanup */ }",
+      "  render(){ return <div/>; }",
+      "}",
+    ],
+    keyterms: [
+      "mounting = first render",
+      "updating = re-render on prop/state change",
+      "unmounting = cleanup phase",
+    ],
+  },
+  {
+    id: 41,
+    question: "State vs Props in React — differences with example.",
+    answer: [
+      "State: internal, mutable, owned by component (useState/useReducer).",
+      "Props: external, read-only, passed from parent to child.",
+      "Props flow is one-way (parent → child).",
+    ],
+    example: [
+      "function Parent(){",
+      "  const [count, setCount] = useState(0);",
+      "  return <Child count={count} onInc={()=>setCount(c=>c+1)} />;",
+      "}",
+      "function Child({count, onInc}){",
+      "  return <button onClick={onInc}>Count: {count}</button>;",
+      "}",
+    ],
+    keyterms: [
+      "state = component data that changes",
+      "props = data from parent",
+      "one-way binding = parent passes props to child",
+    ],
+  },
+  {
+    id: 42,
+    question:
+      "Compare Redux and Zustand: why, how, and when to use; mention Redux Toolkit.",
+    answer: [
+      "Both manage global state; choose based on complexity and team needs.",
+      "Redux: predictable, middleware, developer tools, more boilerplate; good for large apps and strict patterns.",
+      "Redux Toolkit: reduces boilerplate (createSlice, configureStore) and is recommended standard.",
+      "Zustand: minimal API, less boilerplate, hook-based store; good for small-to-medium apps or simple global state.",
+    ],
+    example: [
+      "// Redux Toolkit slice (simplified)",
+      "const slice = createSlice({ name:'counter', initialState:0, reducers:{inc: s => s+1} });",
+      "store.dispatch(slice.actions.inc());",
+      "",
+      "// Zustand simple store",
+      "const useStore = create(set => ({count:0, inc: ()=>set(s=>({count: s.count+1}))}));",
+      "useStore.getState().inc();",
+    ],
+    keyterms: [
+      "Redux = central store + reducers + actions",
+      "Redux Toolkit = official abstraction to simplify Redux",
+      "Zustand = small hook-based state library",
+    ],
+  },
+  {
+    id: 43,
+    question:
+      "What are custom hooks, why create them, and a hook example using localStorage?",
+    answer: [
+      "Custom hooks reuse stateful logic (start name with `use`).",
+      "They allow sharing behaviour across components without repeating code.",
+      "Good for form logic, localStorage syncing, subscriptions.",
+    ],
+    example: [
+      "function useLocalStorage(key, initial){",
+      "  const [val, setVal] = useState(()=>{",
+      "    const raw = localStorage.getItem(key);",
+      "    return raw ? JSON.parse(raw) : initial;",
+      "  });",
+      "  useEffect(()=> localStorage.setItem(key, JSON.stringify(val)), [key, val]);",
+      "  return [val, setVal];",
+      "}",
+      "// usage: const [name, setName] = useLocalStorage('name','Ani');",
+    ],
+    keyterms: [
+      "custom hook = function using hooks for reusable logic",
+      "localStorage sync = persist state to browser storage",
+      "encapsulation = hide logic inside hook",
+    ],
+  },
+  {
+    id: 44,
+    question: "What is lazy loading, code-splitting and Suspense in React?",
+    answer: [
+      "Lazy loading (React.lazy) loads components only when needed, reducing initial bundle size.",
+      "Code splitting breaks app bundle into smaller chunks loaded on demand.",
+      "Suspense shows a fallback UI while the lazy chunk loads.",
+    ],
+    example: [
+      "const LazyPage = React.lazy(() => import('./BigPage'));",
+      "function App(){",
+      "  return (<Suspense fallback={<div>Loading...</div>}><LazyPage/></Suspense>);",
+      "}",
+    ],
+    keyterms: [
+      "React.lazy = dynamic import for components",
+      "code splitting = break bundle into chunks",
+      "Suspense = fallback UI while loading",
+    ],
+  },
+  {
+    id: 45,
+    question:
+      "Explain Virtual DOM, reconciliation, React Fiber and the diffing algorithm (brief).",
+    answer: [
+      "Virtual DOM: lightweight in-memory representation of UI.",
+      "Diffing compares previous and current VDOM to compute minimal DOM updates (reconciliation).",
+      "React Fiber is the rewrite for incremental rendering and better scheduling (pausing, prioritizing work).",
+      "Diffing uses heuristics (keys, element type) to minimize operations.",
+    ],
+    example: [
+      "When state changes, React creates new VDOM, compares (diff) with previous, then updates only changed DOM nodes (not full re-render).",
+      "Using keys in lists helps diffing produce minimal moves: <li key={id}>",
+    ],
+    keyterms: [
+      "Virtual DOM = abstract DOM copy",
+      "reconciliation = compute minimal updates",
+      "Fiber = scheduler + incremental rendering",
+      "keys = help list diffing",
+    ],
+  },
+
+  {
+    id: 46,
+    question:
+      "Routing and RBAC: how to implement protected routes and role-based access in React?",
+    answer: [
+      "Use React Router for routes; protect routes by checking auth and roles before rendering component.",
+      "RBAC: assign roles to user (admin/user) and conditionally allow access.",
+      "Redirect or show unauthorized page when check fails.",
+    ],
+    example: [
+      "function Protected({role, children}){",
+      "  const user = useAuth();",
+      "  if(!user) return <Navigate to='/login' />;",
+      "  if(role && user.role !== role) return <Navigate to='/unauthorized' />;",
+      "  return children;",
+      "}",
+      "<Route path='/admin' element={<Protected role='admin'><Admin/></Protected>} />",
+    ],
+    keyterms: [
+      "React Router = routing library",
+      "Protected route = gate component checking auth/role",
+      "RBAC = role-based access control",
+    ],
+  },
+  {
+    id: 47,
+    question:
+      "How to handle query params, dynamic routing and route params in React Router?",
+    answer: [
+      "useParams() reads dynamic segments (/:id).",
+      "useSearchParams() or new URLSearchParams reads query strings (?q=abc).",
+      "Dynamic routing renders different content based on URL params.",
+    ],
+    example: [
+      "// Route: /user/:id",
+      "const { id } = useParams(); // id from path",
+      "const [searchParams] = useSearchParams();",
+      "const sort = searchParams.get('sort'); // ?sort=asc",
+    ],
+    keyterms: [
+      "useParams = path params",
+      "useSearchParams = query params",
+      "dynamic route = URL-driven rendering",
+    ],
+  },
+  {
+    id: 48,
+    question:
+      "React Testing: what is React Testing Library (RTL) and basic testing pattern?",
+    answer: [
+      "RTL focuses on testing UI from user's perspective (DOM queries, events).",
+      "Use render(), screen queries and fireEvent/userEvent to simulate interactions.",
+      "Prefer behaviour tests over implementation details.",
+    ],
+    example: [
+      "render(<Button />);",
+      "const btn = screen.getByRole('button', {name: /click/i});",
+      "userEvent.click(btn);",
+      "expect(screen.getByText(/done/i)).toBeInTheDocument();",
+    ],
+    keyterms: [
+      "RTL = user-focused testing library",
+      "render = render component in test DOM",
+      "userEvent = simulate user actions",
+    ],
+  },
+  {
+    id: 49,
+    question: "fetch vs axios: differences and usage examples",
+    answer: [
+      "fetch: native browser API, returns Response which needs .json() parsing; no built-in interceptors.",
+      "axios: library, auto-parses JSON (res.data), supports request/response interceptors, better error handling and older browser support.",
+      "Choose axios for extra features, fetch for native no-dep usage.",
+    ],
+    example: [
+      "// fetch",
+      "fetch('/api/data')",
+      "  .then(res => { if(!res.ok) throw new Error('err'); return res.json(); })",
+      "  .then(data => console.log(data))",
+      "// axios",
+      "axios.get('/api/data')",
+      "  .then(res => console.log(res.data))",
+    ],
+    keyterms: [
+      "fetch = native, promise-based",
+      "axios = feature-rich HTTP client",
+      "interceptors = middleware for requests/responses",
+    ],
+  },
+  {
+    id: 50,
+    question:
+      "Why use a key in map(), and how does useState differ from normal variables (including manual array form)?",
+    answer: [
+      "key uniquely identifies list items so React can track elements across re-renders and perform minimal DOM updates.",
+      "useState values persist across renders and trigger re-render when updated; normal variables reset each render and do not trigger updates.",
+      "Manual form: const stateArr = useState(0); const count = stateArr[0]; const setCount = stateArr[1]; — same underlying API as destructured form.",
+    ],
+    example: [
+      "// keys in list",
+      "items.map(item => <li key={item.id}>{item.name}</li>);",
+      "",
+      "// useState manual access (not recommended but possible)",
+      "const stateArr = useState(0);",
+      "const count = stateArr[0];",
+      "const setCount = stateArr[1];",
+      "setCount(prev => prev + 1);",
+    ],
+    keyterms: [
+      "key = stable id for list items",
+      "re-render = UI update caused by state change",
+      "useState = hook that returns [value, setValue]",
+    ],
+  },
+  {
+    id: 51,
+    question:
+      "Why do we use parentheses around JSX inside .map, like .map(user => (<li>{user.name}</li>))?",
+    answer: [
+      "Parentheses here are not for function parameters.",
+      "They are used to wrap the JSX being returned from the arrow function.",
+      "This allows writing multi-line JSX without needing the 'return' keyword.",
+      "Without parentheses: .map(user => <li>{user.name}</li>) (for single-line).",
+      "With parentheses: .map(user => ( <li>{user.name}</li> )) (for multi-line readability).",
+    ],
+    example: [
+      "// Single line (no parentheses)",
+      "users.map(user => <li>{user.name}</li>)",
+      "",
+      "// Multi-line (with parentheses for JSX)",
+      "users.map(user => (",
+      "  <li key={user.id}>{user.name}</li>",
+      "))",
+    ],
+    keyterms: [
+      "Arrow function = Short function syntax using =>",
+      "JSX = JavaScript XML, syntax extension for React",
+      "Parentheses around JSX = Groups multi-line JSX for implicit return",
+    ],
+  },
 ];
 
 export default reactQuestions;

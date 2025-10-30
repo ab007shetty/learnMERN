@@ -30,6 +30,7 @@ import {
   Braces,
   Code,
   Type,
+  Images,
 } from "lucide-react";
 
 // --- Programs grouped and sorted alphabetically by category ---
@@ -78,6 +79,17 @@ const react = [
     concept: "useEffect, fetch, filter",
     conceptDescription:
       "useEffect is used for side-effects like data fetching; fetch retrieves data from an API; filter is used to display matching results.",
+    category: "react",
+  },
+  {
+    id: "carousel",
+    name: "Image Carousel",
+    icon: Images,
+    description:
+      "Simple image carousel that automatically slides every 5 seconds with next and previous navigation buttons.",
+    concept: "useState, useEffect",
+    conceptDescription:
+      "useState tracks the current image index, while useEffect handles automatic sliding using setInterval with cleanup.",
     category: "react",
   },
   {
