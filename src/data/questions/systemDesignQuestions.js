@@ -204,5 +204,23 @@ const systemDesignQuestions = [
       "DDoS protection = prevents overload attacks",
     ],
   },
+  {
+    id: 11,
+    question: "SSR vs CSR: what are they and how they affect SEO?",
+    answer: [
+      "CSR (Client-Side Rendering): browser downloads JS, renders UI; slower first paint, content not present in HTML initially.",
+      "SSR (Server-Side Rendering): server sends fully rendered HTML; faster first paint and better SEO because crawlers see content.",
+      "Use hybrid approaches (SSR + hydration/ISR) for best UX/SEO.",
+    ],
+    example: [
+      "Next.js provides SSR: getServerSideProps fetches data server-side and returns HTML.",
+      "React SPA uses CSR: index.html + bundle.js which renders content in browser.",
+    ],
+    keyterms: [
+      "CSR = renders in browser",
+      "SSR = renders on server",
+      "SEO = search engine indexing improved by SSR",
+    ],
+  },
 ];
 export default systemDesignQuestions;

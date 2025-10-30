@@ -12,6 +12,7 @@ export const programRegistry = {
   stopwatch: () => import("../components/programs/Stopwatch"),
   "use-reducer-counter": () =>
     import("../components/programs/CounterWithReducer"),
+  carousel: () => import("../components/programs/Carousel"),
 
   // Algo Programs
   "anagram-checker": () => import("../components/programs/AnagramChecker"),

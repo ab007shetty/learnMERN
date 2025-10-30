@@ -367,8 +367,81 @@ const coreJsQuestions = [
       "Better debugging, recursion",
     ],
   },
+
   {
     id: 19,
+    question: "What is array destructuring in JavaScript and why is it used?",
+    answer: [
+      "Array destructuring allows extracting values from arrays and assigning them to variables in a single line.",
+      "It makes code shorter and easier to read.",
+      "You can skip elements or set default values.",
+    ],
+    example: [
+      "const arr = [1, 2, 3];",
+      "const [a, b, c] = arr;",
+      "console.log(a, b, c); // 1 2 3",
+      "",
+      "// Skipping and default value",
+      "const [x, , z = 10] = [5];",
+      "console.log(x, z); // 5 10",
+    ],
+    keyterms: [
+      "Destructuring = unpacking values from arrays/objects",
+      "Default value = assigned if no value present",
+    ],
+  },
+
+  {
+    id: 20,
+    question:
+      "What are the types of exports in JavaScript modules and how do they differ?",
+    answer: [
+      "There are two types: **Default Export** and **Named Export**.",
+      "Default export → only one per file, can be imported with any name.",
+      "Named export → multiple per file, must use same name when importing.",
+    ],
+    example: [
+      "// Default export",
+      "export default function greet() { console.log('Hello'); }",
+      "import hello from './greet.js';",
+      "hello();",
+      "",
+      "// Named export",
+      "export const add = (a,b) => a + b;",
+      "import { add } from './math.js';",
+      "console.log(add(2,3)); // 5",
+    ],
+    keyterms: [
+      "Default export = single main export per file",
+      "Named export = multiple exports with exact names",
+    ],
+  },
+  {
+    id: 21,
+    question:
+      "What is Optional Chaining (?.) in JavaScript and why is it used?",
+    answer: [
+      "Optional chaining (?.) allows safe access to nested object properties.",
+      "It prevents runtime errors if a property doesn’t exist.",
+      "If any property in the chain is null or undefined, it returns undefined instead of throwing an error.",
+      "Useful for handling deeply nested data safely.",
+    ],
+    example: [
+      "const user = { profile: { name: 'Ani' } };",
+      "console.log(user.profile?.name); // Ani",
+      "console.log(user.address?.city); // undefined (no error)",
+      "",
+      "// Without optional chaining → Error",
+      "// console.log(user.address.city); // ❌ TypeError",
+    ],
+    keyterms: [
+      "Optional chaining = safe property access operator",
+      "?. = returns undefined if property doesn’t exist",
+      "Avoids = runtime TypeError",
+    ],
+  },
+  {
+    id: 22,
     question: "What are First-Class and Higher-Order Functions in JavaScript?",
     answer: [
       "First-class functions: Functions are treated like variables. They can be assigned, passed as arguments, or returned.",
@@ -400,7 +473,26 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 20,
+    id: 23,
+    question:
+      "What are Higher-Order Functions (HOF) in JavaScript and why are they used?",
+    answer: [
+      "A Higher-Order Function is a function that takes another function as an argument or returns one.",
+      "They help in code reuse and functional programming style.",
+      "Examples include map(), filter(), reduce().",
+    ],
+    example: [
+      "const nums = [1, 2, 3, 4];",
+      "const squares = nums.map(n => n * n);",
+      "console.log(squares); // [1, 4, 9, 16]",
+    ],
+    keyterms: [
+      "HOF = function that takes or returns another function",
+      "map, filter, reduce = common HOFs",
+    ],
+  },
+  {
+    id: 24,
     question:
       "What is a Callback Function in JavaScript and its top use cases?",
     answer: [
@@ -426,7 +518,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 21,
+    id: 25,
     question: "Arrow Functions vs Regular Functions: what are key differences?",
     answer: [
       "Arrow functions use lexical `this` (inherited from surrounding scope).",
@@ -456,7 +548,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 22,
+    id: 26,
     question: "What are Pure vs Impure Functions?",
     answer: [
       "Pure: same inputs -> same output, no side effects.",
@@ -479,7 +571,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 23,
+    id: 27,
     question: "What are closures in JavaScript?",
     answer: [
       "Function bundled with its lexical environment is called as a closure. ",
@@ -505,7 +597,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 24,
+    id: 28,
     question: "What are pros and cons of closures?",
     answer: [
       "Pros: Encapsulation, Stateful functions, Modularity",
@@ -533,7 +625,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 25,
+    id: 29,
     question: "How do closures enable data hiding and encapsulation?",
     answer: [
       "Variables like `count` live in the lexical scope of `createCounter` and are not directly accessible outside.",
@@ -562,7 +654,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 26,
+    id: 30,
     question: "How do `let`, `var`, and `const` affect closures?",
     answer: [
       "`var` → function-scoped, shared across closures (last value retained).",
@@ -589,7 +681,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 27,
+    id: 31,
     question:
       "How does setTimeout demonstrate closures (let vs var) with Fix ?",
     answer: [
@@ -624,7 +716,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 28,
+    id: 32,
     question: "What are Event Listeners in JavaScript?",
     answer: [
       "They run a handler when an event occurs (click, input, etc.).",
@@ -641,7 +733,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 29,
+    id: 33,
     question: "How do closures work with Event Listeners?",
     answer: [
       "Listeners capture variables from their creation scope.",
@@ -662,7 +754,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 30,
+    id: 34,
     question: "How does scope affect Event Listeners (var vs let)?",
     answer: [
       "A function execution context is created only when a function is invoked (added to the call stack).Inside that context, JS maintains a Lexical Environment(variable env)",
@@ -690,7 +782,54 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 31,
+    id: 35,
+    question:
+      "What are event listeners in JavaScript and how do onClick or onSubmit work?",
+    answer: [
+      "Event listeners detect user actions like clicks, typing, or submitting forms.",
+      "They are used to make webpages interactive.",
+      "Common events: onClick, onSubmit, onChange, onFocus, onBlur.",
+    ],
+    example: [
+      "// HTML: <button id='btn'>Click Me</button>",
+      "document.getElementById('btn').addEventListener('click', () => {",
+      "  console.log('Button clicked');",
+      "});",
+      "",
+      "// onSubmit example",
+      "document.querySelector('form').addEventListener('submit', (e) => {",
+      "  e.preventDefault();",
+      "  console.log('Form submitted');",
+      "});",
+    ],
+    keyterms: [
+      "Event listener = detects user action",
+      "onClick = triggers on button click",
+      "onSubmit = triggers when form submitted",
+    ],
+  },
+  {
+    id: 36,
+    question:
+      "What is the difference between setTimeout() and setInterval() in JavaScript?",
+    answer: [
+      "Both are used to run functions after a time delay.",
+      "setTimeout() runs the function **once** after the delay.",
+      "setInterval() runs the function **repeatedly** at given intervals.",
+      "Both can be cleared using clearTimeout() and clearInterval().",
+    ],
+    example: [
+      "setTimeout(() => console.log('Run once'), 1000);",
+      "const id = setInterval(() => console.log('Repeating...'), 2000);",
+      "// clearInterval(id) to stop",
+    ],
+    keyterms: [
+      "setTimeout = runs function once after delay",
+      "setInterval = repeats function at fixed intervals",
+    ],
+  },
+  {
+    id: 37,
     question: "Why should you remove Event Listeners?",
     answer: [
       "Listeners hold references via closures -> memory use.",
@@ -713,7 +852,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 32,
+    id: 38,
     question: "What are Debouncing and Throttling with event listeners?",
     answer: [
       "Debounce: delay execution until user stops triggering.",
@@ -740,7 +879,7 @@ const coreJsQuestions = [
     keyterms: ["Debounce = wait then run", "Throttle = run at fixed rate"],
   },
   {
-    id: 33,
+    id: 39,
     question: "What are synchronous and asynchronous code in JavaScript?",
     answer: [
       "Synchronous code runs line-by-line, blocking further execution until the current task finishes.",
@@ -762,7 +901,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 34,
+    id: 40,
     question: "Why is JavaScript called single-threaded and synchronous?",
     answer: [
       "JS runs on a single main thread executing one task at a time.",
@@ -780,7 +919,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 35,
+    id: 41,
     question: "What does blocking the main thread mean in JavaScript?",
     answer: [
       "A long synchronous task stops the event loop from processing other work.",
@@ -804,7 +943,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 36,
+    id: 42,
     question: "What is the Event Loop in JavaScript and how does it work?",
     answer: [
       "The event loop is the mechanism that enables JavaScript (a single-threaded language) to handle asynchronous operations without blocking.",
@@ -834,7 +973,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 37,
+    id: 43,
     question:
       "What is the difference between Microtask Queue and Callback/Task Queue in JavaScript event loop?",
     answer: [
@@ -859,7 +998,7 @@ const coreJsQuestions = [
   },
 
   {
-    id: 38,
+    id: 44,
     question:
       "How do you handle asynchronous code using callbacks in JavaScript?",
     answer: [
@@ -878,17 +1017,17 @@ const coreJsQuestions = [
     keyterms: ["Callback = passed function", "Async execution"],
   },
   {
-    id: 39,
+    id: 45,
     question:
       "How do you handle asynchronous code using Promises in JavaScript?",
     answer: [
-      "Promises represent async results; use .then() for success and .catch() for errors.",
+      "Promises is an object representing the eventual completion or failure of an async operation.",
       "Code after a Promise runs immediately while the Promise is pending, showing async behavior.",
-      "Explanation of example:",
-      "1. `promiseDemo` resolves after 1 second.",
-      "2. `.then()` runs when the Promise resolves.",
-      "3. `console.log('Start')` runs immediately, before the resolved message.",
-      "4. `.catch()` handles errors if rejected.",
+      "Behaviour of Promise:",
+      "1. `Executes Only once.",
+      "2. `Immutable, so more trustworthy than callbacks.",
+      "3. `.then()` runs when the Promise resolves.",
+      "4. Only Pending, Fulfilled (resolved), Rejected are the states of a Promise.",
     ],
     example: [
       "const promiseDemo = new Promise(res =>",
@@ -903,13 +1042,10 @@ const coreJsQuestions = [
       " ",
       "// Output: 'Start' immediately, then 'Hello from Promise!' after 1s",
     ],
-    keyterms: [
-      ".then/.catch = handlers",
-      "Async execution = code runs while Promise is pending",
-    ],
+    keyterms: ["Async execution = code runs while Promise is pending"],
   },
   {
-    id: 40,
+    id: 46,
     question:
       "How do you handle asynchronous code using async/await in JavaScript?",
     answer: [
@@ -938,7 +1074,7 @@ const coreJsQuestions = [
     keyterms: ["Async/await = sync-like", "Await = pause"],
   },
   {
-    id: 41,
+    id: 47,
     question: "Compare callbacks, promises, and async/await in JavaScript.",
     answer: [
       "Callbacks: Oldest way, pass a function to handle async result. Simple but leads to nesting (callback hell).",
@@ -948,7 +1084,7 @@ const coreJsQuestions = [
     example: [
       "Style      | Handling result     | Pros                 | Cons                   ",
       "-----------|---------------------|----------------------|------------------------",
-      "Callback   | Inside callback fn  | Simple, built-in     | Callback hell, messy   ",
+      "Callback   | Inside callback fn  | Simple, built-in     | Callback hell, Inversion of Control",
       "Promise    | .then()/.catch()    | Cleaner, chaining    | Verbose for many steps ",
       "Async/Await| await inside async  | Readable, looks sync | Must be in async fn    ",
     ],
@@ -959,7 +1095,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 42,
+    id: 48,
     question:
       "What is starvation of tasks in the Callback Queue in JavaScript?",
     answer: [
@@ -992,8 +1128,459 @@ const coreJsQuestions = [
       "Callback/Task Queue = lower priority, may starve if microtasks never finish",
     ],
   },
+
   {
-    id: 43,
+    id: 49,
+    question: "What are Promises in JavaScript and why are they used?",
+    answer: [
+      "A Promise is an object that represents the eventual completion or failure of an asynchronous task.",
+      "It acts as a placeholder for a value that will be available in the future.",
+      "Promises help solve problems of callbacks like **callback hell** and **inversion of control**.",
+      "They provide a cleaner and more reliable way to handle async code.",
+    ],
+    example: [
+      "const promise = new Promise((resolve, reject) => {",
+      "  let success = true;",
+      "  success ? resolve('Done!') : reject('Error');",
+      "});",
+      "",
+      "promise.then(res => console.log(res))",
+      "       .catch(err => console.log(err));",
+    ],
+    keyterms: [
+      "Promise = async placeholder object",
+      "Inversion of control = losing control to nested callbacks",
+      "Callback hell = nested callbacks making code hard to read",
+    ],
+  },
+  {
+    id: 50,
+    question:
+      "What are the different states of a Promise and how do they work?",
+    answer: [
+      "A Promise has **3 states**: Pending, Fulfilled, and Rejected.",
+      "Pending → initial state before completion.",
+      "Fulfilled → operation completed successfully (resolved).",
+      "Rejected → operation failed with an error.",
+      "A promise is **immutable** once resolved or rejected.",
+    ],
+    example: [
+      "const promise = new Promise((resolve, reject) => {",
+      "  setTimeout(() => resolve('Success!'), 2000);",
+      "});",
+      "",
+      "promise.then(res => console.log(res)); // Fulfilled after 2s",
+    ],
+    keyterms: [
+      "pending = waiting state",
+      "fulfilled = success",
+      "rejected = failed state",
+      "immutable = cannot change once settled",
+    ],
+  },
+  {
+    id: 51,
+    question: "What is Promise chaining and why is it used?",
+    answer: [
+      "Promise chaining helps run asynchronous operations **sequentially**.",
+      "Each `.then()` returns a new promise, allowing vertical readable code.",
+      "It avoids callback hell and keeps logic clean.",
+      "Always return a value or promise from `.then()` for the next chain.",
+    ],
+    example: [
+      "new Promise(resolve => resolve(10))",
+      "  .then(num => num * 2)",
+      "  .then(num => num + 5)",
+      "  .then(console.log); // 25",
+    ],
+    keyterms: [
+      "chaining = linking .then() calls",
+      "return value = passed to next .then()",
+      "vertical structure = clean readable flow",
+    ],
+  },
+  {
+    id: 52,
+    question: "How does error handling work in Promises?",
+    answer: [
+      "`.catch()` is used to handle errors in promises.",
+      "It only catches errors from `.then()` placed before it.",
+      "Multiple `.catch()` blocks can handle different sections of a chain.",
+      "Always keep a final `.catch()` at the end to catch any unhandled error.",
+    ],
+    example: [
+      "new Promise((_, reject) => reject('Error!'))",
+      "  .then(() => console.log('Success'))",
+      "  .catch(err => console.log('Caught:', err))",
+      "  .then(() => console.log('Continues...'));",
+    ],
+    keyterms: [
+      "catch = handles rejection",
+      "then = continues chain",
+      "error propagation = how rejections travel",
+    ],
+  },
+  {
+    id: 53,
+    question:
+      "What are async and await in JavaScript and how do they work internally?",
+    answer: [
+      "'async' marks a function that always returns a Promise.",
+      "'await' pauses the async function until the Promise resolves.",
+      "Async/await provides a **synchronous look** to async code.",
+      "It is built on top of Promises and uses event loop for scheduling.",
+    ],
+    example: [
+      "const API_URL = 'https://api.github.com/users/ani';",
+      "",
+      "async function fetchUser() {",
+      "  const res = await fetch(API_URL);",
+      "  const data = await res.json();",
+      "  console.log(data);",
+      "}",
+      "",
+      "fetchUser();",
+    ],
+    keyterms: [
+      "async = returns a promise",
+      "await = waits for promise result",
+      "event loop = handles async scheduling",
+    ],
+  },
+  {
+    id: 54,
+    question:
+      "When do async/await promises actually start running and how does timing work?",
+    answer: [
+      "A Promise starts executing **as soon as it is created**, not when awaited.",
+      "Await only pauses function execution until the promise settles.",
+      "Timers or tasks inside a promise start immediately upon declaration.",
+      "If multiple promises are declared before awaits, they run **in parallel**.",
+    ],
+    example: [
+      "const p1 = new Promise(res => setTimeout(() => res('P1 done'), 5000));",
+      "const p2 = new Promise(res => setTimeout(() => res('P2 done'), 3000));",
+      "",
+      "async function demo() {",
+      "  const a = await p1; // waits 5s (timer already running)",
+      "  const b = await p2; // resolves instantly if already done",
+      "  console.log(a, b);",
+      "}",
+      "",
+      "demo(); // total ≈ 5s, not 8s",
+    ],
+    keyterms: [
+      "promise start = at creation time",
+      "await = pauses async function only",
+      "parallel execution = both timers run together",
+    ],
+  },
+  {
+    id: 55,
+    question:
+      "What are Promise combinator methods (all, allSettled, race, any) in JavaScript and how do they differ?",
+    answer: [
+      "Promise combinators handle multiple promises together.",
+      "Promise.all waits for all promises to fulfill or rejects if any fails.",
+      "Promise.allSettled waits for all to finish (fulfilled or rejected).",
+      "Promise.race settles as soon as the first promise settles (success or fail).",
+      "Promise.any fulfills when the first promise resolves, ignoring rejections. ",
+    ],
+    example: [
+      "const p1 = Promise.resolve('A');",
+      "const p2 = new Promise((res) => setTimeout(() => res('B'), 100));",
+      "const p3 = Promise.reject('C');",
+      "",
+      "Promise.all([p1, p2, p3])",
+      "  .then(res => console.log('All:', res))",
+      "  .catch(err => console.log('All Error:', err));",
+      "",
+      "Promise.allSettled([p1, p2, p3])",
+      "  .then(res => console.log('AllSettled:', res));",
+      "",
+      "Promise.race([p1, p2, p3])",
+      "  .then(res => console.log('Race:', res))",
+      "  .catch(err => console.log('Race Error:', err));",
+      "",
+      "Promise.any([p3, p2])",
+      "  .then(res => console.log('Any:', res))",
+      "  .catch(err => console.log('Any Error:', err));",
+      "",
+      "// Output:",
+      "// All Error: C",
+      "// AllSettled: [{status:'fulfilled', value:'A'}, {status:'fulfilled', value:'B'}, {status:'rejected', reason:'C'}]",
+      "// Race: A",
+      "// Any: B",
+    ],
+    keyterms: [
+      "Promise.all = resolves if all succeed, rejects on any error",
+      "Promise.allSettled = Returns object with resolve/reject for all, safest among all",
+      "Promise.race = settles on first resolve/reject",
+      "Promise.any = looks for first success, but if all fails then returns array of aggregated errors.",
+    ],
+  },
+
+  {
+    id: 56,
+    question:
+      "How does the 'this' keyword behave in JavaScript under different modes and scopes?",
+    answer: [
+      "'this' refers to the object that is currently executing the function.",
+      "In global scope (non-strict), 'this' refers to the global object (window in browsers).",
+      "In strict mode, 'this' is undefined when used in a function (not bound automatically).",
+      "Inside an object method, 'this' refers to that object.",
+      "In arrow functions, 'this' is inherited from the outer lexical scope.",
+      "In event handlers, 'this' usually refers to the element that triggered the event.",
+      "In classes, 'this' refers to the instance of the class.",
+    ],
+    example: [
+      "// Global scope",
+      "console.log(this); // window (in browser), global (in Node.js)",
+      "",
+      "'use strict';",
+      "function show() { console.log(this); }",
+      "show(); // undefined in strict mode",
+      "",
+      "const obj = {",
+      "  name: 'Ani',",
+      "  normalFn: function() { console.log(this.name); },",
+      "  arrowFn: () => console.log(this.name)",
+      "};",
+      "",
+      "obj.normalFn(); // 'Ani' → 'this' refers to obj",
+      "obj.arrowFn();  // undefined → 'this' from outer scope (global)",
+      "",
+      "class User {",
+      "  constructor(name) { this.name = name; }",
+      "  greet() { console.log('Hi', this.name); }",
+      "}",
+      "new User('Anirudha').greet(); // 'Hi Anirudha'",
+    ],
+    keyterms: [
+      "this (global, non-strict) = window/global object",
+      "this (strict mode) = undefined in normal functions",
+      "this (object method) = current object",
+      "this (arrow function) = inherited from outer scope",
+      "this (class method) = class instance",
+    ],
+  },
+  {
+    id: 57,
+    question:
+      "What does the 'this' keyword refer to in HTML event attributes, and how is it used with properties like .tagName?",
+    answer: [
+      "In inline HTML event attributes (like onclick, onmouseover), 'this' refers to the element that triggered the event.",
+      "It allows direct access to the element’s properties and methods within the same tag.",
+      "For example, 'this.tagName' returns the name of the HTML tag in uppercase (e.g., BUTTON, DIV).",
+      "You can also use 'this' to modify styles or content dynamically (e.g., this.style.color = 'red').",
+    ],
+    example: [
+      '<button onclick="alert(this.tagName)">Show Tag</button>',
+      "<div onclick=\"this.style.background='yellow'\">Click to Highlight</div>",
+    ],
+    keyterms: [
+      "this = refers to the current HTML element handling the event",
+      "tagName = returns the element’s tag in uppercase",
+      "inline event = event defined directly inside the HTML tag",
+    ],
+  },
+
+  {
+    id: 58,
+    question:
+      "Explain the different behaviors of the 'this' keyword in JavaScript with examples.",
+    answer: [
+      "'this' refers to the object that is executing the current function, and its value depends on where and how the function is called.",
+      "In **global scope**, 'this' refers to the global object (window/global).",
+      "In **non-strict mode**, if 'this' is undefined or null, it automatically defaults to the global object — known as **this substitution**.",
+      "In **strict mode**, 'this' remains undefined in normal functions.",
+      "In **object methods**, 'this' refers to the object before the dot (caller object).",
+      "In **DOM event handlers**, 'this' refers to the HTML element that triggered the event.",
+    ],
+    example: [
+      "// Global scope",
+      "console.log(this); // window (in browser)",
+      "",
+      "// Normal function - non-strict mode",
+      "function show() { console.log(this); }",
+      "show(); // window (this substitution)",
+      "",
+      "// Strict mode",
+      "'use strict';",
+      "function showStrict() { console.log(this); }",
+      "showStrict(); // undefined",
+      "",
+      "// Object method",
+      "const obj = { a: 10, print() { console.log(this.a); } };",
+      "obj.print(); // 10 (this → obj)",
+      "",
+      "// this in DOM",
+      "<button onclick='alert(this.tagName)'>Click Me</button>",
+      "// Alerts: BUTTON",
+    ],
+    keyterms: [
+      "this = dynamic reference to execution context",
+      "this substitution = replacement of undefined/null with global object in non-strict mode",
+      "strict mode = keeps this as undefined in functions",
+      "method context = this refers to caller object",
+      "DOM this = HTML element that triggered the event",
+    ],
+  },
+  {
+    id: 59,
+    question:
+      "How can the 'this' value be explicitly controlled in JavaScript using call(), apply(), and bind()?",
+    answer: [
+      "These methods are used to manually set or control the value of 'this' inside a function.",
+      "`call()` and `apply()` invoke the function immediately with a given 'this' value.",
+      "`bind()` returns a new function with the specified 'this' permanently bound.",
+      "They are used to share or borrow methods between different objects.",
+    ],
+    example: [
+      "const user1 = { name: 'Bruce' };",
+      "const user2 = { name: 'Clark' };",
+      "",
+      "function greet() { console.log('Hi', this.name); }",
+      "",
+      "greet.call(user1);  // Hi Bruce  → 'this' = user1",
+      "greet.apply(user2); // Hi Clark  → 'this' = user2",
+      "const bound = greet.bind(user1);",
+      "bound(); // Hi Bruce  → permanently bound to user1",
+    ],
+    keyterms: [
+      "call() = invokes immediately, passes args individually",
+      "apply() = invokes immediately, passes args as array",
+      "bind() = returns new function with fixed this",
+    ],
+  },
+  {
+    id: 60,
+    question:
+      "How does the 'this' keyword behave inside arrow functions in JavaScript?",
+    answer: [
+      "Arrow functions do **not** have their own 'this'.",
+      "They inherit 'this' from the **lexical (outer) scope** where they are defined.",
+      "Hence, their 'this' depends on where they are written, not on how they are called.",
+      "They are useful when you want to preserve the outer function’s 'this' value.",
+    ],
+    example: [
+      "// Arrow function in global scope",
+      "const show = () => console.log(this);",
+      "show(); // window (in browser)",
+      "",
+      "// Arrow inside a normal method",
+      "const obj = {",
+      "  name: 'Bruce',",
+      "  display: function() {",
+      "    const inner = () => console.log(this.name);",
+      "    inner(); // inherits this from display()",
+      "  }",
+      "};",
+      "obj.display(); // 'Bruce'",
+    ],
+    keyterms: [
+      "arrow function = inherits this from outer scope",
+      "lexical this = static this from definition context",
+      "normal function = creates its own dynamic this",
+    ],
+  },
+  {
+    id: 61,
+    question:
+      "How does the value of 'this' change in different execution contexts such as global, object methods, and class constructors?",
+    answer: [
+      "In the **global context**, 'this' refers to the global object (window in browser, global in Node).",
+      "Inside a **function** (non-strict mode), 'this' defaults to the global object; in strict mode, it stays undefined.",
+      "Within an **object method**, 'this' refers to the object that called the method.",
+      "In a **class constructor**, 'this' represents the newly created instance of the class.",
+      "When **methods are detached** or passed as callbacks, 'this' may become undefined or refer to the global object.",
+    ],
+    example: [
+      "// Global context",
+      "console.log(this === window); // true (in browser)",
+      "",
+      "// Object method",
+      "const user = { name: 'Ani', show() { console.log(this.name); } };",
+      "user.show(); // 'Ani'",
+      "",
+      "// Class constructor",
+      "class Person { constructor(name) { this.name = name; } }",
+      "const p = new Person('Riya');",
+      "console.log(p.name); // 'Riya'",
+    ],
+    keyterms: [
+      "execution context = scope where 'this' is evaluated",
+      "global context = top-level scope (window/global)",
+      "object method = 'this' refers to the object itself",
+      "class constructor = 'this' refers to new instance",
+    ],
+  },
+
+  {
+    id: 62,
+    question:
+      "What are call, apply, and bind methods in JavaScript and how do they differ?",
+    answer: [
+      "All three are used to **manually set 'this'** inside a function.",
+      "**call()** invokes the function immediately with given arguments listed individually.",
+      "**apply()** is similar but takes arguments as an **array**.",
+      "**bind()** returns a **new function** with 'this' permanently bound — it doesn't execute immediately.",
+    ],
+    example: [
+      "const person = { name: 'Ani' };",
+      "",
+      "function greet(place, country) {",
+      "  console.log(`Hi, I'm ${this.name} from ${place}, ${country}`);",
+      "}",
+      "",
+      "greet.call(person, 'Udupi', 'India');      // call → executes immediately",
+      "greet.apply(person, ['Udupi', 'India']);   // apply → same but args as array",
+      "const boundFn = greet.bind(person, 'Udupi', 'India');",
+      "boundFn();                                 // bind → executes later",
+    ],
+    keyterms: [
+      "call() = execute function immediately with given this and args",
+      "apply() = same as call but takes args as array",
+      "bind() = returns new function with this permanently bound",
+    ],
+  },
+
+  {
+    id: 63,
+    question:
+      "How can we create a simple custom version of the 'bind()' method in JavaScript?",
+    answer: [
+      "'bind()' lets us fix 'this' for a function.",
+      "We can recreate it easily using a custom 'myBind' method.",
+      "It returns a new function that runs the original one with a fixed 'this'.",
+    ],
+    example: [
+      "Function.prototype.myBind = function(obj) {",
+      "  const fn = this;",
+      "  return function() {",
+      "    fn.call(obj);",
+      "  };",
+      "};",
+      "",
+      "const person = {",
+      "  name: 'Ani'",
+      "};",
+      "",
+      "function sayHi() {",
+      "  console.log('Hi', this.name, 'from Udupi');",
+      "}",
+      "",
+      "const hi = sayHi.myBind(person);",
+      "hi(); // Hi Ani from Udupi",
+    ],
+    keyterms: [
+      "bind() = creates a new function with fixed 'this'",
+      "call() = invokes function with given 'this' value",
+      "custom bind = manual way to lock 'this'",
+    ],
+  },
+  {
+    id: 64,
     question: "What is the map() method in JavaScript?",
     answer: [
       "map() creates a new array by applying a transformation function to each element.",
@@ -1014,7 +1601,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 44,
+    id: 65,
     question: "What is the filter() method in JavaScript?",
     answer: [
       "filter() creates a new array with only elements that pass the provided condition.",
@@ -1035,7 +1622,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 45,
+    id: 66,
     question: "What is the reduce() method in JavaScript?",
     answer: [
       "reduce() applies a reducer function to all elements of an array, returning a single accumulated result.",
@@ -1057,7 +1644,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 46,
+    id: 67,
     question:
       "What is a Polyfill for map, filter, and reduce, and how to implement it?",
     answer: [
@@ -1089,7 +1676,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 47,
+    id: 68,
     question: "What is Memoization and how does it use closures?",
     answer: [
       "Caching function results to avoid recomputation.",
@@ -1112,7 +1699,7 @@ const coreJsQuestions = [
     keyterms: ["Memoization = cache results", "Closure holds cache"],
   },
   {
-    id: 48,
+    id: 69,
     question:
       "Which is more common in JavaScript: OOP or Functional Programming, and why?",
     answer: [
@@ -1140,7 +1727,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 49,
+    id: 70,
     question:
       "What is Object-Oriented Programming (OOP) in JavaScript and what are its main principles?",
     answer: [
@@ -1157,7 +1744,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 50,
+    id: 71,
     question: "How is Encapsulation achieved in JavaScript?",
     answer: [
       "Encapsulation means keeping data (variables) safe from direct access and exposing only necessary methods.",
@@ -1180,7 +1767,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 51,
+    id: 72,
     question: "What is Abstraction in JavaScript?",
     answer: [
       "Abstraction means exposing only necessary features while hiding details.",
@@ -1202,7 +1789,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 52,
+    id: 73,
     question: "What is Inheritance in JavaScript?",
     answer: [
       "Inheritance allows one class to acquire properties and methods of another class.",
@@ -1225,7 +1812,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 53,
+    id: 74,
     question: "What is Polymorphism in JavaScript?",
     answer: [
       "Polymorphism means the same method name can behave differently based on the object.",
@@ -1253,7 +1840,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 54,
+    id: 75,
     question:
       "How do functions relate to constructors and prototypes in JavaScript?",
     answer: [
@@ -1280,7 +1867,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 55,
+    id: 76,
     question:
       "What is the difference between prototypal and classical inheritance in JavaScript?",
     answer: [
@@ -1308,7 +1895,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 56,
+    id: 77,
     question: "What is Prototyping in JavaScript?",
     answer: [
       "Prototyping is the process of adding new methods or properties to built-in objects through their prototype.",
@@ -1330,9 +1917,128 @@ const coreJsQuestions = [
       "Instance = any object created from a constructor (e.g., string, array)",
     ],
   },
+  {
+    id: 78,
+    question:
+      "What are different types of JavaScript errors like SyntaxError, ReferenceError, TypeError, RangeError, and AggregateError?",
+    answer: [
+      "JavaScript has built-in error types to identify specific runtime issues.",
+      "SyntaxError → occurs when code syntax is invalid.",
+      "ReferenceError → occurs when accessing an undefined variable or reference.",
+      "TypeError → occurs when an operation is done on the wrong data type.",
+      "RangeError → occurs when a value is not in the expected range.",
+      "AggregateError → groups multiple errors (mainly used with Promise.any).",
+    ],
+    example: [
+      "// SyntaxError: Missing parenthesis",
+      "// eval('let x = ;');",
+      "",
+      "// ReferenceError",
+      "console.log(a); // 'a' is not defined",
+      "",
+      "// TypeError",
+      "let num = 10;",
+      "num.toUpperCase(); // invalid method on number",
+      "",
+      "// RangeError",
+      "let arr = new Array(-5); // invalid array length",
+      "",
+      "// AggregateError (used with Promise.any)",
+      "Promise.any([",
+      "  Promise.reject('Err1'),",
+      "  Promise.reject('Err2')",
+      "]).catch(e => console.log(e.errors)); // ['Err1', 'Err2']",
+    ],
+    keyterms: [
+      "SyntaxError = invalid code structure or missing symbols",
+      "ReferenceError = using variable before declaration or non-existent",
+      "TypeError = wrong data type operation",
+      "RangeError = number/value out of valid range",
+      "AggregateError = group of multiple errors in one object",
+    ],
+  },
+  {
+    id: 79,
+    question:
+      "What are object methods in JavaScript and how do they differ from normal functions?",
+    answer: [
+      "Object methods are functions stored as properties of objects.",
+      "ES6 introduced shorthand method syntax for cleaner definitions.",
+      "Arrow functions as methods do not have their own 'this', while normal functions and shorthand methods do.",
+    ],
+    example: [
+      "const user = {",
+      "  name: 'Ani',",
+      "  sayHi() { console.log('Hi ' + this.name); },       // shorthand method",
+      "  arrowHi: () => console.log('Hi ' + this.name),     // arrow method (no own this)",
+      "  normalHi: function() { console.log('Hello ' + this.name); } // normal function",
+      "};",
+      "",
+      "user.sayHi();    // 'Hi Ani'",
+      "user.arrowHi();  // 'Hi undefined' in strict mode",
+      "user.normalHi(); // 'Hello Ani'",
+    ],
+    keyterms: [
+      "Object method = function stored in object property",
+      "Method shorthand = ES6 concise syntax",
+      "Arrow method = inherits this from outer scope",
+      "Normal function method = explicit function keyword",
+    ],
+  },
 
   {
-    id: 57,
+    id: 80,
+    question: "What are JavaScript generators?",
+    answer: [
+      "Generators are special functions that can pause (`yield`) and later resume execution.",
+      "Defined with `function*` syntax and use `yield` to return values step by step.",
+      "Calling a generator does not run it immediately—it returns an iterator object.",
+      "Execution continues each time `.next()` is called, maintaining internal state.",
+    ],
+    example: [
+      "function* gen(){",
+      "  yield 1;",
+      "  yield 2;",
+      "  yield 3;",
+      "}",
+      "const it = gen();",
+      "console.log(it.next().value); // 1",
+      "console.log(it.next().value); // 2",
+      "console.log(it.next().value); // 3",
+    ],
+    keyterms: [
+      "generator = resumable function",
+      "yield = pause/return value",
+      "iterator = object returned by generator",
+    ],
+  },
+  {
+    id: 81,
+    question: "What are Symbols in JavaScript?",
+    answer: [
+      "Symbols are **unique and immutable primitive values**.",
+      "They are often used as **object keys** to avoid naming conflicts.",
+      "Even Symbols with the same description are different.",
+      "Symbols can be used to add **safe, hidden properties** to objects.",
+    ],
+    example: [
+      "// Create a unique Symbol (here id is a unique Symbol, not a string)",
+      "const id = Symbol('id');",
+      "const obj = {};",
+      "obj[id] = 10; // property key is the Symbol, not a string",
+      " ",
+      "// Every Symbol is unique",
+      "const a = Symbol('id');",
+      "const b = Symbol('id');",
+      "console.log(a === b); // false",
+    ],
+    keyterms: [
+      "Symbol = unique key",
+      "hidden properties = keys not easily collided with others",
+    ],
+  },
+  {
+    id: 82,
     question: "What is smart garbage collection in modern JavaScript engines?",
     answer: [
       "Modern JS engines have garbage collectors that automatically free memory used by variables no longer accessible.",
@@ -1360,7 +2066,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 58,
+    id: 83,
     question: "How do Closures Affect Garbage Collection?",
     answer: [
       "Closures allocate a lot of memory which cannot be deleted so this acts as a disadvantage.",
@@ -1377,7 +2083,7 @@ const coreJsQuestions = [
     keyterms: ["Closure = memory hold", "Disadvantage = leak risk"],
   },
   {
-    id: 59,
+    id: 84,
     question: "Why Remove Event Listeners for Garbage Collection?",
     answer: [
       "Unused variables are automatically deleted... Closures allocate a lot of memory which cannot be deleted.",
@@ -1388,7 +2094,7 @@ const coreJsQuestions = [
     keyterms: ["Smart GC = auto delete", "Listener remove = GC aid"],
   },
   {
-    id: 60,
+    id: 85,
     question: "What is the Mark-and-Sweep algorithm in garbage collection?",
     answer: [
       "It is a tracing garbage collection technique used in JS engines.",
@@ -1406,7 +2112,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 61,
+    id: 86,
     question:
       "Is JavaScript compiled or interpreted? Explain Google Chrome's V8 execution pipeline.",
     answer: [
@@ -1436,7 +2142,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 62,
+    id: 87,
     question:
       "What are some key memory and performance optimizations in JavaScript engines?",
     answer: [
@@ -1471,7 +2177,7 @@ const coreJsQuestions = [
     ],
   },
   {
-    id: 63,
+    id: 88,
     question:
       "What is the difference between Web Worker and Service Worker in JavaScript?",
     answer: [
@@ -1497,6 +2203,36 @@ const coreJsQuestions = [
       "Service Worker = Proxy layer for caching, offline, push",
       "Thread = Separate execution flow",
       "Event-driven = Reacts to events like fetch, push",
+    ],
+  },
+  {
+    id: 89,
+    question:
+      "What is the Singleton Pattern in JavaScript and how can it be implemented?",
+    answer: [
+      "Singleton ensures that only one instance of an object is created throughout the application.",
+      "It provides a global access point to that instance.",
+      "Used for managing shared resources like configuration, logging, or database connections.",
+    ],
+    example: [
+      "// Simple Singleton Example",
+      "class Singleton {",
+      "  constructor() {",
+      "    if (Singleton.instance) return Singleton.instance; // Return existing instance",
+      "    this.value = Math.random();",
+      "    Singleton.instance = this;",
+      "  }",
+      "}",
+      "",
+      "const obj1 = new Singleton();",
+      "const obj2 = new Singleton();",
+      "console.log(obj1 === obj2); // true (same instance)",
+      "console.log(obj1.value, obj2.value); // same value",
+    ],
+    keyterms: [
+      "Singleton = Design pattern that restricts class instantiation to one object",
+      "Instance = The single created object reused throughout the app",
+      "Global Access = The instance is accessible from anywhere",
     ],
   },
 ];
