@@ -13,6 +13,12 @@ export const programRegistry = {
   "use-reducer-counter": () =>
     import("../components/programs/CounterWithReducer"),
   carousel: () => import("../components/programs/Carousel"),
+  "throttle-search": () => import("../components/programs/ThrottleSearch"),
+  "async-await": () => import("../components/programs/AsyncAwait"),
+  autocomplete: () => import("../components/programs/Autocomplete"),
+  "infinite-scroll": () => import("../components/programs/InfiniteScroll"),
+  "nested-comments": () => import("../components/programs/NestedComments"),
+  "toast-component": () => import("../components/programs/Toast"),
 
   // Algo Programs
   "anagram-checker": () => import("../components/programs/AnagramChecker"),
@@ -29,6 +35,7 @@ export const programRegistry = {
   "largest-number": () => import("../components/programs/LargestNumber"),
   "move-zeroes": () => import("../components/programs/MoveZeroes"),
   "remove-duplicates": () => import("../components/programs/RemoveDuplicates"),
+  "count-duplicates": () => import("../components/programs/CountDuplicates"),
 
   // String Programs
   "count-chars": () => import("../components/programs/CountChars"),
@@ -39,6 +46,7 @@ export const programRegistry = {
   "vowel-counter": () => import("../components/programs/VowelCounter"),
 
   // Core JS Programs
+  "set-array-methods": () => import("../components/programs/SetArrayMethods"),
   "two-sum": () => import("../components/programs/TwoSum"),
   "longest-common-prefix": () =>
     import("../components/programs/LongestCommonPrefix"),

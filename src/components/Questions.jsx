@@ -32,6 +32,8 @@ const loadQuestions = async (category) => {
       return (await import('../data/questions/databaseQuestions.js')).default;
     case 'systemdesign':
       return (await import('../data/questions/systemDesignQuestions.js')).default;
+    case 'seo':
+      return (await import('../data/questions/seoQuestions.js')).default;
     case 'other':
       return (await import('../data/questions/otherQuestions.js')).default;
     default:
@@ -104,6 +106,15 @@ const categories = [
     iconColor: 'text-slate-500',
     bgGradient: 'from-slate-100 via-gray-50 to-zinc-100 dark:from-slate-900/30 dark:via-gray-900/20 dark:to-zinc-900/30',
     description: 'Scalability, architecture, and patterns'
+  },
+  { 
+    id: 'seo',
+    name: 'SEO Fundamentals',
+    icon: Globe, 
+    color: 'from-green-500 to-emerald-500',
+    iconColor: 'text-green-500',
+    bgGradient: 'from-green-100 via-emerald-50 to-lime-100 dark:from-green-900/30 dark:via-emerald-900/20 dark:to-lime-900/30',
+    description: 'Search engine optimization concepts, techniques, ranking factors, and best practices'
   },
   { 
     id: 'other', 

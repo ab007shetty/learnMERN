@@ -219,5 +219,27 @@ const databaseQuestions = [
       "Trade-off = consistency vs scalability",
     ],
   },
+  {
+    id: 11,
+    question: "What is IndexedDB and why is it used?",
+    answer: [
+      "IndexedDB is a low-level NoSQL database in the browser for storing large amounts of structured data.",
+      "Useful for offline-first applications and caching large datasets locally.",
+    ],
+    example: [
+      "const request = indexedDB.open('myDB', 1);",
+      "request.onsuccess = event => { const db = event.target.result; };",
+      " ",
+      "request.onupgradeneeded = event => {",
+      "  const db = event.target.result;",
+      "  db.createObjectStore('users', { keyPath: 'id' });",
+      "};",
+    ],
+    keyterms: [
+      "IndexedDB = browser-side database",
+      "Offline-first = app works without network",
+      "Object store = table equivalent in IndexedDB",
+    ],
+  },
 ];
 export default databaseQuestions;

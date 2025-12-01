@@ -331,6 +331,258 @@ console.log(4);
       "Microtasks run after main thread ends, in order they were queued: 2 → 3 → 5.",
     ],
   },
+  {
+    id: 17,
+    question: `
+let arr = [1,2,3];
+
+console.log(arr, 4);
+console.log([...arr, 4]);
+`,
+    answer: `
+[1,2,3] 4
+[1,2,3,4]
+`,
+    explanation: [
+      "Comma in console.log passes separate arguments, so 4 isn’t merged.",
+      "Spread operator unpacks elements, creating a new array with 4 appended.",
+      "Hence, spread forms a combined array while log comma just prints separately.",
+    ],
+  },
+  {
+    id: 18,
+    question: `
+let arr = [1, 2, 3, 4];
+let [a, ...rest] = arr;
+
+console.log(a);
+console.log(rest);
+`,
+    answer: `
+1
+[2, 3, 4]
+`,
+    explanation: [
+      "Array destructuring unpacks values into variables.",
+      "Rest (...) gathers remaining elements into one array.",
+      "Spread does the opposite — expands elements when creating arrays or calling functions.",
+    ],
+  },
+  {
+    id: 19,
+    question: `
+const arr = [10, , 30, 40];
+const [a = 1, b = 2, c = 3, ...d] = arr;
+console.log(a, b, c, d);
+`,
+    answer: `
+10 2 30 [40]
+`,
+    explanation: [
+      "The array has a missing second element, which is treated as undefined.",
+      "During destructuring, 'a' gets 10 from arr[0].",
+      "'b' uses its default value 2 because arr[1] is missing (undefined).",
+      "'c' gets 30 from arr[2].",
+      "The rest operator (...) gathers remaining elements into 'd' → [40].",
+    ],
+  },
+  {
+    id: 20,
+    question: `
+let arr = [1, 2, 3, 4];
+
+function sum(...nums) {
+  return nums.reduce((a, b) => a + b, 0);
+}
+
+console.log(sum(arr));
+console.log(sum(...arr));
+`,
+    answer: `
+NaN
+10
+`,
+    explanation: [
+      "In sum(arr), nums = [[1,2,3,4]] — a nested array.",
+      "reduce tries 0 + [1,2,3,4], giving NaN.",
+      "In sum(...arr), spread passes values separately, so reduce works as 1+2+3+4 = 10.",
+    ],
+  },
+  {
+    id: 21,
+    question: `
+const data = {
+  user: {
+    profile: {
+      name: "Riya",
+      age: 22
+    }
+  }
+};
+
+console.log(data.user?.profile?.name);
+console.log(data.account?.details?.id);
+console.log(data.user.profile?.email?.toUpperCase());
+`,
+    answer: `
+Riya
+undefined
+undefined
+`,
+    explanation: [
+      "✅ data.user?.profile?.name → 'Riya' (all properties exist).",
+      "❌ data.account?.details?.id → undefined (account doesn't exist, so no error).",
+      "❌ data.user.profile?.email?.toUpperCase() → undefined (email is undefined, so optional chaining prevents TypeError).",
+    ],
+  },
+  {
+    id: 22,
+    question: `
+let user = {
+  first: "Ani",
+  last: "Shetty",
+
+  wrongFull: () => this.first + " " + this.last,
+
+  fixedArrow: () => user.first + " " + user.last,
+
+  correctFull: function() {
+    return this.first + " " + this.last;
+  }
+};
+
+console.log(user.wrongFull);
+console.log(user.fixedArrow());
+console.log(user.correctFull());
+`,
+    answer: `
+undefined undefined
+Ani Shetty
+Ani Shetty
+`,
+    explanation: [
+      "In `wrongFull`, arrow functions don’t have their own `this`, so it points to the global scope — `undefined`.",
+      "In `fixedArrow`, the object name `user` is used directly, so it works but isn’t reusable (depends on object name).",
+      "In `correctFull`, a normal function binds `this` to the object when called as a method — correct behavior.",
+      "Best practice → always use normal functions for object methods needing 'this'.",
+    ],
+  },
+  {
+    id: 23,
+    question: `
+Promise.resolve("Start")
+  .then(val => { 
+    console.log("Then 1:", val); 
+    throw "Error A"; 
+  })
+  .catch(err => { 
+    console.log("Catch 1:", err); 
+    return "Recovered"; 
+  })
+  .then(val => { 
+    console.log("Then 2:", val); 
+    throw "Error B"; 
+  })
+  .catch(err => console.log("Catch 2:", err));
+`,
+    answer: `
+Then 1: Start
+Catch 1: Error A
+Then 2: Recovered
+Catch 2: Error B
+`,
+    explanation: [
+      "Promise starts resolved → Then 1 runs and throws 'Error A'.",
+      "Catch 1 handles 'Error A' and returns 'Recovered' → chain becomes resolved again.",
+      "Then 2 runs with 'Recovered' and throws 'Error B'.",
+      "Catch 2 handles 'Error B'.",
+      "✅ Demonstrates how throwing and returning in catch affects the chain.",
+    ],
+  },
+  {
+    id: 24,
+    question: `const promise = new Promise(resolve => 
+      setTimeout(() => resolve("promise resolved"), 1000));
+
+async function demo() {
+  console.log("Before await");
+  const result = await promise;
+  console.log(result);
+  console.log("after await");
+}
+
+demo();
+console.log("outside async fn");`,
+    answer: `
+Before await
+outside async fn
+promise resolved
+after await`,
+    explanation: [
+      "The Promise starts immediately when it's created, but await pauses function execution until the promise settles.",
+      "The main thread continues, so 'outside async fn' prints next.",
+      "After 1s, the Promise resolves, and 'result' is printed, followed by 'after await'.",
+      "This demonstrates how async/await pauses the function without blocking the main thread.",
+    ],
+  },
+  {
+    id: 25,
+    question: `
+const a = 10;
+const b = 20;
+
+const str = "a + b * 2";
+
+const result = eval(str);
+
+console.log(result);
+`,
+    answer: "50",
+    explanation: [
+      "The variable str contains the string 'a + b * 2'.",
+      "eval(str) executes that string as real JavaScript code.",
+      "So it becomes: a + b * 2 → 10 + 20 * 2.",
+      "Operator precedence applies: 20 * 2 = 40.",
+      "Then 10 + 40 = 50.",
+      "Thus console.log(result) prints 50.",
+    ],
+  },
+  {
+    id: 26,
+    question: `
+const x = 5;
+const y = 3;
+
+const expr = "x + y + 'x'";
+
+const result = eval(expr);
+
+console.log(result);
+`,
+    answer: "8x",
+    explanation: [
+      "The string 'x + y + \\'x\\'' is executed by eval.",
+      "So it becomes real code: x + y + 'x'.",
+      "x = 5 and y = 3 → 5 + 3 = 8.",
+      "Then 8 + 'x' causes string concatenation.",
+      "Final result = '8x'.",
+    ],
+  },
+  {
+    id: 27,
+    question: `
+console.log(typeof null);
+`,
+    answer: "object",
+    explanation: [
+      "In JavaScript, typeof null returns 'object' due to a historical bug.",
+      "Early JS stored type info in low-level binary tags.",
+      "Objects were tagged as 000 (binary).",
+      "null mistakenly got the same tag, so typeof treated null as an object.",
+      "The bug could not be fixed later without breaking old websites.",
+      "Hence typeof null still returns 'object'.",
+    ],
+  },
 ];
 
 export default puzzles;

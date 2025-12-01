@@ -31,6 +31,11 @@ import {
   Code,
   Type,
   Images,
+  Timer,
+  Terminal,
+  MessageSquare,
+  ArrowDown,
+  Bell,
 } from "lucide-react";
 
 // --- Programs grouped and sorted alphabetically by category ---
@@ -71,6 +76,17 @@ const react = [
     category: "react",
   },
   {
+    id: "throttle-search",
+    name: "Throttle Search",
+    icon: Timer,
+    description:
+      "Search input that updates results at fixed intervals, even if the user keeps typing continuously.",
+    concept: "useRef",
+    conceptDescription:
+      "Throttle ensures a function runs at most once within a given time frame, tracked using timestamps stored in useRef.",
+    category: "react",
+  },
+  {
     id: "fetch-users",
     name: "Fetch & Filter",
     icon: Globe,
@@ -79,6 +95,17 @@ const react = [
     concept: "useEffect, fetch, filter",
     conceptDescription:
       "useEffect is used for side-effects like data fetching; fetch retrieves data from an API; filter is used to display matching results.",
+    category: "react",
+  },
+  {
+    id: "async-await",
+    name: "Async/Await",
+    icon: Terminal,
+    description:
+      "Fetches a GitHub user's profile using async/await and displays key details. Demonstrates handling asynchronous code in React.",
+    concept: "useEffect, async/await, optional chaining",
+    conceptDescription:
+      "useEffect handles side-effects; async/await simplifies promise handling; optional chaining prevents errors during rendering when data hasn't arrived yet.",
     category: "react",
   },
   {
@@ -122,6 +149,50 @@ const react = [
     concept: "useRef, setInterval",
     conceptDescription:
       "useRef persists the timer ID across renders without causing re-renders, suitable for intervals.",
+    category: "react",
+  },
+  {
+    id: "toast-component",
+    name: "Toast Notification",
+    icon: Bell,
+    description:
+      "Displays a temporary popup message that auto-hides after a delay.",
+    concept: "useState, useEffect, animations",
+    conceptDescription:
+      "State controls toast visibility; useEffect handles auto-dismiss with a timer.",
+    category: "react",
+  },
+  {
+    id: "autocomplete",
+    name: "Autocomplete Search",
+    icon: Search,
+    description:
+      "Shows suggestions while typing and filters data in real time.",
+    concept: "useState, filtering",
+    conceptDescription:
+      "Tracks input and filters suggestion list based on typed characters.",
+    category: "react",
+  },
+  {
+    id: "infinite-scroll",
+    name: "Infinite Scroll",
+    icon: ArrowDown,
+    description:
+      "Loads more data automatically when the user reaches the bottom of the page.",
+    concept: "useEffect, scroll listeners, API calls",
+    conceptDescription:
+      "Scroll event detects bottom reach and triggers new data fetching.",
+    category: "react",
+  },
+  {
+    id: "nested-comments",
+    name: "Nested Comments",
+    icon: MessageSquare,
+    description:
+      "Renders comments with infinite replies, each reply holding its own nested structure.",
+    concept: "recursion",
+    conceptDescription:
+      "Recursive component renders comments inside comments, allowing infinite nesting.",
     category: "react",
   },
   {
@@ -260,6 +331,17 @@ const arrays = [
       "Hash map efficiently tracks and filters seen elements.",
     category: "arrays",
   },
+  {
+    id: "count-duplicates",
+    name: "Count Duplicate Values",
+    icon: Hash,
+    description:
+      "Counts how many times each value appears in an array and returns an object with frequencies.",
+    concept: "objects, array loops",
+    conceptDescription:
+      "Object is used as a frequency map to count occurrences efficiently.",
+    category: "arrays",
+  },
 ];
 
 // Strings
@@ -334,6 +416,17 @@ const strings = [
 // Core JS
 
 const corejs = [
+  {
+    id: "set-array-methods",
+    name: "Set & Array Methods",
+    icon: Code,
+    description:
+      "Demonstrates important Set and Array operations in JavaScript like unique, union, intersection, difference, membership, and string→array conversion.",
+    concept: "Set, Array methods, iteration, spread operator",
+    conceptDescription:
+      "Uses Set to store unique values and combine with array methods like filter, map, reduce, and spread operator [...] to perform operations such as removing duplicates, computing union, intersection, difference, and checking membership.",
+    category: "corejs",
+  },
   {
     id: "two-sum",
     name: "Two Sum",

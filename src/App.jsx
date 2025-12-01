@@ -80,6 +80,9 @@ const App = () => {
         import('./data/questions/otherQuestions.js').then(() => {
           console.log('Preloaded data file: ./data/questions/otherQuestions.js');
         }),
+        import('./data/questions/seoQuestions.js').then(() => {
+          console.log('Preloaded data file: ./data/questions/seoQuestions.js');
+        }),
       ]).catch((err) => {
         console.error('Failed to preload question data files:', err);
       });

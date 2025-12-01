@@ -1,0 +1,407 @@
+const seoQuestions = [
+  {
+    id: 1,
+    question: "What is SEO and why is it important?",
+    answer: [
+      "SEO stands for Search Engine Optimization.",
+      "It improves visibility and ranking of websites in search engines.",
+      "Higher ranking brings more organic traffic without paid ads.",
+    ],
+    example: [
+      "// SEO Goal:",
+      "// Improve ranking for keywords like 'buy shoes online'.",
+      "// Results:",
+      "// More traffic + more conversions.",
+    ],
+    keyterms: [
+      "SEO = optimizing content for search engines.",
+      "Organic traffic = free search traffic.",
+      "Ranking = position in search results.",
+    ],
+  },
+  {
+    id: 2,
+    question: "What is the difference between on-page and off-page SEO?",
+    answer: [
+      "On-page SEO refers to optimizations done on the website itself.",
+      "Off-page SEO refers to actions taken outside the website like backlinks.",
+      "Both help increase ranking and authority.",
+    ],
+    example: [
+      "// On-page:",
+      "Title tags, meta descriptions, headings, content, internal links",
+      " ",
+      "// Off-page:",
+      "Backlinks, social signals, brand mentions",
+    ],
+    keyterms: [
+      "On-page = content + structure.",
+      "Off-page = authority building.",
+      "Backlink = link from another site.",
+    ],
+  },
+  {
+    id: 3,
+    question: "What are keywords in SEO?",
+    answer: [
+      "Keywords are search terms people type into search engines.",
+      "Used to optimize pages to match search intent.",
+      "Choosing correct keywords helps reach target audience.",
+    ],
+    example: [
+      "// Examples:",
+      "'best laptops 2025'",
+      "'macbook vs windows'",
+      "'buy gaming mouse'",
+    ],
+    keyterms: [
+      "Keyword research = finding target search terms.",
+      "Search intent = what user wants.",
+      "Long-tail keywords = low competition and specific.",
+    ],
+  },
+  {
+    id: 4,
+    question: "What is search intent?",
+    answer: [
+      "Search intent means the purpose behind a user's search.",
+      "Matching content with intent improves rankings.",
+      "Types: informational, navigational, transactional, commercial.",
+    ],
+    example: [
+      "Informational → 'how to change password'",
+      "Navigational → 'facebook login'",
+      "Transactional → 'buy iphone 15'",
+      "Commercial → 'best phone under 30000'",
+    ],
+    keyterms: [
+      "Intent = purpose of the search.",
+      "Informational = learn something.",
+      "Transactional = ready to buy.",
+    ],
+  },
+  {
+    id: 5,
+    question: "What are meta tags in SEO?",
+    answer: [
+      "Meta tags give information about a page to search engines.",
+      "Important ones: title tag and meta description.",
+      "Good meta tags improve CTR in search results.",
+    ],
+    example: [
+      "<title>Best Shoes for Men | 2025</title>",
+      "<meta name='description' content='Top 10 shoes for men reviewed.'>",
+    ],
+    keyterms: [
+      "Title tag = main headline in Google.",
+      "Meta description = short summary.",
+      "CTR = click-through rate.",
+    ],
+  },
+  {
+    id: 6,
+    question: "What are header tags (H1, H2, H3)?",
+    answer: [
+      "Header tags structure content in hierarchy.",
+      "H1 is the main title; H2/H3 are sub-headings.",
+      "Helps SEO and improves readability.",
+    ],
+    example: [
+      "<h1>Best Laptops 2025</h1>",
+      "<h2>Top Budget Laptops</h2>",
+      "<h3>Under 30000</h3>",
+    ],
+    keyterms: [
+      "H1 = page title.",
+      "H2/H3 = content sections.",
+      "SEO uses headers to understand structure.",
+    ],
+  },
+  {
+    id: 7,
+    question: "What is technical SEO?",
+    answer: [
+      "Technical SEO focuses on improving crawling and indexing.",
+      "Includes site speed, mobile friendliness, XML sitemaps, robots.txt.",
+      "Ensures search engines can understand and access the site.",
+    ],
+    example: [
+      "// Technical SEO:",
+      "Fix broken links",
+      "Improve page speed",
+      "Optimize robots.txt",
+      "Submit sitemap.xml",
+    ],
+    keyterms: [
+      "Crawling = discovering pages.",
+      "Indexing = storing pages in search engine.",
+      "Sitemap = list of URLs.",
+    ],
+  },
+  {
+    id: 8,
+    question: "What is mobile-first indexing?",
+    answer: [
+      "Google uses the mobile version of a site for ranking.",
+      "Responsive design is required for SEO.",
+      "Poor mobile UI affects ranking negatively.",
+    ],
+    example: [
+      "// Make UI responsive:",
+      "Use CSS media queries",
+      "Use mobile-friendly fonts",
+      "Use fluid layouts",
+    ],
+    keyterms: [
+      "Mobile-first = Google prioritizes mobile.",
+      "Responsive design = adjusts to screen size.",
+      "Core Web Vitals = experience metrics.",
+    ],
+  },
+  {
+    id: 9,
+    question: "What are backlinks and why are they important?",
+    answer: [
+      "Backlinks are links from other websites pointing to your site.",
+      "High-quality backlinks improve domain authority and ranking.",
+      "They act as trust signals for search engines.",
+    ],
+    example: [
+      "// Backlink example:",
+      "Blog A links to your article:",
+      "<a href='yourwebsite.com'>Great guide!</a>",
+    ],
+    keyterms: [
+      "Backlink = external link.",
+      "Authority = trust and strength.",
+      "Link-building = acquiring backlinks.",
+    ],
+  },
+  {
+    id: 10,
+    question: "What is a sitemap?",
+    answer: [
+      "A sitemap is a file listing all important pages of a website.",
+      "Helps Google crawl and index pages faster.",
+      "Usually submitted through Google Search Console.",
+    ],
+    example: [
+      "<urlset>",
+      "  <url><loc>https://site.com/home</loc></url>",
+      "  <url><loc>https://site.com/about</loc></url>",
+      "</urlset>",
+    ],
+    keyterms: [
+      "XML sitemap = structured page list.",
+      "Indexing = search engine storing pages.",
+      "Search Console = Google tool.",
+    ],
+  },
+  {
+    id: 11,
+    question: "What is robots.txt?",
+    answer: [
+      "robots.txt tells search engines which pages to crawl or avoid.",
+      "Used to block admin or sensitive pages.",
+      "Not used for hiding private data.",
+    ],
+    example: ["User-agent: *", "Disallow: /admin/", "Allow: /public/"],
+    keyterms: [
+      "Crawl allow/deny rules.",
+      "User-agent = bots.",
+      "Not for security.",
+    ],
+  },
+  {
+    id: 12,
+    question: "What is domain authority (DA)?",
+    answer: [
+      "Domain Authority is a score predicting a website's ability to rank.",
+      "Higher DA usually means better ranking potential.",
+      "DA increases through strong backlinks and quality content.",
+    ],
+    example: ["// Factors:", "Backlinks", "Content quality", "Technical SEO"],
+    keyterms: [
+      "DA = ranking strength.",
+      "Moz metric = not from Google.",
+      "Backlinks affect DA.",
+    ],
+  },
+  {
+    id: 13,
+    question: "What is page speed and why is it important?",
+    answer: [
+      "Page speed measures how fast a webpage loads.",
+      "Direct Google ranking factor.",
+      "Slow websites increase bounce rate and reduce conversions.",
+    ],
+    example: [
+      "// Improve speed:",
+      "Compress images",
+      "Use lazy loading",
+      "Minify CSS/JS",
+    ],
+    keyterms: [
+      "LCP = loading performance.",
+      "CLS = layout shift.",
+      "Core Web Vitals = user experience metrics.",
+    ],
+  },
+  {
+    id: 14,
+    question: "What is keyword cannibalization?",
+    answer: [
+      "When multiple pages target the same keyword.",
+      "They compete with each other and reduce ranking.",
+      "Solution: merge or differentiate content.",
+    ],
+    example: [
+      "// Bad practice:",
+      "Two blog posts targeting 'best phones 2025'",
+      "// Fix:",
+      "Combine into one strong article",
+    ],
+    keyterms: [
+      "Cannibalization = internal competition.",
+      "Merge content = fix.",
+      "SERP = search results page.",
+    ],
+  },
+  {
+    id: 15,
+    question: "What is local SEO?",
+    answer: [
+      "Local SEO improves visibility for location-based searches.",
+      "Used by businesses like salons, shops, restaurants.",
+      "Optimized using Google Business Profile and local citations.",
+    ],
+    example: ["Search: 'pizza near me'", "Your store appears in Google Maps"],
+    keyterms: [
+      "Local pack = map results.",
+      "Citations = NAP details.",
+      "Google Business Profile = local listing.",
+    ],
+  },
+  {
+    id: 16,
+    question: "What is schema markup (structured data)?",
+    answer: [
+      "Schema markup helps search engines understand content.",
+      "Enables rich results like ratings, FAQ, breadcrumbs.",
+      "Improves CTR but not a direct ranking factor.",
+    ],
+    example: [
+      "<script type='application/ld+json'>",
+      "{",
+      "  'type': 'Product',",
+      "  'name': 'Shoes',",
+      "  'rating': '4.6'",
+      "}",
+      "</script>",
+    ],
+    keyterms: [
+      "Structured data = machine-readable info.",
+      "Rich snippets = enhanced search result.",
+      "JSON-LD = recommended format.",
+    ],
+  },
+  {
+    id: 17,
+    question: "What is a canonical tag?",
+    answer: [
+      "Canonical tags prevent duplicate content issues.",
+      "They tell Google the preferred version of a page.",
+      "Useful for e-commerce product variations.",
+    ],
+    example: [
+      "<link rel='canonical' href='https://example.com/product/shoes' />",
+    ],
+    keyterms: [
+      "Canonical = preferred URL.",
+      "Duplicate content = ranking loss.",
+      "Consolidates SEO signals.",
+    ],
+  },
+  {
+    id: 18,
+    question: "What is a bounce rate?",
+    answer: [
+      "Bounce rate is the percentage of visitors who leave without interaction.",
+      "High bounce rate may indicate bad UX or irrelevant content.",
+      "Improved by better UI, faster speed, and good content.",
+    ],
+    example: [
+      "// Example cases:",
+      "Slow page → high bounce",
+      "Bad mobile design → high bounce",
+    ],
+    keyterms: [
+      "Bounce = no interaction.",
+      "UX = user experience.",
+      "High bounce hurts ranking indirectly.",
+    ],
+  },
+  {
+    id: 19,
+    question: "What is alt text and why is it important?",
+    answer: [
+      "Alt text describes images to search engines and screen readers.",
+      "Helps accessibility and image SEO.",
+      "If an image fails to load, alt text replaces it.",
+    ],
+    example: ["<img src='shoe.jpg' alt='Red running shoe for men' />"],
+    keyterms: [
+      "Alt text = image description.",
+      "Accessibility = screen reader support.",
+      "Image SEO = ranking in Google Images.",
+    ],
+  },
+  {
+    id: 20,
+    question: "What is the difference between white hat and black hat SEO?",
+    answer: [
+      "White hat SEO follows Google guidelines.",
+      "Black hat SEO uses shortcuts like keyword stuffing and spam links.",
+      "Black hat techniques may lead to penalties.",
+    ],
+    example: [
+      "// White hat:",
+      "High-quality content",
+      "Clean backlinks",
+      " ",
+      "// Black hat:",
+      "Invisible text",
+      "Spam backlinks",
+    ],
+    keyterms: [
+      "White hat = ethical SEO.",
+      "Black hat = risky shortcuts.",
+      "Penalty = ranking drop.",
+    ],
+  },
+  {
+    id: 21,
+    question: "What is robots.txt and what is it used for?",
+    answer: [
+      "robots.txt is a file that gives instructions to web crawlers about which pages to crawl or ignore.",
+      "It helps prevent indexing of private or irrelevant pages and reduces server load.",
+      "By controlling what search engines index, it improves SEO by focusing crawlers on important pages.",
+      "Does not enforce security; it's only a guideline for bots.",
+    ],
+    example: [
+      "// Content of robots.txt file",
+      "User-agent: *          // applies to all web crawlers",
+      "Disallow: /admin/       // tells crawlers not to index anything under /admin/",
+      "Allow: /public/         // explicitly allows indexing of /public/",
+      "// Place this file in the root of your website: https://example.com/robots.txt",
+    ],
+    keyterms: [
+      "robots.txt = crawler instruction file",
+      "User-agent = specific bot or * for all",
+      "Disallow / Allow = control page crawling",
+      "SEO benefit = helps search engines index important pages efficiently",
+    ],
+  },
+];
+
+export default seoQuestions;
