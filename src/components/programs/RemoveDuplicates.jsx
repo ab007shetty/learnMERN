@@ -32,22 +32,53 @@ export default RemoveDuplicates;
 const DEFAULT_JS_CODE = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
-function removeDuplicates(arr) {
+// Using includes
+function removeDuplicatesUsingIncludes(arr) {
+  const result = [];
+
+  for (let item of arr) {
+    if (!result.includes(item)) {
+      result.push(item);
+    }
+  }
+  return result;
+}
+
+console.log(removeDuplicatesUsingIncludes([1, 2, 2, "a", "b", "a", 3, 1, 4]));
+
+
+// Using Set
+function removeDuplicatesUsingSet(arr) {
+  return [...new Set(arr)];
+}
+
+console.log(removeDuplicatesUsingSet([1, 2, 2, "a", "b", "a", 3, 1, 4]));
+
+
+// Using filter
+function removeDuplicatesUsingFilter(arr) {
+  return arr.filter((item, index) => arr.indexOf(item) === index);
+}
+
+console.log(removeDuplicatesUsingFilter([1, 2, 2, "a", "b", "a", 3, 1, 4]));
+
+
+// Using Object (Hash Map)
+function removeDuplicatesUsingObject(arr) {
   const seen = {};      // acts as a hash map
   const result = [];
 
   for (let item of arr) {
     if (!seen[item]) {
       seen[item] = true;   // mark as seen
-      result.push(item);   // add to result
+      result.push(item);  // add to result
     }
   }
-
   return result;
 }
 
-// Example usage:
-console.log(removeDuplicates([1, 2, 2, "a", "b", "a", 3, 1, 4]));
+console.log(removeDuplicatesUsingObject([1, 2, 2, "a", "b", "a", 3, 1, 4]));
+
 `.trim();
 
 export default function RemoveDuplicates(props) {

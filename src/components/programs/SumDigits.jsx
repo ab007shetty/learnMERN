@@ -27,27 +27,27 @@ export default SumDigits;
 const DEFAULT_JS_CODE = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
-function sumOfDigits(num) {
-  return num
-    .toString()
-    .split('')
-    .reduce((sum, digit) => sum + Number(digit), 0);
+// Sum of digits using reduce (string method)
+
+function sumOfDigitsUsingReduce(num) {
+
+  return num.toString()                             // can also use String(num)
+  .split('')                 
+  .reduce((sum, digit) => sum + Number(digit), 0);
 }
 
-// Example usage:
-console.log(sumOfDigits(1234)); // 10
-console.log(sumOfDigits(5601)); // 12
+console.log(sumOfDigitsUsingReduce(1234)); // 10
 
 
 
-function sumOfDigits(num) {
+// Sum of digits using recursion (math method)
+
+function sumOfDigitsUsingRecursion(num) {
   if (num === 0) return 0;
-  return (num % 10) + sumOfDigits(Math.floor(num / 10));
+  return (num % 10) + sumOfDigitsUsingRecursion(Math.floor(num / 10));
 }
 
-// Example usage:
-console.log(sumOfDigits(1234)); // 10
-console.log(sumOfDigits(5601)); // 12
+console.log(sumOfDigitsUsingRecursion(5601)); // 12
 `.trim();
 
 export default function SumDigits(props) {

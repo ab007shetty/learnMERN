@@ -19,26 +19,41 @@ function Todo() {
   };
 
   const toggle = (index) => {                   // !todo.completed - toggles between true/false; true only 
-    setTodos(                                      // completed: false, sets it once and never flips back.
+    setTodos(                                      // completed: false, sets it once and never flips back
       todos.map((todo, i) => i === index ? { ...todo, completed: !todo.completed } : todo ));
   };
 
+  const edit = (index) => {
+    const newText = prompt("Edit todo:", todos[index].text);
+    if (newText.trim()) {                            // If newText is "", then js treats it as falsy value
+      setTodos(
+        todos.map((todo, i) => i === index ? { ...todo, text: newText } : todo));
+    }
+  };
+  
   return (
     <div>
       <h1>Todo</h1>                           {/* Input field is controlled; 'e' is the event object */}
-      <input value={input} onChange={e => setInput(e.target.value)} />
+      <input value={input} onChange={e => setInput(e.target.value)} />  &nbsp;
       <button onClick={add}>Add</button>
+      
       <ul>
         {todos.map((todo, i) => (
           <li key={i}>
-            <input type="checkbox" checked={todo.completed} onChange={() => toggle(i)} />
+
+            <input type="checkbox" checked={todo.completed} onChange={() => toggle(i)} />   &nbsp;
+
             <span style={{ textDecoration: todo.completed ? "line-through" : "none" }}>
               {todo.text}
-            </span>                  {/* () => delays execution until the button is actually clicked */}
-            <button onClick={() => remove(i)}> Delete </button>
+            </span>   &nbsp;            {/* () => delays execution until the button is actually clicked */}
+           
+            <button onClick={() => remove(i)}> Delete </button> &nbsp;
+            <button onClick={() => edit(i)}>Edit</button>       &nbsp;
+
           </li>
         ))}
       </ul>
+      
     </div>
   );
 }

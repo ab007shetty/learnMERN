@@ -28,9 +28,18 @@ export default ReverseString;
 `.trim();
 
 const DEFAULT_JS_CODE = `
-//Write React components, JSX, or pure JS. No need of any import statements.
+// Write React components, JSX, or pure JS. No need of any import statements.
 
-function reverseString(input) {
+// Using built-in methods
+function reverseStringBuiltIn(input) {
+  return input.split('').reverse().join('');
+}
+
+console.log(reverseStringBuiltIn("olleh")); // "hello"
+
+
+// Without built-in methods
+function reverseStringManual(input) {
   let reversed = "";
   for (let i = input.length - 1; i >= 0; i--) {
     reversed += input[i];
@@ -38,8 +47,20 @@ function reverseString(input) {
   return reversed;
 }
 
-// Simulate calling with user-provided input
-console.log(reverseString("hello")); // Output: "olleh"
+console.log(reverseStringManual("doog")); // "good"
+
+
+//Using for-of loop
+function reverseString(str) {
+  let res = "";
+  for (let char of str) {
+    res = char + res;
+  }
+  return res;
+}
+
+console.log(reverseString("yad")); // day
+
 `.trim();
 
 export default function ReverseString(props) {

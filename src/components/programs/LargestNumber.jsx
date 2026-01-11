@@ -33,12 +33,18 @@ export default LargestNumber;
 const DEFAULT_JS_CODE = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
-function findLargest(arr) {
-  if (!Array.isArray(arr) || arr.length === 0) {
-    return "Invalid array";
-  }
+// Using reduce method
+const findLargestUsingReduce = arr =>
+  arr.reduce((max, cv) => (cv > max ? cv : max), arr[0]);
+
+console.log(findLargestUsingReduce([1, 5, 3, 8, 2])); // Output: 8
+
+
+// Using for-of loop
+function findLargestUsingLoop(arr) {
 
   let max = arr[0];
+  
   for (let num of arr) {
     if (num > max) {
       max = num;
@@ -47,10 +53,7 @@ function findLargest(arr) {
   return max;
 }
 
-
-// Example usage:
-const input = [1, 5, 3, 9, 2];
-console.log("Largest Number is: ", findLargest(input)); // Output: 9
+console.log(findLargestUsingLoop([1, 5, 3, 9, 2])); // Output: 9
 `.trim();
 
 export default function LargestNumber(props) {
