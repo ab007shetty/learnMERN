@@ -1,0 +1,67 @@
+import{j as o}from"./index-B9-fRT7P.js";import{P as r}from"./PlaygroundWrapper-WsRgzkuU.js";const t=`
+//Write React components, JSX, or pure JS. No need of any import statements.
+
+function MoveZeroes() {
+  const [input, setInput] = useState("0,1,0,3,12");
+  const [output, setOutput] = useState([]);
+
+  const moveZeroes = () => {
+    let nums = input.split(",").map(Number);
+    let pos = 0;
+
+    for (let i = 0; i < nums.length; i++) {
+      if (nums[i] !== 0) {
+        [nums[pos], nums[i]] = [nums[i], nums[pos]];
+        pos++;
+      }
+    }
+
+    setOutput(nums);
+  };
+
+  return (
+    <div>
+      <input value={input} onChange={e => setInput(e.target.value)} placeholder="E.g. 0,1,0,3,12" />
+      <button onClick={moveZeroes}>Move Zeroes</button>
+      <div>{output.join(", ")}</div>
+    </div>
+  );
+}
+
+export default MoveZeroes;
+`.trim(),n=`
+//Write React components, JSX, or pure JS. No need of any import statements.
+
+// Using 2 arrays
+
+function moveZeroesUsingExtraArray(arr) {
+  let zero = [];
+  let nonZero = [];
+
+  for (let num of arr) {
+    num === 0 ? zero.push(num) : nonZero.push(num);
+  }
+
+  return nonZero.concat(zero);
+}
+
+console.log(moveZeroesUsingExtraArray([0, 1, 0, 3, 12])); // [1, 3, 12, 0, 0]
+
+
+// In-place swapping
+
+function moveZeroesInPlace(arr) {
+  let pos = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] !== 0) {
+      [arr[pos], arr[i]] = [arr[i], arr[pos]];
+      pos++;                      // Swap arr[i] (current element) with arr[pos] using array destructuring
+    }
+  }
+
+  return arr;
+}
+
+console.log(moveZeroesInPlace([0, 1, 0, 3, 12])); // [1, 3, 12, 0, 0]
+`.trim();function a(e){return o.jsx(r,{defaultCode:t,defaultJsCode:n,...e})}export{a as default};
