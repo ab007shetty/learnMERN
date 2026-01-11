@@ -30,10 +30,10 @@ export const programRegistry = {
 
   // Array Programs
   "array-operations": () => import("../components/programs/ArrayOperations"),
+  "set-array-methods": () => import("../components/programs/SetArrayMethods"),
   "find-index": () => import("../components/programs/FindIndex"),
   "flatten-array": () => import("../components/programs/FlattenArray"),
   "largest-number": () => import("../components/programs/LargestNumber"),
-  "move-zeroes": () => import("../components/programs/MoveZeroes"),
   "remove-duplicates": () => import("../components/programs/RemoveDuplicates"),
   "count-duplicates": () => import("../components/programs/CountDuplicates"),
 
@@ -42,21 +42,27 @@ export const programRegistry = {
   "longest-word": () => import("../components/programs/LongestWord"),
   "reverse-string": () => import("../components/programs/ReverseString"),
   "snake-case": () => import("../components/programs/SnakeCaseConverter"),
-  "sum-digits": () => import("../components/programs/SumDigits"),
   "vowel-counter": () => import("../components/programs/VowelCounter"),
 
   // Core JS Programs
-  "set-array-methods": () => import("../components/programs/SetArrayMethods"),
   "two-sum": () => import("../components/programs/TwoSum"),
-  "longest-common-prefix": () =>
-    import("../components/programs/LongestCommonPrefix"),
-  "closure-settimeout": () =>
-    import("../components/programs/ClosureSetTimeout"),
+  "pair-sum": () => import("../components/programs/PairSum"),
+  "second-largest": () => import("../components/programs/SecondLargest"),
+  "move-zeroes": () => import("../components/programs/MoveZeroes"),
+  "sum-digits": () => import("../components/programs/SumDigits"),
+  "sorted-check": () => import("../components/programs/SortedCheck"),
+  "reverse-array": () => import("../components/programs/ReverseArray"),
   fizzbuzz: () => import("../components/programs/FizzBuzz"),
+  "sliding-window": () => import("../components/programs/SlidingWindow"),
+  "peaks-valleys": () => import("../components/programs/PeaksValleys"),
   "find-missing-number": () =>
     import("../components/programs/FindMissingNumber"),
+  "longest-common-prefix": () =>
+    import("../components/programs/LongestCommonPrefix"),
+  "valid-parentheses": () => import("../components/programs/ValidParentheses"),
+  "closure-settimeout": () =>
+    import("../components/programs/ClosureSetTimeout"),
   "merge-sorted-arrays": () =>
     import("../components/programs/MergeSortedArrays"),
-  "valid-parentheses": () => import("../components/programs/ValidParentheses"),
-  "second-largest": () => import("../components/programs/SecondLargest"),
+  "max-subarray": () => import("../components/programs/MaxSubarray"),
 };

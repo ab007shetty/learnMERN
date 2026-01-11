@@ -48,19 +48,19 @@ console.log(flatten([1, [2, [3, [4, 5]]]]));
 
 
 // Manual flattening using recursion (loop based)
-// Without ..., push adds the whole array as one element. Since concat() does not modify the original array but returns a new one, we must reassign it using res = res.concat(...) or the result is lost.
-
 function flattenUsingRecursion(arr) {
   let res = [];
 
-  for (let i = 0; i < arr.length; i++) {
-    Array.isArray(arr[i]) ? res.push(...flattenUsingRecursion(arr[i])) : res.push(arr[i]);
-    }
-
-  return res;
+  for (let item of arr) {
+    Array.isArray(item) ? res.push(...flattenUsingRecursion(item)) : res.push(item);
+  }
+    return res;
 }
 
 console.log(flattenUsingRecursion([1, [2, [3, [4, 5]]]]));
+
+// Without ..., push adds the whole array as one element. Since concat() does not modify the original array but returns a new one, we must reassign it using res = res.concat(...) or the result is lost.
+
 `.trim();
 
 export default function FlattenArray(props) {

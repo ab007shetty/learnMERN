@@ -36,6 +36,7 @@ import {
   MessageSquare,
   ArrowDown,
   Bell,
+  Check,
 } from "lucide-react";
 
 // --- Programs grouped and sorted alphabetically by category ---
@@ -280,6 +281,17 @@ const arrays = [
     category: "arrays",
   },
   {
+    id: "set-array-methods",
+    name: "Set & Array Methods",
+    icon: Code,
+    description:
+      "Demonstrates important Set and Array operations in JavaScript like unique, union, intersection, difference, membership, and string→array conversion.",
+    concept: "Set, Array methods, iteration, spread operator",
+    conceptDescription:
+      "Uses Set to store unique values and combine with array methods like filter, map, reduce, and spread operator [...] to perform operations such as removing duplicates, computing union, intersection, difference, and checking membership.",
+    category: "arrays",
+  },
+  {
     id: "find-index",
     name: "Find Index",
     icon: FileSearch,
@@ -307,17 +319,6 @@ const arrays = [
       "Find the biggest number in an array. Returns the maximum value from a list of numbers.",
     concept: "useState, Math.max",
     conceptDescription: "Math.max with spread operator finds maximum value.",
-    category: "arrays",
-  },
-  {
-    id: "move-zeroes",
-    name: "Move Zeroes",
-    icon: ArrowDownWideNarrow,
-    description:
-      "Move all zeroes in the array to the end, keeping the order of non-zero elements. [0,1,0,3,12] ➝ [1,3,12,0,0]",
-    concept: "useState, array manipulation",
-    conceptDescription:
-      "uses in-place swapping to move zeroes to the end while preserving order.",
     category: "arrays",
   },
   {
@@ -390,17 +391,6 @@ const strings = [
     category: "strings",
   },
   {
-    id: "sum-digits",
-    name: "Sum of Digits",
-    icon: BookOpen,
-    description:
-      "Takes a number and returns the sum of its digits. Uses string conversion and reduce function.",
-    concept: "reduce",
-    conceptDescription:
-      "Convert number to string, split to array, convert back to digits, and sum using reduce.",
-    category: "strings",
-  },
-  {
     id: "vowel-counter",
     name: "Vowel Counter",
     icon: ArrowUpRight,
@@ -413,20 +403,8 @@ const strings = [
   },
 ];
 
-// Core JS
-
-const corejs = [
-  {
-    id: "set-array-methods",
-    name: "Set & Array Methods",
-    icon: Code,
-    description:
-      "Demonstrates important Set and Array operations in JavaScript like unique, union, intersection, difference, membership, and string→array conversion.",
-    concept: "Set, Array methods, iteration, spread operator",
-    conceptDescription:
-      "Uses Set to store unique values and combine with array methods like filter, map, reduce, and spread operator [...] to perform operations such as removing duplicates, computing union, intersection, difference, and checking membership.",
-    category: "corejs",
-  },
+// Logic
+const logic = [
   {
     id: "two-sum",
     name: "Two Sum",
@@ -436,29 +414,70 @@ const corejs = [
     concept: "hashmap, array, logic",
     conceptDescription:
       "Stores visited numbers in an object and checks if the complement (target - current) exists.",
-    category: "corejs",
+    category: "logic",
   },
   {
-    id: "longest-common-prefix",
-    name: "Longest Common Prefix",
-    icon: Type,
+    id: "pair-sum",
+    name: "Pair Sum",
+    icon: Code,
     description:
-      "Finds the longest common starting substring among an array of strings.",
-    concept: "string, prefix, loops",
+      "Checks whether any two numbers in the array add up to a target value.",
+    concept: "hashing, set",
     conceptDescription:
-      "Iteratively trims prefix until all strings start with it, returning the shared beginning characters.",
-    category: "corejs",
+      "Traverses the array once and stores visited elements in a Set to check if the required complement already exists.",
+    category: "logic",
   },
   {
-    id: "closure-settimeout",
-    name: "Closure with setTimeout",
-    icon: Clock,
-    description:
-      "Demonstrates how closures and setTimeout work together to print numbers in sequence.",
-    concept: "closure, setTimeout, async",
+    id: "second-largest",
+    name: "Find Second Largest Number",
+    icon: Code,
+    description: "Finds the second largest unique number in an array.",
+    concept: "sorting, logic",
     conceptDescription:
-      "Closures or block-scoped variables (let) allow each loop iteration to capture its own value, ensuring correct output with setTimeout.",
-    category: "corejs",
+      "Removes duplicates using Set and sorts descending to find the second highest element.",
+    category: "logic",
+  },
+  {
+    id: "move-zeroes",
+    name: "Move Zeroes",
+    icon: ArrowDownWideNarrow,
+    description:
+      "Move all zeroes in the array to the end, keeping the order of non-zero elements. [0,1,0,3,12] ➝ [1,3,12,0,0]",
+    concept: "useState, array manipulation",
+    conceptDescription:
+      "uses in-place swapping to move zeroes to the end while preserving order.",
+    category: "logic",
+  },
+  {
+    id: "sum-digits",
+    name: "Sum of Digits",
+    icon: BookOpen,
+    description:
+      "Takes a number and returns the sum of its digits. Uses string conversion and reduce function.",
+    concept: "reduce",
+    conceptDescription:
+      "Convert number to string, split to array, convert back to digits, and sum using reduce.",
+    category: "logic",
+  },
+  {
+    id: "sorted-check",
+    name: "Check Sorted Array",
+    icon: Check,
+    description: "Checks if an array is sorted in ascending order.",
+    concept: "one pass",
+    conceptDescription:
+      "Compares adjacent elements once to verify sorted order.",
+    category: "logic",
+  },
+  {
+    id: "reverse-array",
+    name: "Reverse Array",
+    icon: RefreshCcw,
+    description: "Reverses an array using two pointers.",
+    concept: "two pointers",
+    conceptDescription:
+      "Uses left and right pointers to swap elements until reversed.",
+    category: "logic",
   },
   {
     id: "fizzbuzz",
@@ -469,7 +488,27 @@ const corejs = [
     concept: "loop, conditionals",
     conceptDescription:
       "Uses modulus (%) operator and conditional checks to replace numbers with Fizz, Buzz, or FizzBuzz.",
-    category: "corejs",
+    category: "logic",
+  },
+  {
+    id: "sliding-window",
+    name: "Sliding Window",
+    icon: Shuffle,
+    description: "Finds maximum sum of a subarray of size K.",
+    concept: "sliding window",
+    conceptDescription:
+      "Maintains a moving window and updates sum efficiently in one pass.",
+    category: "logic",
+  },
+  {
+    id: "peaks-valleys",
+    name: "Peaks & Valleys",
+    icon: ArrowUpRight,
+    description: "Finds elements greater or smaller than both neighbors.",
+    concept: "neighbor comparison",
+    conceptDescription:
+      "Compares each element with adjacent elements in one traversal.",
+    category: "logic",
   },
   {
     id: "find-missing-number",
@@ -480,18 +519,18 @@ const corejs = [
     concept: "math, array, reduce",
     conceptDescription:
       "Uses sum of first N natural numbers formula and compares with actual array sum to find the missing value.",
-    category: "corejs",
+    category: "logic",
   },
   {
-    id: "merge-sorted-arrays",
-    name: "Merge Two Sorted Arrays",
-    icon: Shuffle,
+    id: "longest-common-prefix",
+    name: "Longest Common Prefix",
+    icon: Type,
     description:
-      "Merges two sorted arrays into one sorted array without using sort().",
-    concept: "array, two pointers",
+      "Finds the longest common starting substring among an array of strings.",
+    concept: "string, prefix, loops",
     conceptDescription:
-      "Uses pointer-based traversal for both arrays to merge efficiently in O(n+m) time.",
-    category: "corejs",
+      "Iteratively trims prefix until all strings start with it, returning the shared beginning characters.",
+    category: "logic",
   },
   {
     id: "valid-parentheses",
@@ -502,17 +541,39 @@ const corejs = [
     concept: "stack, string, logic",
     conceptDescription:
       "Uses a stack data structure to push open brackets and pop when matching close brackets appear.",
-    category: "corejs",
+    category: "logic",
   },
   {
-    id: "second-largest",
-    name: "Find Second Largest Number",
-    icon: Code,
-    description: "Finds the second largest unique number in an array.",
-    concept: "sorting, logic",
+    id: "closure-settimeout",
+    name: "Closure with setTimeout",
+    icon: Clock,
+    description:
+      "Demonstrates how closures and setTimeout work together to print numbers in sequence.",
+    concept: "closure, setTimeout, async",
     conceptDescription:
-      "Removes duplicates using Set and sorts descending to find the second highest element.",
-    category: "corejs",
+      "Closures or block-scoped variables (let) allow each loop iteration to capture its own value, ensuring correct output with setTimeout.",
+    category: "logic",
+  },
+  {
+    id: "merge-sorted-arrays",
+    name: "Merge Two Sorted Arrays",
+    icon: Shuffle,
+    description:
+      "Merges two sorted arrays into one sorted array without using sort().",
+    concept: "array, two pointers",
+    conceptDescription:
+      "Uses pointer-based traversal for both arrays to merge efficiently in O(n+m) time.",
+    category: "logic",
+  },
+  {
+    id: "max-subarray",
+    name: "Max Subarray (Kadane)",
+    icon: BarChart2,
+    description: "Finds the maximum sum of a contiguous subarray.",
+    concept: "kadane, dynamic programming",
+    conceptDescription:
+      "Kadane’s algorithm keeps track of current and maximum sum in one pass.",
+    category: "logic",
   },
 ];
 
@@ -531,7 +592,7 @@ const programs = [
   ...algo,
   ...arrays,
   ...strings,
-  ...corejs,
+  ...logic,
 ];
 
 export default programs;

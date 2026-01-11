@@ -14,7 +14,7 @@ const FILTER_OPTIONS = [
   { id: 'algo', label: 'Algo' },
   { id: 'arrays', label: 'Arrays' },
   { id: 'strings', label: 'Strings' },
-  { id: 'corejs', label: 'Core JS' },
+  { id: 'logic', label: 'Logic' },
 ];
 
 const FilterDropdown = ({ isOpen, onClose, selectedFilter, onFilterChange }) => {
@@ -126,7 +126,7 @@ const Sidebar = ({
       case 'algo': return 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400';
       case 'arrays': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
       case 'strings': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
-      case 'corejs': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400';
+      case 'logic': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400';
       default: return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
     }
   };
@@ -137,7 +137,7 @@ const Sidebar = ({
       case 'algo': return 'text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 hover:bg-pink-100 dark:hover:bg-pink-900/20';
       case 'arrays': return 'text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/20';
       case 'strings': return 'text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/20';
-      case 'corejs': return 'text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/20';
+      case 'logic': return 'text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/20';
       default: return 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700';
     }
   };

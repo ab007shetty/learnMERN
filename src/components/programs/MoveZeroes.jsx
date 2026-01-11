@@ -36,21 +36,38 @@ export default MoveZeroes;
 const DEFAULT_JS_CODE = `
 //Write React components, JSX, or pure JS. No need of any import statements.
 
-function moveZeroes(arr) {
+// Using 2 arrays
+
+function moveZeroesUsingExtraArray(arr) {
+  let zero = [];
+  let nonZero = [];
+
+  for (let num of arr) {
+    num === 0 ? zero.push(num) : nonZero.push(num);
+  }
+
+  return nonZero.concat(zero);
+}
+
+console.log(moveZeroesUsingExtraArray([0, 1, 0, 3, 12])); // [1, 3, 12, 0, 0]
+
+
+// In-place swapping
+
+function moveZeroesInPlace(arr) {
   let pos = 0;
 
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] !== 0) {
       [arr[pos], arr[i]] = [arr[i], arr[pos]];
-      pos++;              // Swap arr[i] (current element) with arr[pos] using array destructuring
+      pos++;                      // Swap arr[i] (current element) with arr[pos] using array destructuring
     }
   }
 
   return arr;
 }
 
-// Simulate user input
-console.log(moveZeroes([0, 1, 0, 3, 12])); // Output: [1, 3, 12, 0, 0]
+console.log(moveZeroesInPlace([0, 1, 0, 3, 12])); // [1, 3, 12, 0, 0]
 `.trim();
 
 export default function MoveZeroes(props) {
